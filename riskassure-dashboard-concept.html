@@ -2973,6 +2973,39 @@
               <div class="kv"><span>Password changes</span><b>Changing or resetting your password signs out every other session</b></div>
               <div class="kv"><span>Working on this device</span><b>Data worked on without signing in to the cloud is stored unencrypted in this browser, on this machine. On a shared machine, sign out and clear the browser's site data when you finish</b></div>
             </div>
+            <div class="top" style="margin-top:8px"><span class="label" style="font-size:15px;font-weight:600">Your password</span></div>
+            <p class="sub" style="margin:0 0 10px">Your password is yours alone: only you can set it, and not even an administrator can see it or choose it for you. An admin can only send you a reset link.</p>
+            <div id="pwChangeBox" hidden>
+              <form id="pwChangeForm" autocomplete="off">
+                <div class="formrow">
+                  <label class="field">Current password
+                    <input id="pwCurrent" type="password" autocomplete="current-password" placeholder="Your current password" />
+                  </label>
+                  <label class="field">New password
+                    <input id="pwNew" type="password" autocomplete="new-password" placeholder="New password" />
+                  </label>
+                </div>
+                <ul class="polchk" id="pwNewPolicy">
+                  <li data-pol="len">At least 12 characters</li>
+                  <li data-pol="case">Uppercase and lowercase letters</li>
+                  <li data-pol="num">At least one number</li>
+                  <li data-pol="sym">At least one symbol (e.g. ! ? # %)</li>
+                </ul>
+                <label class="field" style="margin-top:10px;max-width:360px">Confirm new password
+                  <input id="pwNew2" type="password" autocomplete="new-password" placeholder="Repeat the new password" />
+                </label>
+                <p class="autherr" id="pwError" role="alert" hidden></p>
+                <p class="authok" id="pwOk" role="status" hidden></p>
+                <div class="btnrow" style="margin-top:10px">
+                  <button type="submit" class="btn small" id="pwSubmit" disabled>Change password</button>
+                  <span class="sub">Changing your password signs out your other sessions; this session stays signed in.</span>
+                </div>
+              </form>
+            </div>
+            <div id="pwDeviceBox" hidden>
+              <p class="sub" style="margin:0 0 10px">You are working on this device, and a device profile has no password: passwords belong to cloud accounts. Connect a cloud account to set or change your password.</p>
+              <div class="btnrow"><button type="button" class="btn small" id="pwConnectBtn">Connect a cloud account</button></div>
+            </div>
             <div class="top" style="margin-top:8px"><span class="label" style="font-size:15px;font-weight:600">Multi-factor authentication (authenticator app)</span></div>
             <p class="sub" id="mfaStatus" style="margin:0 0 10px">Sign in to the cloud workspace to manage multi-factor authentication.</p>
             <div id="mfaEnrollBox" hidden style="border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px">
@@ -6198,6 +6231,93 @@
             if (en) en.hidden = false; if (un) un.hidden = true;
           }
         }
+        /* ---------- your password (Settings - Security) ----------
+           The person an account belongs to is the only person who ever
+           sets its password, admins included: there is no admin-set
+           password anywhere in this application. A signed-in user
+           changes their own password here. The current password is
+           verified by re-authenticating against the auth service for
+           the signed-in email; the new password must pass the same
+           policy checklist as sign-up; on success every other session
+           is signed out (the same call the reset-completion path uses)
+           while this session stays alive. No password material is ever
+           written to the access record. On-device sessions have no
+           password at all, so the section explains that instead of
+           pretending to store one locally. */
+        function pwShowError(msg) { var e = $("pwError"); if (!e) return; e.textContent = msg || ""; e.hidden = !msg; if (msg) $("pwOk").hidden = true; }
+        function pwShowOk(msg) { var e = $("pwOk"); if (!e) return; e.textContent = msg || ""; e.hidden = !msg; if (msg) $("pwError").hidden = true; }
+        function paintPwPolicy() {
+          var list = $("pwNewPolicy"); if (!list) return;
+          var bad = passwordIssues($("pwNew").value);
+          list.querySelectorAll("li").forEach(function (li) { li.classList.toggle("ok", bad.indexOf(li.getAttribute("data-pol")) === -1); });
+        }
+        function refreshPwForm() {
+          var btn = $("pwSubmit"); if (!btn) return;
+          paintPwPolicy();
+          var cur = $("pwCurrent").value, nw = $("pwNew").value, nw2 = $("pwNew2").value;
+          var mismatch = !!nw2 && nw !== nw2;
+          if (mismatch) pwShowError("The two new passwords do not match.");
+          else { var err = $("pwError"); if (err && err.textContent === "The two new passwords do not match.") pwShowError(""); }
+          btn.disabled = !(cur && !passwordIssues(nw).length && nw2 && !mismatch);
+        }
+        function wirePasswordSection() {
+          var form = $("pwChangeForm"); if (!form || form.__pwWired) return; form.__pwWired = true;
+          form.addEventListener("submit", pwChangeSubmit);
+          ["pwCurrent", "pwNew", "pwNew2"].forEach(function (id) { var el = $(id); if (el) el.addEventListener("input", refreshPwForm); });
+          var cb = $("pwConnectBtn");
+          if (cb) cb.addEventListener("click", function () {
+            if (!window.RASB) { toast("Cloud sign-in is unavailable right now - you are working on this device."); return; }
+            RA.sb = window.RASB;
+            showGate();
+          });
+        }
+        function renderPasswordSection() {
+          var box = $("pwChangeBox"), dev = $("pwDeviceBox"); if (!box || !dev) return;
+          wirePasswordSection();
+          var cloud = RA.mode === "cloud" && RA.sb && RA.user;
+          box.hidden = !cloud;
+          dev.hidden = !!cloud;
+          if (cloud) refreshPwForm();
+        }
+        async function pwChangeSubmit(e) {
+          e.preventDefault();
+          if (RA.mode !== "cloud" || !RA.sb || !RA.user) return;
+          var email = RA.user.email || "";
+          var cur = $("pwCurrent").value, nw = $("pwNew").value, nw2 = $("pwNew2").value;
+          if (passwordIssues(nw).length) { pwShowError("That password does not meet the workspace policy yet - 12 or more characters with upper and lower case, a number and a symbol (see the checklist above)."); return; }
+          if (nw !== nw2) { pwShowError("The two new passwords do not match."); return; }
+          if (!cur) { pwShowError("Enter your current password."); return; }
+          var btn = $("pwSubmit"); btn.disabled = true; pwShowError(""); pwShowOk("");
+          try {
+            var chk = await RA.sb.auth.signInWithPassword({ email: email, password: cur });
+            if (chk.error) {
+              var cm = (chk.error && chk.error.message) || "";
+              if (/invalid login|invalid credentials/i.test(cm)) {
+                var n = throttleFail(email);
+                secLog("Password change failed", "A password change was attempted for " + maskEmail(email) + " at " + new Date().toLocaleString() + " but the current password given was not correct (" + n + " failed attempt(s) in the last 15 minutes). No password or token was recorded.");
+                var dl = throttleDelayMs(n); if (dl) await sleepMs(dl);
+                pwShowError("Current password is incorrect.");
+              } else {
+                pwShowError(authErrorText(chk.error));
+              }
+              btn.disabled = false; refreshPwForm();
+              return;
+            }
+            if (chk.data && chk.data.session && chk.data.session.user) RA.user = chk.data.session.user;
+            var res = await RA.sb.auth.updateUser({ password: nw });
+            if (res.error) throw res.error;
+            accessLog("Password changed", currentUserName() + " changed their own password in Settings at " + new Date().toLocaleString() + ". All other sessions were signed out; this session stayed signed in. No password material was recorded.");
+            try { await RA.sb.auth.signOut({ scope: "others" }); } catch (e2) {}
+            $("pwCurrent").value = ""; $("pwNew").value = ""; $("pwNew2").value = "";
+            pwShowOk("Password changed. Your other sessions have been signed out, and this session stays signed in.");
+            toast("Password changed.");
+          } catch (err) {
+            var m = (err && err.message) || "";
+            if (/different from the old/i.test(m)) pwShowError("Choose a password that is different from your current one.");
+            else pwShowError(authErrorText(err));
+          }
+          btn.disabled = false; refreshPwForm();
+        }
         async function mfaEnrollStart() {
           var msg = $("mfaMsg"); if (msg) msg.textContent = "";
           if (!RA.sb) return;
@@ -6798,6 +6918,7 @@
           subscribeRealtime();
           renderSessionInfo();
           renderMfa();
+          renderPasswordSection();
           /* Admins enrol at the sign-in gate before this point, so an admin
              reaching the workspace already holds a factor; this is only a
              belt-and-braces reminder if the factor list cannot be read. */
@@ -6836,6 +6957,7 @@
             var b2c = $("authBtnOut"); if (b2c) b2c.hidden = true;
             renderSessionInfo();
             renderMfa();
+            renderPasswordSection();
             var cc = $("cloudCard");
             if (cc) { cc.hidden = false; $("cloudEmail").textContent = RA.profile.email || (RA.user && RA.user.email) || ""; $("cloudRole").textContent = roleLabel(RA.role); $("cloudTenant").textContent = RA.tenantName || ""; $("cloudTenantLine").textContent = RA.tenantName || ""; }
             var sc = $("teamStaticCard"); if (sc) sc.hidden = true;
@@ -13951,7 +14073,7 @@
         }
 
         /* ---------- compliance view: acceptance + access record ---------- */
-        var SEC_EVENT_PREFIXES = ["Signed in", "Sign-in failed", "Signed out", "Password reset", "MFA", "Session timeout", "Legal terms accepted", "Continued on this device", "Account sign-up", "Privacy request", "Consent granted", "Consent withdrawn", "Consent recorded", "Account deletion requested", "Data export", "Data purge", "Team invite"];
+        var SEC_EVENT_PREFIXES = ["Signed in", "Sign-in failed", "Signed out", "Password reset", "Password change", "MFA", "Session timeout", "Legal terms accepted", "Continued on this device", "Account sign-up", "Privacy request", "Consent granted", "Consent withdrawn", "Consent recorded", "Account deletion requested", "Data export", "Data purge", "Team invite"];
         function renderAccessLog() {
           var body = $("clAccessBody"); if (!body) return;
           var items = ensureArray(loadData("ra2_access_log", [])).slice().reverse();
@@ -13980,7 +14102,7 @@
           __goView(name);
           if (name === "compliance") { try { renderAccessLog(); } catch (e) {} }
           if (name === "servicedesk") { try { renderTickets(); } catch (e) {} }
-          if (name === "settings") { try { renderPrivacySection(); refreshDataControls(); renderLocalInvites(); renderOrgSetting(); renderProfileSetting(); } catch (e) {} }
+          if (name === "settings") { try { renderPrivacySection(); refreshDataControls(); renderLocalInvites(); renderOrgSetting(); renderProfileSetting(); renderPasswordSection(); } catch (e) {} }
           if (name === "review") { try { renderTeamExtras(); } catch (e) {} }
         };
         var __renderWorkspace = renderWorkspace;
@@ -14003,7 +14125,7 @@
           /* the sidebar uses its own nav handler - render the new views as they open */
           document.querySelectorAll('[data-view-target="compliance"]').forEach(function (b) { b.addEventListener("click", function () { setTimeout(renderAccessLog, 40); }); });
           document.querySelectorAll('[data-view-target="servicedesk"]').forEach(function (b) { b.addEventListener("click", function () { setTimeout(renderTickets, 40); }); });
-          document.querySelectorAll('[data-view-target="settings"]').forEach(function (b) { b.addEventListener("click", function () { setTimeout(function () { try { renderPrivacySection(); refreshDataControls(); renderLocalInvites(); renderOrgSetting(); } catch (e) {} }, 40); }); });
+          document.querySelectorAll('[data-view-target="settings"]').forEach(function (b) { b.addEventListener("click", function () { setTimeout(function () { try { renderPrivacySection(); refreshDataControls(); renderLocalInvites(); renderOrgSetting(); renderPasswordSection(); } catch (e) {} }, 40); }); });
           /* same pattern for the live lists: a status or record changed inside
              the workspace must be what the list shows when the user returns */
           document.querySelectorAll('[data-view-target="reviews"]').forEach(function (b) { b.addEventListener("click", function () { setTimeout(function () { try { renderReviews(); } catch (e) {} }, 40); }); });
