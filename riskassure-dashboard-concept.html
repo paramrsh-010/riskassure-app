@@ -6266,8 +6266,7 @@
           ["pwCurrent", "pwNew", "pwNew2"].forEach(function (id) { var el = $(id); if (el) el.addEventListener("input", refreshPwForm); });
           var cb = $("pwConnectBtn");
           if (cb) cb.addEventListener("click", function () {
-            if (!window.RASB) { toast("Cloud sign-in is unavailable right now - you are working on this device."); return; }
-            RA.sb = window.RASB;
+            ensureCloudClient();
             showGate();
           });
         }
@@ -6592,6 +6591,24 @@
           if (/invalid login|invalid credentials/i.test(m)) return "Invalid email or password.";
           return "Something went wrong. Try again.";
         }
+        /* Cloud availability is information, never a veto. The stored
+           device-session preference and any earlier availability probe
+           may be DISPLAYED (banner, mode pill), but they must never stop
+           a sign-in, sign-up, connect or password-reset submission from
+           attempting the real call: the client is (re)attached here at
+           submit time, and the outcome shown comes from the service's
+           actual response, not from a pre-emptive refusal. */
+        function ensureCloudClient() {
+          if (!RA.sb && window.RASB) RA.sb = window.RASB;
+          return RA.sb || null;
+        }
+        function isRateLimitError(err) {
+          if (!err) return false;
+          if (err.status === 429 || err.statusCode === 429 || String(err.status || "") === "429") return true;
+          var c = String(err.code || err.error_code || "");
+          if (/over_email_send_rate_limit|over_request_rate_limit|rate_limit/i.test(c)) return true;
+          return /over_email_send_rate_limit|rate limit|too many requests/i.test(String(err.message || ""));
+        }
         var agMode = "signin";
         function agSetMode(m) {
           agMode = m;
@@ -6837,8 +6854,12 @@
           if (!legalAccepted() && !agreeChecked()) { agShowError("Before you continue, please read the Privacy Notice and the Terms of Use to the end in the panels above, then tick each acceptance box. They are separate acceptances, and each is recorded against your account."); return; }
           recordLegalAcceptance(email);
           if (agMode === "signup" && passwordIssues(pass).length) { agShowError("That password does not meet the workspace policy yet - 12 or more characters with upper and lower case, a number and a symbol (see the checklist above)."); return; }
+          /* A device session or a failed availability probe never refuses
+             this attempt: (re)attach the client and make the real call. */
+          ensureCloudClient();
           var btn = $("agSubmit"); btn.disabled = true; agShowError(""); agShowOk("");
           try {
+            if (!RA.sb) throw new Error("Failed to fetch: cloud client could not be loaded");
             if (agMode === "signup") {
               var wsName = ($("agWorkspace") ? $("agWorkspace").value.trim() : "");
               var res = await RA.sb.auth.signUp({ email: email, password: pass, options: { data: { workspace_name: wsName || undefined } } });
@@ -6860,6 +6881,18 @@
               }
               var r2 = await RA.sb.auth.signInWithPassword({ email: email, password: pass });
               if (r2.error) {
+                if (isRateLimitError(r2.error)) {
+                  secLog("Sign-in rate limited", "Sign-in for " + maskEmail(email) + " was rate limited by the authentication service at " + new Date().toLocaleString() + ". No password or token was recorded.");
+                  agShowError("Too many sign-in attempts just now. Wait a few minutes and try again.");
+                  btn.disabled = false;
+                  return;
+                }
+                if (!/invalid login|invalid credentials/i.test(String(r2.error.message || ""))) {
+                  secLog("Sign-in could not reach service", "A sign-in attempt for " + maskEmail(email) + " could not reach the authentication service at " + new Date().toLocaleString() + ". No password or token was recorded.");
+                  agShowError("Couldn't reach the authentication service - check your connection and try again.");
+                  btn.disabled = false;
+                  return;
+                }
                 var n = throttleFail(email);
                 secLog("Sign-in failed", "Failed sign-in attempt for " + maskEmail(email) + " at " + new Date().toLocaleString() + " (" + n + " in the last 15 minutes). No password or token was recorded.");
                 var d = throttleDelayMs(n);
@@ -6876,7 +6909,7 @@
               RA.signInAt = Date.now();
               await enterCloud(r2.data.session);
             }
-          } catch (err) { agShowLoading(false); agShowError(authErrorText(err)); }
+          } catch (err) { agShowLoading(false); agShowError(isRateLimitError(err) ? "Too many attempts just now. Wait a few minutes and try again." : authErrorText(err)); }
           btn.disabled = false;
         }
         async function fetchProfile(uidv) {
@@ -7164,17 +7197,33 @@
                 var em = $("agEmail").value.trim(), st = $("agResetStatus");
                 if (!em) { st.textContent = "Enter your email above first."; return; }
                 st.textContent = "Sending...";
-                accessLog("Password reset requested", "A password reset link was requested for " + em + " at " + new Date().toLocaleString() + ".");
-                if (window.RASB && RA.sb) {
+                /* ALWAYS attempt the call, whatever the device session or
+                   availability state says: that state informs, it never
+                   vetoes. The outcome shown is branched on the service's
+                   real response. */
+                var sb = ensureCloudClient();
+                var outcome = "failed", callErr = null, res = null;
+                if (sb) {
                   try {
                     var back = String(window.location.href).split("#")[0].split("?")[0];
-                    await RA.sb.auth.resetPasswordForEmail(em, { redirectTo: back });
-                  } catch (e2) {}
+                    res = await sb.auth.resetPasswordForEmail(em, { redirectTo: back });
+                    if (res && res.error) callErr = res.error;
+                  } catch (e2) { callErr = e2; }
+                } else {
+                  callErr = new Error("Cloud client could not be loaded");
+                }
+                if (!callErr) outcome = "sent";
+                else if (isRateLimitError(callErr)) outcome = "rate-limited";
+                try { console.info("Password reset attempt outcome: " + outcome + (callErr && callErr.status ? " (status " + callErr.status + ")" : "")); } catch (e3) {}
+                accessLog("Password reset requested", "A password reset link was requested for " + maskEmail(em) + " at " + new Date().toLocaleString() + ". Outcome: " + outcome + ". No password or token was recorded.");
+                if (outcome === "sent") {
                   /* The same neutral reply whether or not the email is
                      registered - the response must not confirm which. */
                   st.textContent = "If this email is registered, a reset link is on its way.";
+                } else if (outcome === "rate-limited") {
+                  st.textContent = "Too many reset requests have been made recently. Please wait a while before trying again.";
                 } else {
-                  st.textContent = "Cloud sign-in is unavailable on this device right now. Your workspace admin can reset your password from Settings - Team.";
+                  st.textContent = "The reset request could not be sent from here right now. Check your connection and try again, or ask your workspace admin to send you a reset link from Settings - Team.";
                 }
               });
             }
@@ -7184,8 +7233,10 @@
             ab.__wired = true;
             ab.addEventListener("click", function () {
               if (RA.mode === "cloud") { signOutCloud(); return; }
-              if (!window.RASB) { toast(RA.signInAt ? "Cloud sign-in is unavailable right now - you are working on this device in a device session." : "Cloud sign-in is unavailable right now - you're working on this device."); return; }
-              RA.sb = window.RASB;
+              /* Connect a cloud account: open the sign-in card and let the
+                 submission make the real attempt. A device session or an
+                 unavailable probe never refuses this before the call. */
+              ensureCloudClient();
               showGate();
             });
             var ab2 = $("authBtnOut");
