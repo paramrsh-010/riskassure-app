@@ -617,6 +617,14 @@
       .authok { color: var(--good); font-size: 13.5px; margin-top: 12px; }
       .authcard .btnrow { margin-top: 18px; }
       .authcard .btnrow .btn { width: 100%; justify-content: center; }
+      .auth-create-entry {
+        display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+        margin-top: 16px; padding: 12px 14px;
+        border: 1px solid var(--line); border-radius: 12px; background: var(--surface-2);
+      }
+      .auth-create-entry .ace-text { font-size: 13.5px; color: var(--ink-2); line-height: 1.4; min-width: 0; }
+      .auth-create-entry .ace-text b { display: block; color: var(--ink); font-size: 14.5px; }
+      .auth-create-entry .btn { flex: none; }
       .authtoggle { margin-top: 14px; font-size: 13.5px; color: var(--ink-2); text-align: center; }
       .authtoggle button, .authoffline {
         appearance: none; border: 0; background: transparent; cursor: pointer; font: inherit;
@@ -4808,6 +4816,10 @@
         <div id="agFormWrap">
           <h2 id="agTitle">Sign in to your workspace</h2>
           <span class="sub" id="agSub">Your team's reviews, findings and actions, synced and shared.</span>
+          <div class="auth-create-entry" id="agCreateEntry">
+            <span class="ace-text"><b id="agTopToggleText">New to RiskAssure?</b><span id="agTopToggleSub">No account yet? Create one and start your own workspace.</span></span>
+            <button type="button" class="btn small" id="agTopToggle">Create an account</button>
+          </div>
           <form id="agForm" autocomplete="on">
             <label class="field">Email
               <input id="agEmail" type="email" autocomplete="email" placeholder="you@example.com" required />
@@ -4833,6 +4845,7 @@
               <p class="sub" style="margin:4px 0 10px">Request a reset link for the email address above. For security, the reply is the same whether or not that email is registered.</p>
               <button type="button" class="btn small" id="agResetSend">Email me a reset link</button>
               <span class="sub" id="agResetStatus" role="status" style="margin-left:8px"></span>
+              <p class="sub" id="agResetHint" style="margin:10px 0 0">Check the inbox for the exact address entered above, including the spam folder. Links expire after one hour.</p>
             </div>
             <div class="agreebox">
               <div class="gate-doc" id="agPrivDoc">
@@ -6470,6 +6483,9 @@
           $("agPass").setAttribute("autocomplete", signup ? "new-password" : "current-password");
           $("agToggleText").textContent = signup ? "Already have an account?" : "New to the workspace?";
           $("agToggle").textContent = signup ? "Sign in" : "Create account";
+          var agTopText = $("agTopToggleText"); if (agTopText) agTopText.textContent = signup ? "Already have an account?" : "New to RiskAssure?";
+          var agTopSub = $("agTopToggleSub"); if (agTopSub) agTopSub.textContent = signup ? "Use your existing account to sign in to your workspace." : "No account yet? Create one and start your own workspace.";
+          var agTopBtn = $("agTopToggle"); if (agTopBtn) agTopBtn.textContent = signup ? "Sign in" : "Create an account";
           var pol = $("agPolicy"); if (pol) pol.hidden = !signup;
           agShowError(""); agShowOk("");
         }
@@ -7004,6 +7020,8 @@
             form.__wired = true;
             form.addEventListener("submit", agSubmit);
             $("agToggle").addEventListener("click", function () { agSetMode(agMode === "signin" ? "signup" : "signin"); });
+            var agTopToggleBtn = $("agTopToggle");
+            if (agTopToggleBtn && !agTopToggleBtn.__wired) { agTopToggleBtn.__wired = true; agTopToggleBtn.addEventListener("click", function () { agSetMode(agMode === "signin" ? "signup" : "signin"); }); }
             $("agOffline").addEventListener("click", function () {
               if (!legalAccepted() && !agreeChecked()) { agShowError("Before you continue, please read the Privacy Notice and the Terms of Use to the end in the panels above, then tick each acceptance box. Each is recorded against your account."); return; }
               recordLegalAcceptance($("agEmail").value.trim());
