@@ -679,7 +679,7 @@
       .gate-prog.done { color: var(--good); }
       .scrollpanel {
         margin-top: 8px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface);
-        max-height: 230px; overflow-y: auto; padding: 12px 14px; font-size: 13.5px;
+        max-height: min(44vh, 430px); overflow-y: auto; padding: 12px 14px; font-size: 13.5px;
       }
       .scrollpanel:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
       .scrollpanel .gate-end { margin: 12px 0 2px; font-size: 12.5px; color: var(--ink-3); font-weight: 600; text-align: center; }
@@ -4878,7 +4878,7 @@
               <p class="sub" style="margin:4px 0 10px">Request a reset link for the email address above. For security, the reply is the same whether or not that email is registered.</p>
               <button type="button" class="btn small" id="agResetSend">Email me a reset link</button>
               <span class="sub" id="agResetStatus" role="status" style="margin-left:8px"></span>
-              <p class="sub" id="agResetHint" style="margin:10px 0 0">Check the inbox for the exact address entered above, including the spam folder. Links expire after one hour.</p>
+              <p class="sub" id="agResetHint" style="margin:10px 0 0">Check the inbox for the exact address entered above, including the spam folder. Links expire after one hour and each link works once, so open it in this same browser. After you set the new password you go straight into your workspace - there is no second sign-in step.</p>
             </div>
             <div class="agreebox">
               <div class="gate-doc" id="agPrivDoc">
@@ -4937,7 +4937,7 @@
         <div id="agLoading" class="authloading" hidden>Loading your workspace...</div>
         <div id="agRecoveryWrap" hidden>
           <h2>Set a new password</h2>
-          <span class="sub">You opened a password reset link. Choose a new password for your account below - when you save it, every other session is signed out.</span>
+          <span class="sub">You opened a password reset link. Choose a new password for your account below - when you save it, every other session is signed out and you go straight into your workspace.</span>
           <form id="agRecForm" autocomplete="off">
             <label class="field">New password
               <input id="agRecPass" type="password" autocomplete="new-password" placeholder="New password" required />
@@ -6093,6 +6093,33 @@
             accessLog("Password reset completed", (who || "A user") + " set a new password from an emailed reset link at " + new Date().toLocaleString() + ". All other sessions were signed out.");
             RA.recovery = false;
             try { await RA.sb.auth.signOut({ scope: "others" }); } catch (e2) {}
+            /* The emailed link already proved control of the account, so
+               keep this session and go straight into the workspace. The old
+               behaviour signed the user out at this point and bounced them
+               back to the sign-in card, which read as the reset having
+               failed and cost another full sign-in. If anything in this
+               path fails, fall back to that sign-in card with the password
+               already changed. */
+            var landed = false;
+            try {
+              var gs3 = await RA.sb.auth.getSession();
+              var sess3 = gs3 && gs3.data ? gs3.data.session : null;
+              if (sess3) {
+                RA.user = sess3.user;
+                try { localStorage.setItem("ra_mode_pref", "cloud"); } catch (e4) {}
+                var proceed3 = await maybeMfaGate();
+                /* Either way the next screen is already owned: the
+                   workspace (or its holding screen), the MFA challenge,
+                   or the sign-in card after an MFA cancel. */
+                landed = true;
+                if (proceed3) {
+                  RA.signInAt = Date.now();
+                  await enterCloud(sess3);
+                  try { toast("Password updated - you are signed in with your new password."); } catch (e5) {}
+                }
+              }
+            } catch (e6) { landed = false; }
+            if (landed) { btn.disabled = false; return; }
             try { await RA.sb.auth.signOut(); } catch (e3) {}
             RA.user = null;
             try { localStorage.setItem("ra_mode_pref", "cloud"); } catch (e4) {}
@@ -6849,6 +6876,7 @@
         }
         async function agSubmit(e) {
           e.preventDefault();
+          RA.__gateTouched = true;
           var email = $("agEmail").value.trim(), pass = $("agPass").value;
           if (!email || !pass) { agShowError("Enter your email and password."); return; }
           if (!legalAccepted() && !agreeChecked()) { agShowError("Before you continue, please read the Privacy Notice and the Terms of Use to the end in the panels above, then tick each acceptance box. They are separate acceptances, and each is recorded against your account."); return; }
@@ -7174,6 +7202,7 @@
           if (form && !form.__wired) {
             form.__wired = true;
             form.addEventListener("submit", agSubmit);
+            ["agEmail", "agPass"].forEach(function (id) { var inp = $(id); if (inp && !inp.__touchWired) { inp.__touchWired = true; inp.addEventListener("input", function () { RA.__gateTouched = true; }); } });
             $("agToggle").addEventListener("click", function () { agSetMode(agMode === "signin" ? "signup" : "signin"); });
             var agTopToggleBtn = $("agTopToggle");
             if (agTopToggleBtn && !agTopToggleBtn.__wired) { agTopToggleBtn.__wired = true; agTopToggleBtn.addEventListener("click", function () { agSetMode(agMode === "signin" ? "signup" : "signin"); }); }
@@ -7194,8 +7223,15 @@
               $("agPass").addEventListener("input", paintPolicy);
               refreshAgreeNote();
               $("agResetSend").addEventListener("click", async function () {
-                var em = $("agEmail").value.trim(), st = $("agResetStatus");
+                var em = $("agEmail").value.trim(), st = $("agResetStatus"), sendBtn = $("agResetSend");
                 if (!em) { st.textContent = "Enter your email above first."; return; }
+                /* One click is enough: the mailer allows only a small
+                   number of reset emails per hour and every extra click
+                   spends one, so the button rests for a minute after each
+                   request and repeat clicks cannot burn that allowance. */
+                var waitLeft = Math.ceil(((window.__raResetCooldownUntil || 0) - Date.now()) / 1000);
+                if (waitLeft > 0) { st.textContent = "A reset link was already requested just now. Give it a minute to arrive (check the inbox and spam folders), or wait " + waitLeft + "s to request another."; return; }
+                sendBtn.disabled = true;
                 st.textContent = "Sending...";
                 /* ALWAYS attempt the call, whatever the device session or
                    availability state says: that state informs, it never
@@ -7225,6 +7261,8 @@
                 } else {
                   st.textContent = "The reset request could not be sent from here right now. Check your connection and try again, or ask your workspace admin to send you a reset link from Settings - Team.";
                 }
+                window.__raResetCooldownUntil = Date.now() + 60000;
+                setTimeout(function () { sendBtn.disabled = false; }, 60000);
               });
             }
           }
@@ -7313,6 +7351,7 @@
             }
             RA.sb = window.RASB;
             watchAuthEvents();
+            var linkCode = params.code || "";
             stripAuthParams();
             if (linkError) {
               recoveryLinkError(/expired|already|invalid/i.test(linkError)
@@ -7320,17 +7359,31 @@
                 : "That password reset link could not be used. Enter your email and request a fresh link below.");
               return;
             }
-            beginRecovery();
+            /* Show the set-password form only once a session from the link
+               actually exists. The library may already have exchanged the
+               link's code, or the exchange may still be in flight, so look
+               in both places and give it a moment before deciding. If no
+               session can be established - an expired link, a link already
+               used, or a link opened in a different browser from the one
+               that requested it - say so at once and offer a fresh link,
+               instead of presenting a form that could only fail on submit. */
             (async function () {
-              try {
-                if (params.code) {
-                  var ex = await RA.sb.auth.exchangeCodeForSession(params.code);
-                  if (!ex.error && ex.data && ex.data.session) RA.user = ex.data.session.user;
-                } else {
+              var sess = null;
+              for (var attempt = 0; attempt < 4 && !sess; attempt++) {
+                try {
                   var gs = await RA.sb.auth.getSession();
-                  if (gs && gs.data && gs.data.session) RA.user = gs.data.session.user;
+                  if (gs && gs.data && gs.data.session) sess = gs.data.session;
+                } catch (e) {}
+                if (!sess && linkCode) {
+                  try {
+                    var ex = await RA.sb.auth.exchangeCodeForSession(linkCode);
+                    if (!ex.error && ex.data && ex.data.session) sess = ex.data.session;
+                  } catch (e2) {}
                 }
-              } catch (e) {}
+                if (!sess && attempt < 3) await new Promise(function (r) { setTimeout(r, 600); });
+              }
+              if (sess) { RA.user = sess.user; beginRecovery(); }
+              else if (!RA.recovery) recoveryLinkError("That password reset link has expired or was already used. Enter your email and request a fresh link below.");
             })();
             return;
           }
@@ -7339,9 +7392,23 @@
           RA.sb = window.RASB;
           watchAuthEvents();
           var settled = false;
-          var timer = setTimeout(function () { if (!settled) { settled = true; showGate(); } }, 6000);
+          var timer = setTimeout(function () { if (!settled) { settled = true; showGate(); } }, 3000);
           RA.sb.auth.getSession().then(async function (res) {
-            if (settled) return; settled = true; clearTimeout(timer);
+            if (settled) {
+              /* The fallback timer already showed the sign-in card because
+                 the saved-session check was slow. If that check now turns
+                 up a live session and the card is still untouched, honour
+                 the session anyway: a slow connection must not force a
+                 person who is already signed in to sign in again. */
+              var lateSession = res && res.data ? res.data.session : null;
+              if (lateSession && !RA.__gateTouched && !RA.booted && RA.mode !== "cloud" && !RA.recovery) {
+                RA.user = lateSession.user;
+                var proceedLate = await maybeMfaGate();
+                if (proceedLate) enterCloud(lateSession);
+              }
+              return;
+            }
+            settled = true; clearTimeout(timer);
             var session = res && res.data ? res.data.session : null;
             if (session) {
               RA.user = session.user;
