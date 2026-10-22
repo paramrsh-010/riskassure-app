@@ -5240,11 +5240,34 @@
     <script>
       window.__raCloudBooted = false;
       window.RASB = null;
+      /* Capture any auth-return markers in the URL (reset-link tokens, a
+         one-time code, a token hash, or an error) BEFORE the client exists.
+         The app - not the library - then establishes the session from them,
+         deterministically. Until this capture existed, the library's own
+         URL handling raced the app's recovery handling: when the library
+         won, it consumed the link, opened an ordinary session and stripped
+         the URL, so the app never learned a recovery was in progress and
+         opened the workspace with the password unchanged. */
+      window.__raAuthReturn = null;
+      try {
+        var __raSnap = {};
+        var __raGrab = function (str) {
+          if (!str) return;
+          String(str).split("&").forEach(function (pair) {
+            var i = pair.indexOf("="); if (i < 1) return;
+            try { __raSnap[decodeURIComponent(pair.slice(0, i))] = decodeURIComponent(pair.slice(i + 1).replace(/\+/g, " ")); } catch (e) {}
+          });
+        };
+        __raGrab(window.location.hash ? window.location.hash.slice(1) : "");
+        __raGrab(window.location.search ? window.location.search.slice(1) : "");
+        if (Object.keys(__raSnap).length) window.__raAuthReturn = __raSnap;
+      } catch (e) { window.__raAuthReturn = null; }
       try {
         if (window.supabase && typeof window.supabase.createClient === "function") {
           window.RASB = window.supabase.createClient(
             "https://npahbwlyieqjstwoarau.supabase.co",
-            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5wYWhid2x5aWVxanN0d29hcmF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI0MDkyMTIsImV4cCI6MjEwNzk4NTIxMn0.fHxIv0qBNulHfzGBDC_AzaGBaqGlrPKkAikG5740FTI"
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5wYWhid2x5aWVxanN0d29hcmF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI0MDkyMTIsImV4cCI6MjEwNzk4NTIxMn0.fHxIv0qBNulHfzGBDC_AzaGBaqGlrPKkAikG5740FTI",
+            { auth: { detectSessionInUrl: false } }
           );
           window.__raCloudBooted = !!window.RASB;
         }
@@ -6036,6 +6059,14 @@
           }
           grab(window.location.hash ? window.location.hash.slice(1) : "");
           grab(window.location.search ? window.location.search.slice(1) : "");
+          /* Merge the snapshot taken at bootstrap, before the client was
+             created: the live URL may already have been stripped (by the
+             app itself on an earlier pass), and the snapshot is the only
+             copy of the markers the link actually arrived with. */
+          try {
+            var snap = window.__raAuthReturn;
+            if (snap) Object.keys(snap).forEach(function (k) { if (!(k in out)) out[k] = snap[k]; });
+          } catch (e) {}
           return out;
         }
         function stripAuthParams() {
@@ -6064,9 +6095,53 @@
           agShowRecoveryError("");
           var p = $("agRecPass"); if (p) setTimeout(function () { p.focus(); }, 60);
         }
-        function beginRecovery() { RA.recovery = true; showRecoveryForm(); }
+        /* Recovery intent is remembered for this tab until a new password
+           is actually set (or the attempt is abandoned). Memory alone was
+           not enough: the flag died with any path that lost it - the old
+           library race, a reload, a late session event - and the recovery
+           session was then mistaken for an ordinary sign-in. While this
+           flag stands, no boot path may open the workspace. */
+        function recoveryPending() { try { return sessionStorage.getItem("ra_recovery_pending") === "1"; } catch (e) { return false; } }
+        function setRecoveryPending(on) { try { if (on) sessionStorage.setItem("ra_recovery_pending", "1"); else sessionStorage.removeItem("ra_recovery_pending"); } catch (e) {} }
+        /* Establish a session from an auth link's own material, in
+           whichever shape the link arrived: implicit tokens, a PKCE code,
+           or a token hash. The token-hash shape in particular is verified
+           only here - nothing else in the page ever verified it, so a
+           valid link in that shape could previously only fail. Falls back
+           to a session the library may already hold. Returns the session
+           or null. */
+        async function establishLinkSession(sb, params) {
+          var sess = null;
+          if (params.access_token && params.refresh_token) {
+            try {
+              var ss = await sb.auth.setSession({ access_token: params.access_token, refresh_token: params.refresh_token });
+              if (!ss.error && ss.data && ss.data.session) sess = ss.data.session;
+            } catch (e) {}
+          }
+          if (!sess && params.code) {
+            try {
+              var ex = await sb.auth.exchangeCodeForSession(params.code);
+              if (!ex.error && ex.data && ex.data.session) sess = ex.data.session;
+            } catch (e2) {}
+          }
+          if (!sess && params.token_hash) {
+            try {
+              var vo = await sb.auth.verifyOtp({ token_hash: params.token_hash, type: params.type || "recovery" });
+              if (!vo.error && vo.data && vo.data.session) sess = vo.data.session;
+            } catch (e3) {}
+          }
+          if (!sess) {
+            try {
+              var gs = await sb.auth.getSession();
+              if (gs && gs.data && gs.data.session) sess = gs.data.session;
+            } catch (e4) {}
+          }
+          return sess;
+        }
+        function beginRecovery() { RA.recovery = true; setRecoveryPending(true); showRecoveryForm(); }
         function recoveryLinkError(msg) {
           RA.recovery = false;
+          setRecoveryPending(false);
           showGate();
           var w = $("agResetWrap"); if (w) w.hidden = false;
           var st = $("agResetStatus"); if (st) st.textContent = "";
@@ -6092,6 +6167,7 @@
             var who = (RA.user && RA.user.email) || (res.data && res.data.user && res.data.user.email) || "";
             accessLog("Password reset completed", (who || "A user") + " set a new password from an emailed reset link at " + new Date().toLocaleString() + ". All other sessions were signed out.");
             RA.recovery = false;
+            setRecoveryPending(false);
             try { await RA.sb.auth.signOut({ scope: "others" }); } catch (e2) {}
             /* The emailed link already proved control of the account, so
                keep this session and go straight into the workspace. The old
@@ -6951,7 +7027,7 @@
         async function enterCloud(session) {
           if (!session || !session.user) { agShowLoading(false); agShowError("Sign-in did not complete. Try again."); return false; }
           RA.sb = window.RASB; RA.user = session.user;
-          if (RA.recovery) { agShowLoading(false); showRecoveryForm(); return true; }
+          if (RA.recovery || recoveryPending()) { RA.recovery = true; agShowLoading(false); showRecoveryForm(); return true; }
           agShowLoading(true);
           var prof = await fetchProfile(session.user.id);
           if (!prof || !prof.tenant_id) {
@@ -6996,6 +7072,7 @@
         async function signOutCloud() {
           secLog("Signed out", currentUserName() + " signed out of the cloud workspace at " + new Date().toLocaleString() + ".");
           stopIdleWatch();
+          setRecoveryPending(false);
           RA.signInAt = 0;
           unsubscribeRealtime();
           try { await RA.sb.auth.signOut(); } catch (e) {}
@@ -7297,6 +7374,7 @@
             $("agRecPass").addEventListener("input", paintRecPolicy);
             $("agRecBack").addEventListener("click", async function () {
               RA.recovery = false;
+              setRecoveryPending(false);
               try { if (RA.sb) await RA.sb.auth.signOut(); } catch (e) {}
               RA.user = null;
               showSignInForm();
@@ -7341,8 +7419,13 @@
              shortcut), or the link appears to do nothing. */
           var params = authReturnParams();
           var linkError = params.error_description || params.error || "";
-          var isRecovery = params.type === "recovery" || !!params.code;
-          if (linkError || isRecovery) {
+          var isRecovery = params.type === "recovery" || !!params.code || !!params.token_hash;
+          /* A recovery already in progress in this tab also counts as a
+             recovery return: its link markers were stripped from the URL on
+             the first pass, or the page was reloaded mid-recovery. The
+             intent is cleared only by setting a new password or abandoning
+             the attempt, never by losing the URL. */
+          if (linkError || isRecovery || recoveryPending()) {
             if (!window.RASB) {
               stripAuthParams();
               RA.mode = "local"; hideGate(); doBoot();
@@ -7351,7 +7434,6 @@
             }
             RA.sb = window.RASB;
             watchAuthEvents();
-            var linkCode = params.code || "";
             stripAuthParams();
             if (linkError) {
               recoveryLinkError(/expired|already|invalid/i.test(linkError)
@@ -7359,34 +7441,59 @@
                 : "That password reset link could not be used. Enter your email and request a fresh link below.");
               return;
             }
+            /* A recovery is in progress from this moment until a new
+               password is actually set. Mark it before the session is
+               established, so no other path can mistake that session for
+               an ordinary sign-in and open the workspace. */
+            RA.recovery = true;
+            setRecoveryPending(true);
             /* Show the set-password form only once a session from the link
-               actually exists. The library may already have exchanged the
-               link's code, or the exchange may still be in flight, so look
-               in both places and give it a moment before deciding. If no
+               actually exists. The session is established here, from the
+               link's own material - implicit tokens, a PKCE code, or a
+               token hash - because the library no longer consumes the URL
+               on its own schedule: that race is what let a reset link land
+               straight in the workspace with the password unchanged. If no
                session can be established - an expired link, a link already
                used, or a link opened in a different browser from the one
                that requested it - say so at once and offer a fresh link,
                instead of presenting a form that could only fail on submit. */
             (async function () {
-              var sess = null;
-              for (var attempt = 0; attempt < 4 && !sess; attempt++) {
+              var sess = await establishLinkSession(RA.sb, params);
+              for (var attempt = 0; attempt < 3 && !sess; attempt++) {
+                await new Promise(function (r) { setTimeout(r, 600); });
                 try {
                   var gs = await RA.sb.auth.getSession();
                   if (gs && gs.data && gs.data.session) sess = gs.data.session;
                 } catch (e) {}
-                if (!sess && linkCode) {
-                  try {
-                    var ex = await RA.sb.auth.exchangeCodeForSession(linkCode);
-                    if (!ex.error && ex.data && ex.data.session) sess = ex.data.session;
-                  } catch (e2) {}
-                }
-                if (!sess && attempt < 3) await new Promise(function (r) { setTimeout(r, 600); });
               }
               if (sess) { RA.user = sess.user; beginRecovery(); }
-              else if (!RA.recovery) recoveryLinkError("That password reset link has expired or was already used. Enter your email and request a fresh link below.");
+              else recoveryLinkError("That password reset link has expired or was already used. Enter your email and request a fresh link below.");
             })();
             return;
           }
+          /* A non-recovery auth return (an email-confirmation link) also
+             carries its session in the URL, and the library no longer
+             consumes it either: establish it explicitly, then boot as
+             usual with the session in place. */
+          var hasLinkMaterial = !!(params.access_token || params.token_hash);
+          if (hasLinkMaterial) {
+            if (!window.RASB) {
+              stripAuthParams();
+              RA.mode = "local"; hideGate(); doBoot();
+              showCloudBanner(true, "Cloud sign-in could not load, so that link could not be completed. Check your connection, reload the page, then open the link again.");
+              return;
+            }
+            RA.sb = window.RASB;
+            watchAuthEvents();
+            stripAuthParams();
+            (async function () {
+              await establishLinkSession(RA.sb, params);
+              proceedNormalBoot();
+            })();
+            return;
+          }
+          proceedNormalBoot();
+          function proceedNormalBoot() {
           if (pref === "local") { RA.mode = "local"; hideGate(); doBoot(); return; }
           if (!window.RASB) { RA.mode = "local"; hideGate(); doBoot(); cdnNoticeOnce(); return; }
           RA.sb = window.RASB;
@@ -7403,6 +7510,7 @@
               var lateSession = res && res.data ? res.data.session : null;
               if (lateSession && !RA.__gateTouched && !RA.booted && RA.mode !== "cloud" && !RA.recovery) {
                 RA.user = lateSession.user;
+                if (recoveryPending()) { RA.recovery = true; beginRecovery(); return; }
                 var proceedLate = await maybeMfaGate();
                 if (proceedLate) enterCloud(lateSession);
               }
@@ -7412,6 +7520,7 @@
             var session = res && res.data ? res.data.session : null;
             if (session) {
               RA.user = session.user;
+              if (recoveryPending()) { RA.recovery = true; beginRecovery(); return; }
               var proceed = await maybeMfaGate();
               if (proceed) enterCloud(session);
               else showGate();
@@ -7423,6 +7532,7 @@
             if (settled) return; settled = true; clearTimeout(timer);
             showGate();
           });
+          }
         }
 
         function calcControlEffectiveness(stepResults) {
