@@ -5262,6 +5262,23 @@
         __raGrab(window.location.search ? window.location.search.slice(1) : "");
         if (Object.keys(__raSnap).length) window.__raAuthReturn = __raSnap;
       } catch (e) { window.__raAuthReturn = null; }
+      /* Latch recovery intent NOW, before any app code runs, and keep a
+         copy of the markers in this tab's session storage. A redirect or
+         reload that drops the markers from the URL must not be able to
+         lose the fact that this page load began as a password reset:
+         while the latch stands, no boot path in the app may open any
+         workspace. The latch is cleared only when a new password is set,
+         when the attempt is abandoned, or when a terminal link error is
+         shown at the gate - never by losing the URL. */
+      try {
+        if (window.__raAuthReturn) {
+          var __raS = window.__raAuthReturn;
+          sessionStorage.setItem("ra_auth_return", JSON.stringify(__raS));
+          if (__raS.type === "recovery" || __raS.code || __raS.token_hash || (__raS.access_token && !__raS.type)) {
+            sessionStorage.setItem("ra_recovery_pending", "1");
+          }
+        }
+      } catch (e) {}
       try {
         if (window.supabase && typeof window.supabase.createClient === "function") {
           window.RASB = window.supabase.createClient(
@@ -6038,8 +6055,15 @@
           if (seen) return;
           showCloudBanner(true, "Cloud sign-in is unavailable right now, so you're working on this device. Everything works as usual and saves here.");
         }
-        function showGate() { stopIdleWatch(); var g = $("authGate"); if (g) { g.hidden = false; agShowLoading(false); try { wireGate(); } catch (e) {} if (!RA.recovery) showSignInForm(); var em = $("agEmail"); if (em && !RA.recovery) setTimeout(function () { em.focus(); }, 60); } }
-        function hideGate() { var g = $("authGate"); if (g) g.hidden = true; startIdleWatch(); }
+        function showGate() { stopIdleWatch(); var g = $("authGate"); if (g) { g.hidden = false; if (RA.recovery || recoveryPending()) { RA.recovery = true; showRecoveryHold(); return; } agShowLoading(false); try { wireGate(); } catch (e) {} showSignInForm(); var em = $("agEmail"); if (em) setTimeout(function () { em.focus(); }, 60); } }
+        function hideGate() {
+          /* The gate is the only way a workspace is ever revealed, so the
+             recovery latch is enforced here as well as at each caller:
+             while a recovery is latched for this page load, the gate stays
+             up and no workspace - cloud or on-device - may be shown. */
+          if (RA.recovery || recoveryPending()) { RA.recovery = true; showRecoveryHold(); return; }
+          var g = $("authGate"); if (g) g.hidden = true; startIdleWatch();
+        }
         function agShowLoading(on) { $("agFormWrap").hidden = on; $("agLoading").hidden = !on; }
         function agShowError(msg) { var e = $("agError"); if (!e) return; e.textContent = msg || ""; e.hidden = !msg; if (msg) $("agOk").hidden = true; }
         function agShowOk(msg) { var e = $("agOk"); if (!e) return; e.textContent = msg || ""; e.hidden = !msg; if (msg) $("agError").hidden = true; }
@@ -6067,6 +6091,17 @@
             var snap = window.__raAuthReturn;
             if (snap) Object.keys(snap).forEach(function (k) { if (!(k in out)) out[k] = snap[k]; });
           } catch (e) {}
+          /* While a recovery is latched, also merge the copy of the
+             markers kept in this tab's session storage: a redirect or a
+             reload may have dropped them from both the URL and the
+             bootstrap snapshot, and the recovery must still be completable
+             from the material the link actually arrived with. */
+          try {
+            if (sessionStorage.getItem("ra_recovery_pending") === "1") {
+              var stored = JSON.parse(sessionStorage.getItem("ra_auth_return") || "null");
+              if (stored) Object.keys(stored).forEach(function (k) { if (!(k in out)) out[k] = stored[k]; });
+            }
+          } catch (e) {}
           return out;
         }
         function stripAuthParams() {
@@ -6084,7 +6119,22 @@
           var w = $("agRecoveryWrap"); if (w) w.hidden = true;
           hideMfaWraps(null);
           var f = $("agFormWrap"); if (f) f.hidden = false;
+          var ld = $("agLoading"); if (ld) ld.textContent = "Loading your workspace...";
           agShowLoading(false);
+        }
+        /* The gate state shown while a latched recovery is being
+           completed: the gate stays up, every workspace-revealing wrap is
+           hidden, and the only exits are the ones the recovery flow itself
+           produces - the set-password form, the recovery error state at
+           the gate, or (after an explicit abandon) the sign-in card. */
+        function showRecoveryHold() {
+          stopIdleWatch();
+          var g = $("authGate"); if (g) g.hidden = false;
+          var f = $("agFormWrap"); if (f) f.hidden = true;
+          var w = $("agRecoveryWrap"); if (w) w.hidden = true;
+          var hw = $("agHoldingWrap"); if (hw) hw.hidden = true;
+          hideMfaWraps(null);
+          var l = $("agLoading"); if (l) { l.textContent = "Completing your password reset link..."; l.hidden = false; }
         }
         function showRecoveryForm() {
           var g = $("authGate"); if (g) g.hidden = false;
@@ -6102,7 +6152,7 @@
            session was then mistaken for an ordinary sign-in. While this
            flag stands, no boot path may open the workspace. */
         function recoveryPending() { try { return sessionStorage.getItem("ra_recovery_pending") === "1"; } catch (e) { return false; } }
-        function setRecoveryPending(on) { try { if (on) sessionStorage.setItem("ra_recovery_pending", "1"); else sessionStorage.removeItem("ra_recovery_pending"); } catch (e) {} }
+        function setRecoveryPending(on) { try { if (on) sessionStorage.setItem("ra_recovery_pending", "1"); else { sessionStorage.removeItem("ra_recovery_pending"); sessionStorage.removeItem("ra_auth_return"); } } catch (e) {} }
         /* Establish a session from an auth link's own material, in
            whichever shape the link arrived: implicit tokens, a PKCE code,
            or a token hash. The token-hash shape in particular is verified
@@ -7023,7 +7073,14 @@
           }
           return null;
         }
-        function doBoot() { RA.booted = true; if (RA.bootFn) RA.bootFn(); }
+        function doBoot() {
+          /* Every workspace boot funnels through here, so the recovery
+             latch is enforced here: while a recovery is latched for this
+             page load, no workspace of any kind boots or renders - the
+             gate holds until the recovery resolves. */
+          if (RA.recovery || recoveryPending()) { RA.recovery = true; showRecoveryHold(); return; }
+          RA.booted = true; if (RA.bootFn) RA.bootFn();
+        }
         async function enterCloud(session) {
           if (!session || !session.user) { agShowLoading(false); agShowError("Sign-in did not complete. Try again."); return false; }
           RA.sb = window.RASB; RA.user = session.user;
@@ -7048,6 +7105,11 @@
           try { localStorage.setItem("ra_mode_pref", "cloud"); } catch (e) {}
           var ok = await hydrateFromCloud();
           try { await seedCloudStageTemplates(); } catch (e) {}
+          /* Re-check the latch after the awaits above, immediately before
+             the workspace is revealed: a recovery that latched while this
+             sign-in was in flight (a late session event, a reload's stored
+             intent) wins over this boot, however far it has progressed. */
+          if (RA.recovery || recoveryPending()) { RA.recovery = true; agShowLoading(false); showRecoveryForm(); return true; }
           hideGate();
           if (!ok) showCloudBanner(true);
           if (RA.booted) { location.reload(); return true; }
@@ -7419,7 +7481,7 @@
              shortcut), or the link appears to do nothing. */
           var params = authReturnParams();
           var linkError = params.error_description || params.error || "";
-          var isRecovery = params.type === "recovery" || !!params.code || !!params.token_hash;
+          var isRecovery = params.type === "recovery" || !!params.code || !!params.token_hash || (!!params.access_token && !params.type);
           /* A recovery already in progress in this tab also counts as a
              recovery return: its link markers were stripped from the URL on
              the first pass, or the page was reloaded mid-recovery. The
@@ -7427,9 +7489,14 @@
              the attempt, never by losing the URL. */
           if (linkError || isRecovery || recoveryPending()) {
             if (!window.RASB) {
+              /* The recovery cannot be completed on this load - and that
+                 failure is shown AT THE GATE, never as a banner over a
+                 booted workspace. This branch previously booted the
+                 on-device workspace and hung the message on it, which is
+                 exactly the landing a reset-link click must never produce:
+                 while recovery intent exists, no workspace boots. */
               stripAuthParams();
-              RA.mode = "local"; hideGate(); doBoot();
-              showCloudBanner(true, "Cloud sign-in could not load, so that password reset link could not be completed. Check your connection, reload the page, then open the link again.");
+              recoveryLinkError("Cloud sign-in could not load, so that password reset link could not be completed. Check your connection, reload the page, then open the link again.");
               return;
             }
             RA.sb = window.RASB;
@@ -7447,6 +7514,10 @@
                an ordinary sign-in and open the workspace. */
             RA.recovery = true;
             setRecoveryPending(true);
+            /* Hold the gate in its recovery state from this instant, so
+               the ordinary sign-in card (and its on-device boot path) is
+               never live while the link's session is being established. */
+            showRecoveryHold();
             /* Show the set-password form only once a session from the link
                actually exists. The session is established here, from the
                link's own material - implicit tokens, a PKCE code, or a
