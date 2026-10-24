@@ -1934,7 +1934,7 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
             <div class="top"><span class="label" style="font-size:16px;font-weight:600">All open actions</span><button type="button" class="tglx" id="overdueToggle" aria-pressed="false">Overdue only</button></div>
             <div class="tablewrap">
               <table>
-                <thead><tr><th>Action</th><th>Linked finding</th><th>Owner</th><th>Due</th><th>Priority</th><th>Status</th></tr></thead>
+                <thead><tr><th>Action</th><th>Linked finding</th><th>Owner</th><th>Due</th><th>Ageing</th><th>Priority</th><th>Status</th></tr></thead>
                 <tbody id="actionsBody">
                   <tr data-overdue="1"><td><span class="t">Recertify privileged access accounts</span><div class="s">From Q3 Access Review</div></td><td class="mono">F-1042</td><td>Staff 2</td><td class="mono">18 Oct</td><td><span class="sev"><i style="background:#d64545"></i>High</span></td><td><span class="status over">Overdue</span></td></tr>
                   <tr data-overdue="1"><td><span class="t">Close dormant vendor portal accounts</span><div class="s">From Vendor Assurance FY26</div></td><td class="mono">F-1011</td><td>Staff 3</td><td class="mono">19 Oct</td><td><span class="sev"><i style="background:#d64545"></i>High</span></td><td><span class="status over">Overdue</span></td></tr>
@@ -3714,6 +3714,19 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
             </div>
             <p class="sub" style="margin-top:10px">Alignment is maintained through the control set evidenced in this workspace: role-based access control enforced by the database on every table, authenticator-app multi-factor authentication, an append-only audit trail, encryption in transit and at rest, and segregation of duties across the review journey. Data-processing terms and the sub-processor list are organisational documents maintained by the organisation outside this application; ask the workspace owner for them during due diligence.</p>
           </article>
+          <article class="card span12" style="--i:1">
+            <div class="top"><span class="label cardtitle">SaaS readiness - the honest position</span><span class="status review">Pilot-ready - not yet SaaS-ready</span></div>
+            <p class="sub" style="margin-top:2px">This application is ready to pilot with a single organisation's assurance team. It is not yet ready to sell as a multi-tenant SaaS product: the items marked as gates below are product and operations work that no interface change can substitute for, and they are stated here so the position is never oversold.</p>
+            <div>
+              <div class="kv"><span><b>In place for a pilot</b> - workspace accounts with database row-level security, authenticator MFA, append-only audit trail, the full review journey (methodology gate, testing, findings, actions), the Second Line Assurance Report framework in the app, computed sign-off with a locked workspace</span><b>In place</b></div>
+              <div class="kv"><span><b>Subscription billing and tier gating</b> - plans, payment collection (Razorpay) and feature limits enforced per tenant</span><b>Gate - not built</b></div>
+              <div class="kv"><span><b>Automated tenant provisioning and onboarding</b> - self-serve workspace creation with the database migrations applied, not a supervised dashboard pass</span><b>Gate - manual today</b></div>
+              <div class="kv"><span><b>Transactional email at volume</b> - a custom SMTP service, so password-reset email is not capped at 2 per hour</span><b>Gate - owner decision</b></div>
+              <div class="kv"><span><b>Operations</b> - verified backup and restore, uptime monitoring, an SLA and a support rota</span><b>Gate - not yet evidenced</b></div>
+              <div class="kv"><span><b>Organisation-side DPDP documents</b> - data-processing terms, sub-processor list and retention schedule published by the operating organisation</span><b>Gate - documents outstanding</b></div>
+              <div class="kv"><span><b>Live tenant-isolation re-probes</b> - RLS verified with real second accounts before paying tenants are onboarded</span><b>Gate - not yet run</b></div>
+            </div>
+          </article>
           <article class="card span6" style="--i:1">
             <div class="top"><span class="label cardtitle">Data privacy &amp; protection</span></div>
             <ul class="checklist">
@@ -3806,6 +3819,7 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
           <h1 id="rwTitle">Q3 Access Review</h1>
           <p><span id="rwMeta">IT general controls &middot; India &middot; Lead: Staff 1 &middot; Due 24 Oct</span> &middot; <span class="status prog" id="rwStatus">In progress</span> <span class="tag" id="rwKind">Independent Assurance Review / Monitoring Review</span> <span class="tag confirm" id="rwClassFlag" hidden></span></p>
           <p class="sub" id="rwClassLine" style="margin-top:2px"></p>
+          <p class="sub" id="rwLockBanner" hidden style="margin-top:6px;padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface-2)"><b>Signed off - workspace locked.</b> Fieldwork data (controls, test plans and results, findings, progress, resourcing, stakeholders, walkthroughs, evidence and KRIs) can no longer be changed. Follow-up action status stays trackable. To change fieldwork data, reopen the review from the Sign-off tab with a reason; the reopening is written to the audit trail.</p>
         </div>
 
         <article class="card" id="wsMethCard" style="margin-bottom:14px">
@@ -4034,7 +4048,7 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
               <div class="top"><span class="label cardtitle">Control library for this review</span><span class="sub" id="controlsCount">4 controls</span></div>
               <div class="tablewrap">
                 <table>
-                  <thead><tr><th>Control ID</th><th>Description</th><th>Owner</th><th>Frequency</th><th>Designation</th><th>COSO 2013 principle</th><th>Source</th></tr></thead>
+                  <thead><tr><th>Control ID</th><th>Description</th><th>Owner</th><th>Frequency</th><th>Designation</th><th>COSO 2013 principle</th><th>1st-line assessment</th><th>Source</th></tr></thead>
                   <tbody id="controlsBody">
                     <tr><td class="mono">AC-01</td><td><span class="t">User access provisioning</span></td><td>Staff 2</td><td>Per event</td><td><span class="tag">Methodology</span></td></tr>
                     <tr><td class="mono">AC-02</td><td><span class="t">Privileged access recertification</span></td><td>Staff 2</td><td>Quarterly</td><td><span class="tag">Methodology</span></td></tr>
@@ -4326,6 +4340,51 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
               <span class="label">Executive summary</span>
               <span class="sub">Drafted by the built-in AI to the Executive Summary stage template: the facts (findings, counts, actions) are filled from this review first, then the AI writes the narrative sections. You preview and edit the draft before downloading it.</span>
               <div class="btnrow"><button type="button" class="btn small" id="exsumDraft">Draft executive summary with built-in AI</button><span class="sub" id="exsumNote"></span></div>
+            </article>
+            <article class="card span12" style="--i:3">
+              <div class="top"><span class="label cardtitle">Second Line Assurance Report - framework view</span><span class="status todo" id="fwRating">Not rated yet</span></div>
+              <span class="sub">One rating scale everywhere: Effective / Generally Effective / Requires Improvement / Ineffective, computed once from the tested controls and findings on this review. The Downloads above and the completed template both read this same rating. The variance table below is Section 3 of the report: a row where the two lines differ must carry its rationale, or the report is incomplete.</span>
+              <div class="tablewrap" style="margin-top:10px">
+                <table>
+                  <thead><tr><th>Area / control</th><th>1st Line Assessment</th><th>2nd Line Independent Rating</th><th>Variance / rationale</th></tr></thead>
+                  <tbody id="fwVarianceBody"></tbody>
+                </table>
+              </div>
+            </article>
+            <article class="card span12" style="--i:4">
+              <div class="top"><span class="label cardtitle">Key Risk Indicators &amp; trends</span><span class="sub">Section 5 of the report - status is computed against the appetite threshold</span></div>
+              <div class="formrow">
+                <label class="field">Indicator<input id="kriName" type="text" placeholder="e.g. Claims settled within 30 days (%)" /></label>
+                <label class="field">Value<input id="kriValue" type="number" step="any" placeholder="e.g. 90.9" /></label>
+                <label class="field">Appetite threshold<input id="kriThreshold" type="number" step="any" placeholder="e.g. 95" /></label>
+                <label class="field">Unit<input id="kriUnit" type="text" placeholder="%, days, count" /></label>
+              </div>
+              <div class="formrow" style="margin-top:10px">
+                <label class="field">Threshold direction
+                  <select id="kriDir"><option value="higher">Higher is better (breach below threshold)</option><option value="lower">Lower is better (breach above threshold)</option></select>
+                </label>
+                <label class="field">Trend
+                  <select id="kriTrend"><option value="&#8594;">&#8594; Stable</option><option value="&#8599;">&#8599; Increasing</option><option value="&#8600;">&#8600; Decreasing</option></select>
+                </label>
+              </div>
+              <div class="btnrow" style="margin-top:10px"><button type="button" class="btn small" id="kriAdd">Add KRI</button><span class="sub" id="kriStatus" role="status"></span></div>
+              <div id="kriList" style="margin-top:10px"></div>
+            </article>
+            <article class="card span12" style="--i:5">
+              <div class="top"><span class="label cardtitle">Report inputs - scope, independence, sign-off</span><span class="sub">Sections 2 and 6 of the report</span></div>
+              <label class="field">Out of scope (explicit exclusions)
+                <textarea id="riScopeOut" rows="2" placeholder="What this review did not cover, agreed with the sponsor"></textarea>
+              </label>
+              <label class="field" style="margin-top:10px">Independence &amp; conflicts disclosure
+                <textarea id="riIndependence" rows="2" placeholder="e.g. The second line did not design any control in scope. / One control was designed with second-line input - declared here."></textarea>
+              </label>
+              <label class="field" style="margin-top:10px">Third-line (Internal Audit) coordination
+                <textarea id="riThirdLine" rows="2" placeholder="How this review was coordinated with Internal Audit so the same processes are not assured twice at the same time"></textarea>
+              </label>
+              <label class="field" style="margin-top:10px">First-line business owner (acknowledges the report at sign-off)
+                <input id="riFirstLineSigner" type="text" placeholder="Name and role of the 1st-line owner" />
+              </label>
+              <div class="btnrow" style="margin-top:10px"><button type="button" class="btn small" id="riSave">Save report inputs</button><span class="sub" id="riNote" role="status"></span></div>
             </article>
           </div>
         </div>
@@ -4642,11 +4701,11 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
             <article class="card span12" style="--i:0">
               <div class="top"><span class="label cardtitle">Sign-off checklist</span><span class="status prog" id="signoffState">Not signed off</span></div>
               <ul class="checklist" id="signoffGateList">
-                <li data-gate="controls"><span class="ck">&#10003;</span><span>All in-scope controls tested or exclusion agreed with the sponsor.</span></li>
-                <li data-gate="exceptions"><span class="ck">&#10003;</span><span>Every exception logged on the audit trail with an owner.</span></li>
-                <li data-gate="taxonomy"><span class="ck">&#10003;</span><span>Findings tagged to the 17-type risk taxonomy.</span></li>
-                <li data-gate="evidence"><span class="ck">&#10003;</span><span>Evidence complete for every item in the sample.</span></li>
-                <li data-gate="responses"><span class="ck">&#10003;</span><span>Management responses received for all critical findings.</span></li>
+                <li data-gate="controls"><span class="ck">&#8211;</span><span>All in-scope controls tested or exclusion agreed with the sponsor.</span></li>
+                <li data-gate="exceptions"><span class="ck">&#8211;</span><span>Every exception logged on the audit trail with an owner.</span></li>
+                <li data-gate="taxonomy"><span class="ck">&#8211;</span><span>Findings tagged to the 17-type risk taxonomy.</span></li>
+                <li data-gate="evidence"><span class="ck">&#8211;</span><span>Evidence complete for every item in the sample.</span></li>
+                <li data-gate="responses"><span class="ck">&#8211;</span><span>Management responses received for all critical findings.</span></li>
                 <li id="signoffCoso" hidden><span class="ck">&#10003;</span><span>Every Material and Key control is designated, mapped to a COSO 2013 principle and tested over the full period (Material/Key review attestation).</span></li>
                 <li id="signoffResourcing" hidden><span class="ck">&#10003;</span><span>Actual effort reconciled to the resource allocation, within the contingency buffer or with overruns explained in the daily progress log.</span></li>
               </ul>
@@ -4663,6 +4722,12 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
                 <ul class="checklist" id="signoffClassList"></ul>
                 <div class="kv"><span>Classification</span><b id="signoffClassPath"></b></div>
                 <div class="kv"><span>Methodology in force</span><b id="signoffMeth"></b></div>
+              </div>
+              <div id="signoffReopen" hidden style="margin-top:12px">
+                <label class="field">Reopen reason - recorded on the audit trail
+                  <input id="signoffReopenReason" type="text" placeholder="Why is this signed-off review being reopened?" />
+                </label>
+                <div class="btnrow" style="margin-top:10px"><button type="button" class="btn ghost" id="signoffReopenBtn">Reopen review</button></div>
               </div>
               <div class="btnrow" style="margin-top:14px">
                 <button type="button" class="btn" id="signoffBtn">Sign Off Review</button>
@@ -5898,12 +5963,133 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
         function reviewByName(name) { return REVIEWS.find(function (r) { return r.name === name; }) || null; }
         function getControls(reviewId) { return ensureArray(loadData("ra2_controls", [])).filter(function (c) { return c.reviewId === reviewId; }); }
         function getAllControls() { return ensureArray(loadData("ra2_controls", [])); }
-        function saveControl(c) { saveData("ra2_controls", getAllControls().filter(function (x) { return x.id !== c.id; }).concat([c])); }
+        function saveControl(c) { if (!guardUnlocked(c.reviewId, "Control changes")) return; saveData("ra2_controls", getAllControls().filter(function (x) { return x.id !== c.id; }).concat([c])); }
         function getPlans(reviewId) { return ensureArray(loadData("ra2_test_plans", [])).filter(function (p) { return p.reviewId === reviewId; }); }
         function getPlanForControl(controlId) { return ensureArray(loadData("ra2_test_plans", [])).find(function (p) { return p.controlId === controlId; }) || null; }
-        function saveTestPlanRecord(p) { var all = ensureArray(loadData("ra2_test_plans", [])); saveData("ra2_test_plans", all.filter(function (x) { return x.id !== p.id; }).concat([p])); }
-        function saveTestStepRecord(s) { var all = ensureArray(loadData("ra2_test_steps", [])); saveData("ra2_test_steps", all.filter(function (x) { return x.id !== s.id; }).concat([s])); }
-        function saveTestResultRecord(r) { var all = ensureArray(loadData("ra2_test_results", [])); saveData("ra2_test_results", all.filter(function (x) { return x.id !== r.id; }).concat([r])); }
+        function saveTestPlanRecord(p) { if (!guardUnlocked(p.reviewId, "Test plan changes")) return; var all = ensureArray(loadData("ra2_test_plans", [])); saveData("ra2_test_plans", all.filter(function (x) { return x.id !== p.id; }).concat([p])); }
+        function saveTestStepRecord(s) { var plan = ensureArray(loadData("ra2_test_plans", [])).find(function (x) { return x.id === s.testPlanId; }); if (plan && !guardUnlocked(plan.reviewId, "Test plan changes")) return; var all = ensureArray(loadData("ra2_test_steps", [])); saveData("ra2_test_steps", all.filter(function (x) { return x.id !== s.id; }).concat([s])); }
+        function saveTestResultRecord(r) { if (!guardUnlocked(r.reviewId, "Test result changes")) return; var all = ensureArray(loadData("ra2_test_results", [])); saveData("ra2_test_results", all.filter(function (x) { return x.id !== r.id; }).concat([r])); }
+        /* ================================================================
+           SHARED RULES - one implementation each, used by every screen.
+           parseAiJson is the only AI-JSON parser; overallRatingFor is
+           the only overall-rating calculation and reads the single
+           RATING_SCALE; guardUnlocked is the only sign-off lock gate;
+           actionAgeing is the only ageing calculation. Screens never
+           re-implement these locally.
+           ================================================================ */
+        function parseAiJson(text) {
+          var s = String(text == null ? "" : text).replace(/```json|```/gi, "").trim();
+          var start = -1, open = "";
+          for (var i = 0; i < s.length; i++) { if (s[i] === "[" || s[i] === "{") { start = i; open = s[i]; break; } }
+          if (start === -1) throw new Error("The AI response did not contain structured data. Try again, or use the deterministic route for this step.");
+          var end = s.lastIndexOf(open === "[" ? "]" : "}");
+          if (end <= start) throw new Error("The AI response did not contain complete structured data. Try again, or use the deterministic route for this step.");
+          var slice = s.slice(start, end + 1);
+          try { return JSON.parse(slice); } catch (e1) {
+            try { return JSON.parse(slice.replace(/,\s*([}\]])/g, "$1")); } catch (e2) {
+              throw new Error("The AI response could not be read as structured data. Try again, or use the deterministic route for this step.");
+            }
+          }
+        }
+        var RATING_SCALE = ["Effective", "Generally Effective", "Requires Improvement", "Ineffective"];
+        var FIRST_LINE_ASSESSMENTS = ["Satisfactory", "Needs Improvement", "Unsatisfactory"];
+        var RISK_EXPOSURES = ["Financial", "Reputational", "Regulatory", "Operational", "Financial + Regulatory", "Multiple"];
+        function firstLineAssessmentOf(c) { return FIRST_LINE_ASSESSMENTS.indexOf(c && c.firstLineAssessment) > -1 ? c.firstLineAssessment : ""; }
+        function secondLineResultOf(c) {
+          var e = c && c.effectiveness;
+          if (e === "Pass") return "Satisfactory";
+          if (e === "Partial") return "Needs Improvement";
+          if (e === "Fail") return "Unsatisfactory";
+          return "Not yet rated";
+        }
+        function overallRatingFor(review) {
+          if (!review) return "Not rated yet";
+          var controls = getControls(review.id);
+          var tested = controls.filter(function (c) { return c.effectiveness && c.effectiveness !== "Not Tested"; });
+          if (!tested.length) return "Not rated yet";
+          var pass = tested.filter(function (c) { return c.effectiveness === "Pass"; }).length;
+          var partial = tested.filter(function (c) { return c.effectiveness === "Partial"; }).length;
+          var rate = (pass + partial * 0.5) / tested.length;
+          var findings = DB.findings.filter(function (f) { return f.reviewId === review.id; });
+          var hasCritical = findings.some(function (f) { return f.severity === "Critical"; });
+          var hasMajor = findings.some(function (f) { return f.severity === "Major" || f.severity === "High" || f.severity === "Critical"; });
+          if (hasCritical || rate < 0.6) return "Ineffective";
+          if (rate === 1 && !hasMajor) return "Effective";
+          if (rate >= 0.8) return "Generally Effective";
+          return "Requires Improvement";
+        }
+        function ratingChipClass(rating) {
+          if (rating === "Effective") return "done";
+          if (rating === "Generally Effective") return "prog";
+          if (rating === "Requires Improvement") return "review";
+          if (rating === "Ineffective") return "over";
+          return "todo";
+        }
+        var __lockToastAt = 0;
+        function isReviewSignedOff(reviewId) { var r = reviewId ? getReview(reviewId) : null; return !!(r && r.status === "Signed off"); }
+        function guardUnlocked(reviewId, what) {
+          if (!isReviewSignedOff(reviewId)) return true;
+          var now = Date.now();
+          if (now - __lockToastAt > 1500) { __lockToastAt = now; toast("This review is signed off and locked. " + (what || "That change") + " cannot be saved. Reopen the review from the Sign-off tab (a reason is required and is written to the audit trail) to make changes."); }
+          return false;
+        }
+        var __MONTHS = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
+        function parseDueDate(v) {
+          var s = String(v || "").trim(); if (!s) return null;
+          var iso = s.match(/^(\d{4})-(\d{2})-(\d{2})/); if (iso) return new Date(+iso[1], +iso[2] - 1, +iso[3]);
+          var m = s.match(/^(\d{1,2})\s+([A-Za-z]{3,9})\s+(\d{4})$/);
+          if (m) { var mi = __MONTHS.indexOf(m[2].slice(0, 3).toLowerCase()); if (mi > -1) return new Date(+m[3], mi, +m[1]); }
+          var d = new Date(s); return isNaN(d.getTime()) ? null : d;
+        }
+        function actionAgeing(a) {
+          var done = a && (a.status === "Complete" || a.status === "Closed");
+          var due = parseDueDate(a && a.due);
+          if (done) return { label: "Closed", days: null, overdue: false };
+          if (!due) return { label: "No target date", days: null, overdue: false };
+          var today = new Date(); today.setHours(0, 0, 0, 0);
+          var days = Math.round((today.getTime() - due.getTime()) / 86400000);
+          if (days > 0) return { label: days + "d overdue", days: days, overdue: true };
+          if (days === 0) return { label: "Due today", days: 0, overdue: false };
+          return { label: "Due in " + (-days) + "d", days: days, overdue: false };
+        }
+        function getKris(reviewId) { return ensureArray(loadData("ra2_kris", [])).filter(function (k) { return k.reviewId === reviewId; }); }
+        function saveKri(rec) {
+          if (!guardUnlocked(rec.reviewId, "KRI changes")) return false;
+          var all = ensureArray(loadData("ra2_kris", []));
+          saveData("ra2_kris", all.filter(function (x) { return x.id !== rec.id; }).concat([rec]));
+          return true;
+        }
+        function deleteKri(id, reviewId) {
+          if (!guardUnlocked(reviewId, "KRI changes")) return;
+          saveData("ra2_kris", ensureArray(loadData("ra2_kris", [])).filter(function (x) { return x.id !== id; }));
+        }
+        function kriStatus(k) {
+          var v = parseFloat(k && k.value), t = parseFloat(k && k.threshold);
+          if (isNaN(v) || isNaN(t)) return "Not set";
+          var higherBetter = k.direction === "higher";
+          var breach = higherBetter ? v < t : v > t;
+          if (breach) return "Breach";
+          var nearing = higherBetter ? v <= t * 1.2 : v >= t * 0.8;
+          return nearing ? "Nearing" : "Within appetite";
+        }
+        function findingByRef(ref) {
+          if (!ref) return null;
+          return DB.findings.find(function (f) { return (f.ref || "") === ref; }) || null;
+        }
+        function controlsFromMethodologyText(docContent) {
+          var lines = String(docContent || "").split(/\n+/).map(function (x) { return x.trim(); }).filter(Boolean);
+          function mk(name, line) {
+            var clean = String(name || "").split(/\.\s/)[0].replace(/\.+$/, "").trim();
+            return { controlName: clean, controlType: /semi|hybrid/i.test(line) ? "Semi-Automated" : (/automated/i.test(line) ? "Automated" : "Manual"), controlNature: /detective/i.test(line) ? "Detective" : "Preventative", designation: "Standard", cosoPrinciple: "", objective: "", sampleSize: 25, population: "", passCriteria: "", steps: [] };
+          }
+          var out = [];
+          lines.forEach(function (line) {
+            var m = line.match(/^#{0,6}\s*control\s*\d+\s*[-:.)]\s*(.+)$/i);
+            if (m) out.push(mk(m[1], line));
+          });
+          if (!out.length) lines.forEach(function (line) { if (/^#{1,3}\s+\S/.test(line) && out.length < 15) out.push(mk(line.replace(/^#{1,3}\s+/, ""), line)); });
+          return out.slice(0, 15);
+        }
         function getAuditLogs(reviewId) { return ensureArray(loadData("ra2_audit_logs", [])).filter(function (l) { return l.reviewId === reviewId; }); }
         /* ---------- actor identity: ONE resolution path for every new
            audit-trail and access-record entry. Cloud mode: the signed-in
@@ -8831,7 +9017,9 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           var tbody = $("actionsBody"); if (!tbody) return;
           var PRIO = { High: "#d64545", Medium: "#d9930d", Low: "#1d9e75" };
           tbody.innerHTML = DB.actions.map(function (a) {
-            return '<tr' + (a.overdue ? ' data-overdue="1"' : "") + '><td><span class="t">' + esc(a.title) + '</span><div class="s">From ' + esc(a.reviewName || "") + '</div></td><td class="mono">' + esc(a.findingRef || "-") + "</td><td>" + esc(a.owner || "") + '</td><td class="mono">' + esc(a.due || "") + '</td><td><span class="sev"><i style="background:' + (PRIO[a.priority] || "#75839a") + '"></i>' + esc(a.priority || "") + '</span></td><td><span class="status ' + statusClass(a.status) + '">' + esc(a.status || "") + "</span></td></tr>";
+            var age = actionAgeing(a);
+            var fnd2 = findingByRef(a.findingRef);
+            return '<tr' + (age.overdue ? ' data-overdue="1"' : "") + '><td><span class="t">' + esc(a.title) + '</span><div class="s">From ' + esc(a.reviewName || "") + '</div></td><td class="mono">' + esc(a.findingRef ? a.findingRef + (fnd2 ? " - " + fnd2.title : "") : "-") + "</td><td>" + esc(a.owner || "") + '</td><td class="mono">' + esc(a.due || "") + '</td><td class="mono">' + esc(age.label) + '</td><td><span class="sev"><i style="background:' + (PRIO[a.priority] || "#75839a") + '"></i>' + esc(a.priority || "") + '</span></td><td><span class="status ' + statusClass(a.status) + '">' + esc(a.status || "") + "</span></td></tr>";
           }).join("");
         }
         function renderTasks() {
@@ -8855,9 +9043,11 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
             var des = designationOf(c);
             var cosoSel = '<select class="insel" data-coso="' + esc(c.id) + '" aria-label="COSO 2013 principle for ' + esc(c.controlName) + '"><option value="">Not mapped</option>' +
               COSO_PRINCIPLES.map(function (p) { return '<option value="' + p.id + '"' + (c.cosoPrinciple === p.id ? " selected" : "") + ">" + p.id + " - " + esc(p.label) + "</option>"; }).join("") + "</select>";
+            var flSel = '<select class="insel" data-firstline="' + esc(c.id) + '" aria-label="First-line assessment for ' + esc(c.controlName) + '"><option value="">Not assessed</option>' +
+              FIRST_LINE_ASSESSMENTS.map(function (d) { return '<option value="' + d + '"' + (firstLineAssessmentOf(c) === d ? " selected" : "") + ">" + d + "</option>"; }).join("") + "</select>";
             var desSel = '<select class="insel" data-desig="' + esc(c.id) + '" aria-label="Material or Key designation for ' + esc(c.controlName) + '">' +
               ["Material", "Key", "Standard"].map(function (d) { return '<option value="' + d + '"' + (des === d ? " selected" : "") + ">" + d + "</option>"; }).join("") + "</select>";
-            tr.innerHTML = '<td class="mono">' + esc(c.code || "") + '</td><td><span class="t">' + esc(c.controlName) + '</span><div class="s">' + esc(c.controlType || "") + " / " + esc(c.controlNature || "") + "</div></td><td>" + esc(c.owner || "") + "</td><td>" + esc(c.frequency || "") + "</td><td>" + desSel + "</td><td>" + cosoSel + '</td><td><span class="tag">' + esc(c.source || "Methodology") + "</span></td>";
+            tr.innerHTML = '<td class="mono">' + esc(c.code || "") + '</td><td><span class="t">' + esc(c.controlName) + '</span><div class="s">' + esc(c.controlType || "") + " / " + esc(c.controlNature || "") + "</div></td><td>" + esc(c.owner || "") + "</td><td>" + esc(c.frequency || "") + "</td><td>" + desSel + "</td><td>" + cosoSel + "</td><td>" + flSel + '</td><td><span class="tag">' + esc(c.source || "Methodology") + "</span></td>";
             tbody.appendChild(tr);
           });
           tbody.querySelectorAll("[data-desig]").forEach(function (sel) {
@@ -8868,6 +9058,18 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
               addAudit("Control designation set: " + c.controlName + " is now " + sel.value + (sel.value === "Standard" ? "" : " (mapped to the methodology's Material/Key testing requirements)") + ".");
               renderControls(); renderTests(); renderOverviewCounts();
               toast(c.controlName + " designated " + sel.value + ".");
+            });
+          });
+          tbody.querySelectorAll("[data-firstline]").forEach(function (sel) {
+            sel.addEventListener("change", function () {
+              var c = getAllControls().find(function (x) { return x.id === sel.getAttribute("data-firstline"); });
+              if (!c) return;
+              saveControl(Object.assign({}, c, { firstLineAssessment: sel.value }));
+              if (isReviewSignedOff(currentReviewId)) return;
+              addAudit("First-line assessment recorded: " + c.controlName + " assessed by the first line as " + (sel.value || "not assessed") + " (second-line result: " + secondLineResultOf(c) + ").");
+              renderControls();
+              try { renderFramework(); } catch (e) {}
+              toast(sel.value ? "First-line assessment for " + c.controlName + ": " + sel.value + "." : "First-line assessment cleared for " + c.controlName + ".");
             });
           });
           tbody.querySelectorAll("[data-coso]").forEach(function (sel) {
@@ -9106,7 +9308,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           var ov = $("ovFindings"); if (ov) ov.textContent = wsFindings().length;
           renderTax();
         }
-        function saveFindingUpdate(f, patch, auditAction) {
+        function saveFindingUpdate(f, patch, auditAction) { if (!guardUnlocked(f.reviewId || currentReviewId, "Finding changes")) return;
           var all = DB.findings.map(function (x) { return x.id === f.id ? Object.assign({}, x, patch) : x; });
           saveData("ra2_findings", all);
           appendAuditLog({ reviewId: f.reviewId || currentReviewId, action: auditAction || "Finding updated", entityType: "Finding", entityLabel: f.title, changedBy: currentActorName() });
@@ -9142,7 +9344,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           }
           var meta = document.createElement("p");
           meta.style.cssText = "margin:6px 0 0;color:var(--ink-2);font-size:12.5px";
-          meta.textContent = "Management response: " + (f.managementResponse ? "recorded" : "not yet recorded") + " \u00B7 Target date: " + (f.targetDate || "not agreed") + " \u00B7 Owner: " + (f.owner || "not set") + " \u00B7 Status: " + (f.status || "Open") + (ensureArray(f.evidenceLinks).length ? " \u00B7 Evidence: " + ensureArray(f.evidenceLinks).join(", ") : "");
+          meta.textContent = "Management response: " + (f.managementResponse ? "recorded" : "not yet recorded") + (f.riskExposure ? " \u00B7 Risk exposure: " + f.riskExposure : "") + " \u00B7 Target date: " + (f.targetDate || "not agreed") + " \u00B7 Owner: " + (f.owner || "not set") + " \u00B7 Status: " + (f.status || "Open") + (ensureArray(f.evidenceLinks).length ? " \u00B7 Evidence: " + ensureArray(f.evidenceLinks).join(", ") : "");
           d.appendChild(meta);
           /* ---------- finding editor: root cause, impact, recommendation,
              management response, severity, target date, owner, status ---------- */
@@ -9167,6 +9369,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           var inRec = mkArea(f.recommendation, 3);
           var inResp = mkArea(f.managementResponse, 3);
           var inEv = mkArea(ensureArray(f.evidenceLinks).join("\n"), 2);
+          var inExposure = mkSelect([""].concat(RISK_EXPOSURES), f.riskExposure || "");
           var inTarget = mkInput(f.targetDate); inTarget.placeholder = "e.g. 18 Nov 2026";
           var inOwner = mkInput(f.owner);
           var inStatus = mkSelect(["Open", "In review", "In progress", "Overdue", "Closed"], f.status || "Open");
@@ -9176,6 +9379,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           ed.appendChild(row1);
           ed.appendChild(mkField("Root cause", inCause));
           ed.appendChild(mkField("Risk impact", inImpact));
+          ed.appendChild(mkField("Risk exposure (type - the impact above carries the quantification)", inExposure));
           ed.appendChild(mkField("Recommendation", inRec));
           ed.appendChild(mkField("Management response", inResp));
           ed.appendChild(mkField("Evidence links (one per line)", inEv));
@@ -9189,7 +9393,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           saveBtn.addEventListener("click", function () {
             saveFindingUpdate(f, {
               title: inTitle.value.trim() || f.title, severity: inSev.value,
-              rootCause: inCause.value.trim(), riskImpact: inImpact.value.trim(),
+              rootCause: inCause.value.trim(), riskImpact: inImpact.value.trim(), riskExposure: inExposure.value,
               recommendation: inRec.value.trim(), managementResponse: inResp.value.trim(),
               evidenceLinks: inEv.value.split("\n").map(function (s) { return s.trim(); }).filter(Boolean),
               targetDate: inTarget.value.trim(), owner: inOwner.value.trim(), status: inStatus.value
@@ -9253,7 +9457,19 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           mine.forEach(function (a) {
             var row = document.createElement("div"); row.className = "kv";
             var left = document.createElement("span");
-            left.textContent = a.title + (a.findingRef ? " \u00B7 " + a.findingRef : "") + " \u00B7 " + (a.owner || "");
+            var ttl = document.createElement("b"); ttl.textContent = a.title; left.appendChild(ttl);
+            if (a.findingRef) {
+              var fnd = findingByRef(a.findingRef);
+              var chip = document.createElement("button");
+              chip.type = "button"; chip.className = "tag"; chip.style.cssText = "cursor:pointer;margin-left:8px";
+              chip.textContent = "Finding: " + a.findingRef + (fnd ? " - " + fnd.title : "");
+              chip.title = "Open the linked finding";
+              chip.addEventListener("click", function () { selectWTab("findings"); });
+              left.appendChild(chip);
+            }
+            var ameta = document.createElement("span"); ameta.className = "sub";
+            ameta.textContent = " \u00B7 " + (a.owner || "Owner not set") + " \u00B7 " + actionAgeing(a).label;
+            left.appendChild(ameta);
             row.appendChild(left);
             var right = document.createElement("span");
             right.style.cssText = "display:inline-flex;align-items:center;gap:8px";
@@ -9343,6 +9559,9 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           renderControls(); renderPlans(); renderTests(); renderEvidence(); renderWsFindings(); renderWsActions(); renderAudit(); renderScopeRisks(); renderOverviewCounts();
           renderMethSteps(); renderProgress(); renderResourcing(); renderStakeholders(); renderSlTemplates(); renderKindCard();
           try { renderMethPath(); } catch (e) {}
+          try { renderSignoffGate(); } catch (e) {}
+          try { renderFramework(); renderKris(); renderReportInputs(false); } catch (e) {}
+          try { var lb = $("rwLockBanner"); if (lb) lb.hidden = r.status !== "Signed off"; } catch (e) {}
           var cc = $("calcControl");
           if (cc) {
             cc.innerHTML = getControls(currentReviewId).map(function (c) { return '<option value="' + esc(c.id) + '">' + esc((c.code ? c.code + " - " : "") + c.controlName) + "</option>"; }).join("");
@@ -9412,6 +9631,8 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           var panel = document.querySelector('.wpanel[data-wpanel="' + key + '"]');
           animateScope(panel);
           try { updateStageChip(key); } catch (e) {}
+          if (key === "signoff") { try { renderSignoffGate(); } catch (e) {} }
+          if (key === "reports") { try { renderFramework(); renderKris(); renderReportInputs(false); } catch (e) {} }
         }
         var REVIEW_META = {
           "Q3 Access Review": "IT general controls \u00B7 India \u00B7 Lead: Staff 1 \u00B7 Due 24 Oct",
@@ -9459,6 +9680,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
         $("evAdd").addEventListener("click", async function () {
           var f = $("evFile").files && $("evFile").files[0];
           if (!f) { toast("Choose an evidence file first."); return; }
+          if (!guardUnlocked(currentReviewId, "Evidence uploads")) return;
           var rec = { id: uid(), reviewId: currentReviewId, name: f.name, ref: "Uploaded", docType: "evidence", uploadedAt: nowISO(), sha256: await sha256Hex(f) };
           if (RA.mode === "cloud" && RA.sb) {
             $("evFile").value = "";
@@ -9494,8 +9716,13 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           try {
             var data = await anthropicRequest(prompt, 4000);
             var text = (data.content || []).map(function (b) { return b.text || ""; }).join("");
-            var clean = text.replace(/```json|```/g, "").trim();
-            var controls = JSON.parse(clean);
+            var controls;
+            try { controls = parseAiJson(text); }
+            catch (parseErr) {
+              controls = controlsFromMethodologyText(docContent);
+              if (!controls.length) throw new Error("The AI response could not be read as structured controls, and the document itself lists no controls the deterministic reader could find (controls are read from lines such as 'Control 1 - name' or from headings). Check the document and try again, or add the controls manually on the Controls tab.");
+              $("methStatus").textContent = "The AI response was not structured data, so the controls listed in the document itself were used instead - review them on the Controls tab before testing.";
+            }
             if (!Array.isArray(controls)) controls = [controls];
             var createdC = [], createdP = [];
             var planSeq = getPlans(currentReviewId).length;
@@ -9534,7 +9761,8 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
             $("methStatus").textContent = "Analysis complete: " + createdC.length + " controls and " + createdP.length + " test plans created from " + sourceName + "." + (mTpl ? " " + StageTpl.cite(mTpl) + "; test plans drafted per the " + (tpTpl ? tpTpl.name : "Test Plan") + " Template." : "");
             toast(controls.length + " control" + (controls.length > 1 ? "s" : "") + " auto-created from " + sourceName + "!");
           } catch (err) {
-            var msg = err.message === "__NO_KEY__" ? aiNoKeyMessage() : (err.message || "Failed to parse test plan");
+            var msg = err.message === "__NO_KEY__" ? aiNoKeyMessage() : (err.message || "The methodology analysis did not complete.");
+            if (/unexpected token|in JSON at position|JSON\.parse|SyntaxError/i.test(msg)) msg = "The AI response could not be read as structured controls. Try again, or add the controls manually on the Controls tab.";
             $("methStatus").textContent = "Analysis failed: " + msg;
             toast(msg);
           }
@@ -10046,11 +10274,8 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
             throw intakeFail((err && err.message) || "The AI provider could not be reached.", "Try again in a moment, or use the structured data (CSV) import instead - it needs no AI step.");
           }
           var text = (data.content || []).map(function (b) { return b.text || ""; }).join("");
-          var clean = text.replace(/```json|```/g, "").trim();
-          var start = clean.indexOf("["), end = clean.lastIndexOf("]");
-          if (start === -1 || end <= start) throw intakeFail("The AI did not return structured rows from this file.", "Check the file is the control register, or use the structured data (CSV) import for a deterministic result.");
           var parsed;
-          try { parsed = JSON.parse(clean.substring(start, end + 1)); } catch (e) { throw intakeFail("The AI response could not be read as structured rows.", "Try again, or use the structured data (CSV) import for a deterministic result."); }
+          try { parsed = parseAiJson(text); } catch (e) { throw intakeFail("The AI response could not be read as structured rows.", "Try again, or use the structured data (CSV) import for a deterministic result."); }
           if (!Array.isArray(parsed)) parsed = [parsed];
           return parsed.filter(function (r) { return r && (String(r.risk || "").trim() || String(r.controlName || "").trim() || String(r.controlId || "").trim()); }).map(recoverIntakeControlId);
         }
@@ -10153,10 +10378,24 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
             fpcNote = "Finite population correction applied (N=" + N + "), capped at N.";
           }
           scLast = { N: N, conf: conf, tol: tol, exp: exp, R: R, n: n };
+          try { var __sc = ensureArray(loadData("ra2_sampling_calc", [])).filter(function (x) { return x.reviewId !== currentReviewId; }); __sc.push({ reviewId: currentReviewId, state: scLast, pop: popRaw, updatedAt: nowISO() }); saveData("ra2_sampling_calc", __sc); } catch (e) {}
           $("calcResult").textContent = n;
           $("calcExplain").textContent = "Reliability factor R = " + R.toFixed(2) + " (" + conf + "% confidence, " + (exp > 0 ? "1 expected deviation" : "0 expected deviations") + "). n = ceil(" + R.toFixed(2) + " / " + t + ") = ceil(" + (R / t).toFixed(2) + "). " + fpcNote + " Guidance only - the practitioner sets the final sample size.";
           return scLast;
         }
+        function restoreSamplingCalc() {
+          try {
+            if (scLast) return;
+            var rec = ensureArray(loadData("ra2_sampling_calc", [])).find(function (x) { return x.reviewId === currentReviewId; });
+            if (!rec || !rec.state) return;
+            scLast = rec.state;
+            if (rec.pop !== "" && rec.pop != null) $("popSize").value = rec.pop;
+            $("confSel").value = String(scLast.conf); $("tolDev").value = scLast.tol; $("expDev").value = scLast.exp;
+            $("calcResult").textContent = scLast.n;
+            $("calcExplain").textContent = "Restored from the last calculation saved for this review (n = " + scLast.n + ", " + scLast.conf + "% confidence, " + scLast.tol + "% tolerable, " + scLast.exp + "% expected). Recalculate to change it; Apply writes it to the control and its test plan.";
+          } catch (e) {}
+        }
+        try { restoreSamplingCalc(); } catch (e) {}
         $("calcBtn").addEventListener("click", function () {
           var r = calcSampleSize();
           if (r) toast("Sample size calculated: " + r.n + " items.");
@@ -10328,8 +10567,8 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
             var prompt = "You are a senior second line of defence (2LOD) risk assurance manager. Based on the control test failure below, generate a formal audit finding in the style of a UK financial services bank.\n\nREVIEW CONTEXT:\n- Review Name: " + review.name + "\n- Review Type: " + (review.reviewType || "") + "\n- Business Area: " + (review.businessArea || "Not specified") + "\n- Regulations in Scope: " + (ensureArray(review.regulations).join(", ") || "Not specified") + "\n\nFAILED CONTROL TEST:\n- Control Name: " + test.controlName + "\n- Control Type: " + (test.controlType || "Not specified") + "\n- Control Nature: " + (test.controlNature || "Not specified") + "\n- Test Objective: " + (test.objective || "Not specified") + "\n- Sample Size: " + (test.sampleSize || "Not specified") + "\n- Population Tested: " + (test.population || "Not specified") + "\n- Test Result: " + test.result + "\n- Exceptions Found: " + (excStr || "Not specified") + (excRate !== null ? "\n- Exception Rate: " + excRate + "%" : "") + "\n- Tester Comments: " + (test.comments || "None") + "\n- Steps Performed: " + (test.steps || "Not specified") + "\n\nReturn ONLY a valid JSON object with exactly these keys - no markdown, no backticks, no explanation before or after:\n{\n  \"title\": \"concise finding title (max 90 chars, starts with the key issue)\",\n  \"severity\": \"Low|Medium|High|Critical\",\n  \"classification\": \"Observation|Finding|Recommendation\",\n  \"observation\": \"2-3 sentences stating what was observed, factually\", \"criteria\": \"1-2 sentences on what should happen - the policy, standard or control expectation\", \"condition\": \"2-3 sentences on what was actually found, with the exception detail\", \"rootCause\": \"2-3 sentences identifying the underlying cause, not just the symptom\",\n  \"riskImpact\": \"2-3 sentences on regulatory, financial or operational risk if not remediated\",\n  \"recommendation\": \"2-3 sentences with specific, actionable steps to remediate\"\n}\n\nSeverity guidance (calibrate carefully):\n- Critical: regulatory breach actively occurring or imminent; systemic failure\n- High: material exceptions (>10%), significant regulatory risk, multiple failures\n- Medium: moderate exceptions (5-10%), isolated process gaps\n- Low: minor gaps, no immediate regulatory exposure\n" + (excRate !== null ? "Current exception rate is " + excRate + "% - use this to calibrate severity objectively.\n" : "") + "\nWrite in formal UK English. Reference the specific control name and exception details in your response." + (fTpl ? StageTpl.promptBlock(fTpl, "\n\nReturn the JSON object only, as instructed above - the template governs the finding write-up the JSON feeds: observation, criteria and condition carry template sections 1 to 3, rootCause carries section 4 (Cause) and riskImpact carries section 5 (Effect / risk implication).") : "");
             try {
               var data = await anthropicRequest(prompt, 1000);
-              var raw = ((data && data.content && data.content[0] && data.content[0].text) || "").replace(/```json|```/g, "").trim();
-              var parsed = JSON.parse(raw);
+              var raw = ((data && data.content && data.content[0] && data.content[0].text) || "");
+              var parsed = parseAiJson(raw);
               AIQ.push(Object.assign({}, parsed, { testId: test.id, controlName: test.controlName, controlCode: test.code, cosoPrinciple: test.cosoPrinciple, _accepted: false, _error: false, writeup: buildFindingWriteup(fTpl, parsed, test, review), tplCite: fTpl ? StageTpl.cite(fTpl) : "" }));
             } catch (e) {
               console.error("AI finding error for control", test.id, e);
@@ -10350,6 +10589,138 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           addAudit("AI findings generation complete: " + AIQ.length + " draft finding(s) from failed or partial controls.");
         }
         $("genFinding").addEventListener("click", generateAIFindingsFromControls);
+
+        /* ---------- Second Line Assurance framework: variance, KRIs, report inputs ----------
+           Everything in this section reads the shared rules above
+           (overallRatingFor, secondLineResultOf, actionAgeing, kriStatus);
+           the downloaded report, the framework view and the completed
+           template therefore never disagree with each other. */
+        function varianceRowsFor(review) {
+          return getControls(review.id).map(function (c) {
+            var first = firstLineAssessmentOf(c) || "Not assessed";
+            var second = secondLineResultOf(c);
+            var differs = first !== "Not assessed" && second !== "Not yet rated" && first !== second;
+            var rationale = differs
+              ? "Independent testing rated this " + second + " against a first-line assessment of " + first + (c.exceptions ? ". Evidence: " + c.exceptions : ". See the control test result and evidence for this control.")
+              : (first === "Not assessed" ? "First line has not recorded an assessment yet - record it on the Controls tab before the report is issued." : (second === "Not yet rated" ? "Second-line testing not yet complete for this control." : "Independent testing agrees with the first-line assessment."));
+            return { area: (c.code ? c.code + " - " : "") + c.controlName, first: first, second: second, differs: differs, rationale: rationale };
+          });
+        }
+        function renderFramework() {
+          var r = getReview(currentReviewId); if (!r) return;
+          var chip = $("fwRating");
+          if (chip) { var rating = overallRatingFor(r); chip.textContent = rating === "Not rated yet" ? rating : "Overall rating: " + rating; chip.className = "status " + ratingChipClass(rating); }
+          var body = $("fwVarianceBody"); if (!body) return;
+          var rows = varianceRowsFor(r);
+          body.innerHTML = rows.length ? rows.map(function (v) {
+            return "<tr" + (v.differs ? ' data-overdue="1"' : "") + "><td><span class=\"t\">" + esc(v.area) + "</span></td><td>" + esc(v.first) + "</td><td>" + esc(v.second) + "</td><td>" + esc(v.rationale) + "</td></tr>";
+          }).join("") : '<tr><td colspan="4"><span class="sub">No controls in scope yet. The variance table is built from the controls on the Controls tab, each with its first-line assessment.</span></td></tr>';
+        }
+        function renderKris() {
+          var box = $("kriList"); if (!box) return;
+          var mine = getKris(currentReviewId);
+          if (!mine.length) { box.innerHTML = '<span class="sub">No KRIs recorded for this review yet. Add the indicators the committee tracks, each with its appetite threshold.</span>'; return; }
+          box.innerHTML = "";
+          mine.forEach(function (k) {
+            var row = document.createElement("div"); row.className = "kv";
+            var st = kriStatus(k);
+            var left = document.createElement("span");
+            left.textContent = k.name + " - " + k.value + (k.unit ? " " + k.unit : "") + " (threshold " + k.threshold + (k.unit ? " " + k.unit : "") + ") " + (k.trend || "");
+            var right = document.createElement("span"); right.style.cssText = "display:inline-flex;align-items:center;gap:8px";
+            var badge = document.createElement("span"); badge.className = "status " + (st === "Breach" ? "over" : st === "Nearing" ? "review" : st === "Within appetite" ? "done" : "todo"); badge.textContent = st;
+            var del = document.createElement("button"); del.type = "button"; del.className = "btn ghost small"; del.textContent = "Remove";
+            del.addEventListener("click", function () { deleteKri(k.id, currentReviewId); renderKris(); toast("KRI removed: " + k.name); });
+            right.appendChild(badge); right.appendChild(del);
+            row.appendChild(left); row.appendChild(right);
+            box.appendChild(row);
+          });
+        }
+        if ($("kriAdd")) $("kriAdd").addEventListener("click", function () {
+          var r = getReview(currentReviewId); if (!r) return;
+          var name = ($("kriName").value || "").trim();
+          var st = $("kriStatus");
+          if (!name) { if (st) st.textContent = "Give the indicator a name first."; return; }
+          if ($("kriValue").value === "" || $("kriThreshold").value === "") { if (st) st.textContent = "Record both the current value and the appetite threshold - status is computed from the two."; return; }
+          var rec = { id: uid(), reviewId: r.id, name: name, value: $("kriValue").value, threshold: $("kriThreshold").value, unit: ($("kriUnit").value || "").trim(), direction: $("kriDir").value || "higher", trend: $("kriTrend").value || "\u2192", createdAt: nowISO() };
+          if (!saveKri(rec)) return;
+          appendAuditLog({ reviewId: r.id, action: "KRI recorded: " + rec.name + " = " + rec.value + (rec.unit ? " " + rec.unit : "") + " against a threshold of " + rec.threshold + " (" + kriStatus(rec) + ").", entityType: "KRI", entityLabel: rec.name, changedBy: currentActorName() });
+          $("kriName").value = ""; $("kriValue").value = ""; $("kriThreshold").value = ""; $("kriUnit").value = "";
+          if (st) st.textContent = "KRI added: " + rec.name + " (" + kriStatus(rec) + ").";
+          renderKris();
+          toast("KRI added: " + rec.name);
+        });
+        function renderReportInputs(force) {
+          var r = getReview(currentReviewId); if (!r) return;
+          var fields = [["riScopeOut", r.scopeOut], ["riIndependence", r.independenceNote], ["riThirdLine", r.thirdLineNote], ["riFirstLineSigner", r.firstLineSigner]];
+          fields.forEach(function (pair) {
+            var el = $(pair[0]); if (!el) return;
+            if (!force && document.activeElement === el) return;
+            el.value = pair[1] || "";
+          });
+        }
+        if ($("riSave")) $("riSave").addEventListener("click", function () {
+          var r = getReview(currentReviewId); if (!r) return;
+          if (!guardUnlocked(r.id, "Report input changes")) return;
+          var patch = { scopeOut: $("riScopeOut").value.trim(), independenceNote: $("riIndependence").value.trim(), thirdLineNote: $("riThirdLine").value.trim(), firstLineSigner: $("riFirstLineSigner").value.trim() };
+          REVIEWS = REVIEWS.map(function (x) { return x.id === r.id ? Object.assign({}, x, patch) : x; });
+          persistReviews();
+          appendAuditLog({ reviewId: r.id, action: "Report inputs saved (out-of-scope, independence disclosure, third-line coordination, first-line sign-off owner).", entityType: "Review", entityLabel: r.name, changedBy: currentActorName() });
+          var n = $("riNote"); if (n) n.textContent = "Saved - these now flow into the downloaded report and the sign-off template.";
+          toast("Report inputs saved.");
+        });
+        function frameworkReportLines(r) {
+          var controls = getControls(r.id);
+          var tested = controls.filter(function (c) { return c.effectiveness && c.effectiveness !== "Not Tested"; });
+          var findings = DB.findings.filter(function (f) { return f.reviewId === r.id; });
+          var acts = reviewActions(r.id);
+          var rating = overallRatingFor(r);
+          var lines = ["", "==================================================================", (r.name || "Review") + " - Final Report", "Second Line Assurance Report (IIA Three Lines Model; COSO Internal Control 2013; COSO ERM 2017; ISO 31000:2018)", "==================================================================", ""];
+          lines.push("1. Executive Summary");
+          lines.push("Overall assurance rating: " + rating + " (single scale: " + RATING_SCALE.join(" / ") + ")");
+          lines.push("Controls tested: " + tested.length + " of " + controls.length + ". Findings: " + findings.length + " (" + findings.filter(function (f) { return f.severity === "Critical"; }).length + " Critical, " + findings.filter(function (f) { return f.severity === "Major" || f.severity === "High"; }).length + " Major/High).");
+          var esc1 = findings.filter(function (f) { return f.severity === "Critical" || f.severity === "Major"; });
+          lines.push("Critical escalations: " + (esc1.length ? esc1.map(function (f) { return (f.ref || "") + " " + f.title; }).join("; ") : "None."));
+          var overdue = acts.filter(function (a) { return actionAgeing(a).overdue; });
+          if (overdue.length) lines.push("Overdue actions: " + overdue.map(function (a) { return a.title + " (" + actionAgeing(a).label + ")"; }).join("; ") + ".");
+          lines.push("", "2. Scope & Objective");
+          lines.push("Coverage period: " + ((r.startDate || "") + (r.startDate && r.endDate ? " to " : "") + (r.endDate || "")) || "Not recorded");
+          lines.push("In scope: " + (controls.length ? controls.map(function (c) { return (c.code ? c.code + " " : "") + c.controlName; }).join("; ") : "No controls recorded"));
+          lines.push("Out of scope: " + (r.scopeOut || "Not recorded - record the agreed exclusions in Reports > Report inputs before this report is issued."));
+          lines.push("", "3. Summary of Assurance Findings (1st line vs 2nd line)");
+          var vrows = varianceRowsFor(r);
+          if (vrows.length) vrows.forEach(function (v) { lines.push("- " + v.area + " | 1st line: " + v.first + " | 2nd line: " + v.second + " | Variance / rationale: " + v.rationale); });
+          else lines.push("- No controls in scope yet.");
+          lines.push("", "4. Detailed Observations & Action Plans");
+          if (findings.length) findings.forEach(function (f) {
+            lines.push("- " + (f.ref || "") + " " + f.title + " (" + (f.severity || "") + ")");
+            if (f.rootCause) lines.push("  Observation / root cause: " + f.rootCause);
+            lines.push("  Risk exposure: " + (f.riskExposure || "Not recorded") + (f.riskImpact ? " - " + f.riskImpact : ""));
+            if (f.recommendation) lines.push("  Recommendation: " + f.recommendation);
+            if (f.managementResponse) lines.push("  Management response: " + f.managementResponse);
+            var linked = acts.filter(function (a) { return a.findingRef && a.findingRef === f.ref; });
+            if (linked.length) linked.forEach(function (a) { lines.push("  Agreed action: " + a.title + " | Owner: " + (a.owner || "Not set") + " | Target: " + (a.due || "Not agreed") + " | Status: " + (a.status || "") + " | Ageing: " + actionAgeing(a).label); });
+            else lines.push("  Agreed action: none recorded yet for this finding - agree one in the Actions tab (owner and target date) before the report is issued.");
+            lines.push("  Finding owner: " + (f.owner || "Not set") + " | Target date: " + (f.targetDate || "Not agreed"));
+          });
+          else lines.push("- No findings raised on this review.");
+          var unlinked = acts.filter(function (a) { return !a.findingRef; });
+          if (unlinked.length) { lines.push("  Actions not linked to a finding:"); unlinked.forEach(function (a) { lines.push("  - " + a.title + " | Owner: " + (a.owner || "Not set") + " | Target: " + (a.due || "Not agreed") + " | Ageing: " + actionAgeing(a).label); }); }
+          lines.push("", "5. Key Risk Indicators & Trends");
+          var kris = getKris(r.id);
+          if (kris.length) kris.forEach(function (k) { lines.push("- " + k.name + ": " + k.value + (k.unit ? " " + k.unit : "") + " vs threshold " + k.threshold + (k.unit ? " " + k.unit : "") + " - " + kriStatus(k) + " " + (k.trend || "")); });
+          else lines.push("- No KRIs recorded for this review yet - add them in Reports > Key Risk Indicators.");
+          var excControls = tested.filter(function (c) { return parseFloat(c.exceptionCount) > 0 && parseFloat(c.sampleSize) > 0; });
+          if (excControls.length) excControls.forEach(function (c) { lines.push("- Sample exception rate, " + (c.code || "") + " " + c.controlName + ": " + (Math.round((parseFloat(c.exceptionCount) / parseFloat(c.sampleSize)) * 1000) / 10) + "% (" + c.exceptionCount + " of " + c.sampleSize + " sampled)"); });
+          lines.push("", "6. Methodology & Sign-Off");
+          lines.push("Assurance criteria: IIA Three Lines Model; IIA Global Internal Audit Standards; COSO Internal Control 2013; COSO ERM 2017; ISO 31000:2018; plus the regulators and laws mapped for this review's jurisdictions (see methodology mapping above).");
+          lines.push("Methodology in force: " + methInForceText(r));
+          lines.push("Independence & conflicts: " + (r.independenceNote || "Not recorded - the second line must declare any control it helped design in Reports > Report inputs before this report is issued."));
+          lines.push("Third-line coordination: " + (r.thirdLineNote || "Not recorded - record how this review was coordinated with Internal Audit in Reports > Report inputs."));
+          lines.push("Sign-off status: " + (r.status || ""));
+          lines.push("Second line reviewer: " + (r.status === "Signed off" ? (r.signedOffBy || r.leadReviewer || "") + (r.signedOffAt ? " | Date: " + String(r.signedOffAt).slice(0, 10) : "") : (r.leadReviewer || "") + " (not yet signed off)"));
+          lines.push("First-line business owner acknowledgement: " + (r.firstLineSigner ? r.firstLineSigner + (r.status === "Signed off" ? " - acknowledged at sign-off" : " - to acknowledge at sign-off") : "Outstanding - name the first-line owner in Reports > Report inputs."));
+          return lines;
+        }
 
         /* ---------- reports download ---------- */
         function download(name, lines) {
@@ -10376,7 +10747,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
               "Effectiveness: " + $("effNote").textContent,
               "",
               "Methodology mapping (global baseline, jurisdiction and law, process):"
-            ].concat(mapLines));
+            ].concat(mapLines).concat(rr ? frameworkReportLines(rr) : []));
             toast(b.getAttribute("data-report") + " downloaded.");
           });
         });
@@ -10435,11 +10806,12 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
               det.textContent = " (" + chk.detail + ")";
             }
           });
+          var ro = $("signoffReopen"); if (ro) ro.hidden = r.status !== "Signed off";
           var note = $("signoffGateNote");
           if (note) note.textContent = r.status === "Signed off" ? (r.signedOffWithOverride ? "This review was signed off WITH AN OVERRIDE. Reason recorded on the audit trail: " + (r.signoffOverrideReason || "") : "This review is signed off.") : (rd.blockers.length ? "Readiness: " + rd.blockers.length + " item(s) outstanding - sign-off is blocked until they are resolved, or an override reason is recorded." : "Readiness: all sign-off criteria are met on the current data.");
         }
         function doSignOff(r, overrideReason, blockers) {
-          REVIEWS = REVIEWS.map(function (x) { return x.id === r.id ? Object.assign({}, x, { status: "Signed off", signedOffWithOverride: !!overrideReason, signoffOverrideReason: overrideReason || "" }) : x; });
+          REVIEWS = REVIEWS.map(function (x) { return x.id === r.id ? Object.assign({}, x, { status: "Signed off", signedOffWithOverride: !!overrideReason, signoffOverrideReason: overrideReason || "", signedOffBy: currentActorName(), signedOffAt: nowISO(), overallRating: overallRatingFor(x) }) : x; });
           persistReviews();
           cloudSignoff(r);
           var act = "Review signed off by " + currentActorName() + " (" + classificationOf(r).label + "; methodology in force: " + methInForceText(r) + "). Workspace locked and fed to the Executive Pack.";
@@ -10471,6 +10843,17 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
             return;
           }
           doSignOff(r, "", []);
+        });
+        if ($("signoffReopenBtn")) $("signoffReopenBtn").addEventListener("click", function () {
+          var r = getReview(currentReviewId); if (!r || r.status !== "Signed off") return;
+          var reason = (($("signoffReopenReason") || {}).value || "").trim();
+          if (!reason) { toast("Record the reopen reason first - it goes on the audit trail."); return; }
+          REVIEWS = REVIEWS.map(function (x) { return x.id === r.id ? Object.assign({}, x, { status: "In progress", signedOffWithOverride: false, signoffOverrideReason: "" }) : x; });
+          persistReviews();
+          appendAuditLog({ reviewId: r.id, action: "Review REOPENED after sign-off by " + currentActorName() + ". Reason: " + reason, entityType: "Review", entityLabel: r.name, changedBy: currentActorName() });
+          var ri = $("signoffReopenReason"); if (ri) ri.value = "";
+          renderWorkspace(); renderReviews();
+          toast("Review reopened. The workspace is editable again; the reopening is on the audit trail.");
         });
         if ($("signoffOverrideBtn")) $("signoffOverrideBtn").addEventListener("click", function () {
           var r = getReview(currentReviewId);
@@ -12745,7 +13128,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
               var prompt = "You are a senior second-line assurance practitioner building a methodology mapping table for a review.\n\nCLASSIFICATION: " + c.label + "\nMETHODOLOGY PROFILE: Objectives: " + prof.objectives + " Procedures: " + prof.procedures + " Evidence: " + prof.evidence + "\nJURISDICTIONS IN SCOPE: " + jurisdictionsOf(r).join(", ") + "\nGLOBAL BASELINE: COSO Internal Control 2013 (control level), COSO ERM 2017 (enterprise level), IIA Global Internal Audit Standards, ISO 31000:2018.\nPROCESS: " + (r.businessArea || r.reviewType || "") + "\nCONTROLS: " + getControls(r.id).map(function (x) { return (x.code || "") + " " + x.controlName; }).join("; ") + "\n\nReturn ONLY a JSON array (no markdown) of at most 8 rows, each: {\"req\":\"Requirement or law\",\"why\":\"Applies because\",\"step\":\"Methodology step\",\"test\":\"Control or test\",\"ev\":\"Evidence required\",\"owner\":\"Stage owner\"}. Cover the global baseline and each jurisdiction's main regulators and laws from your knowledge of the named frameworks only.";
               var data = await aiRequest(prompt, 2200);
               var text = (data.content || []).map(function (b) { return b.text || ""; }).join("");
-              var parsed = JSON.parse(text.replace(/```json|```/g, "").trim());
+              var parsed = parseAiJson(text);
               if (!Array.isArray(parsed) || !parsed.length) throw new Error("empty");
               var rows = parsed.map(function (x) { return { id: uid(), req: String(x.req || ""), why: String(x.why || ""), step: String(x.step || ""), test: String(x.test || ""), ev: String(x.ev || ""), owner: String(x.owner || "Lead Reviewer"), src: "AI draft", ai: true }; }).filter(function (x) { return x.req; });
               saveMappingRows(r.id, rows);
@@ -13022,7 +13405,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
 
         /* ---------- 2. Resourcing with contingency ---------- */
         function getAllocations() { return ensureArray(loadData("ra2_allocations", [])).filter(function (a) { return a.reviewId === currentReviewId; }); }
-        function saveAllocations(mine) {
+        function saveAllocations(mine) { if (!guardUnlocked(currentReviewId, "Resourcing changes")) return;
           var rest = ensureArray(loadData("ra2_allocations", [])).filter(function (a) { return a.reviewId !== currentReviewId; });
           saveData("ra2_allocations", rest.concat(mine));
         }
@@ -13108,7 +13491,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           return ensureArray(loadData("ra2_progress_logs", [])).filter(function (l) { return l.reviewId === currentReviewId; })
             .sort(function (a, b) { return (b.date || "").localeCompare(a.date || "") || (b.createdAt || "").localeCompare(a.createdAt || ""); });
         }
-        function saveProgressLogs(mine) {
+        function saveProgressLogs(mine) { if (!guardUnlocked(currentReviewId, "Progress changes")) return;
           var rest = ensureArray(loadData("ra2_progress_logs", [])).filter(function (l) { return l.reviewId !== currentReviewId; });
           saveData("ra2_progress_logs", rest.concat(mine));
         }
@@ -13221,7 +13604,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
         /* ---------- 4. Stakeholder mapping ---------- */
         var ENGAGE_CLASS = { "Engaged": "done", "Neutral": "prog", "At risk": "review", "Disengaged": "over" };
         function getStakeholders() { return ensureArray(loadData("ra2_stakeholders", [])).filter(function (s) { return s.reviewId === currentReviewId; }); }
-        function saveStakeholders(mine) {
+        function saveStakeholders(mine) { if (!guardUnlocked(currentReviewId, "Stakeholder changes")) return;
           var rest = ensureArray(loadData("ra2_stakeholders", [])).filter(function (s) { return s.reviewId !== currentReviewId; });
           saveData("ra2_stakeholders", rest.concat(mine));
         }
@@ -13396,6 +13779,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
         }
         function showFilled(text, name, via) {
           slFilledText = text; slFilledName = name;
+          try { var __rest = ensureArray(loadData("ra2_sl_filled", [])).filter(function (x) { return x.reviewId !== currentReviewId; }); __rest.push({ reviewId: currentReviewId, text: text, name: name, via: via || "", filledAt: nowISO() }); saveData("ra2_sl_filled", __rest); } catch (e) {}
           /* The filled output (uploaded template + review data, or AI text)
              is sanitised before it is rendered: templates are shared across
              the workspace, so raw HTML here would be stored XSS. */
@@ -13405,8 +13789,21 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           $("slOutCard").hidden = false;
           $("slOutCard").scrollIntoView({ behavior: "smooth", block: "nearest" });
         }
+        function restoreSlFilled() {
+          try {
+            if (slFilledText) return;
+            var rec = ensureArray(loadData("ra2_sl_filled", [])).find(function (x) { return x.reviewId === currentReviewId; });
+            if (!rec || !rec.text) return;
+            slFilledText = rec.text; slFilledName = rec.name || "";
+            $("slOut").innerHTML = /<[a-z][\s\S]*>/i.test(rec.text) ? sanitizeHtml(rec.text) : "<pre style=\"white-space:pre-wrap;font:inherit;margin:0\">" + esc(rec.text) + "</pre>";
+            $("slOutMeta").textContent = rec.name || "";
+            $("slFillNote").textContent = (rec.via || "") + " Restored from the fill saved for this review.";
+            $("slOutCard").hidden = false;
+          } catch (e) {}
+        }
         function renderSlTemplates() {
           var box = $("slList"); if (!box) return;
+          try { restoreSlFilled(); } catch (e) {}
           var mine = getSlTemplates();
           box.innerHTML = "";
           if (!mine.length) {
@@ -13532,7 +13929,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
             body: ["EXECUTIVE SUMMARY", "Review: {{review_name}} | Period: {{period}} | Overall rating: {{overall_rating}}", "", "1. Scope and approach", "{{scope_summary}}", "", "2. Headline conclusion", "{{headline}}", "", "3. Key findings ({{finding_count}}: {{critical}} Critical, {{major}} Major, {{minor}} Minor)", "{{top_findings}}", "", "4. Themes", "{{themes}}", "", "5. Actions agreed", "{{actions_summary}}", "", "6. Assurance statement", "{{assurance_statement}}", "", "Prepared by: {{prepared_by}} (Second line) | Date: {{date}}"].join("\n") },
           { id: "TPL-SIGNOFF", name: "Sign-off and Attestation", stage: "Sign-off", version: "1.0",
             purpose: "formal close-out with COSO attestation.",
-            body: ["REVIEW SIGN-OFF AND ATTESTATION", "Review: {{review_name}} | Period: {{period}}", "", "1. Scope confirmation", "The review was performed in accordance with the agreed scoping memo (ref: {{scoping_ref}}) and the approved methodology.", "", "2. COSO attestation", "{{coso_attestation}}", "", "3. Limitations", "{{limitations}}", "", "4. Overall rating: {{overall_rating}}", "", "Signed: {{signed_by}} ({{role}}) | Date: {{signed_at}}", "Notes: {{notes}}"].join("\n") }
+            body: ["REVIEW SIGN-OFF AND ATTESTATION", "Review: {{review_name}} | Period: {{period}}", "", "1. Scope confirmation", "The review was performed in accordance with the agreed scoping memo (ref: {{scoping_ref}}) and the approved methodology.", "", "2. COSO attestation", "{{coso_attestation}}", "", "3. Limitations", "{{limitations}}", "", "4. Overall rating: {{overall_rating}}", "", "Signed (Second line reviewer): {{signed_by}} ({{role}}) | Date: {{signed_at}}", "First-line business owner acknowledgement: {{first_line_signoff}}", "Notes: {{notes}}"].join("\n") }
         ];
         RA.stageCloud = {};
         function stageTplOverrides() { return ensureArray(loadData("ra2_stage_templates", [])); }
@@ -13781,11 +14178,14 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
             var rank = { critical: 0, major: 1, minor: 2 };
             if (fs.length) facts.top_findings = fs.slice().sort(function (x, y) { return rank[sevBucket(x.severity)] - rank[sevBucket(y.severity)]; }).slice(0, 5).map(function (x) { return "- " + (x.ref || "") + " " + x.title + " (" + x.severity + ")"; }).join("\n");
             var acts = reviewActions(rid);
-            if (acts.length) facts.actions_summary = acts.map(function (x) { return "- " + x.title + " (Owner: " + (x.owner || "Unassigned") + ", due " + (x.due || "TBC") + ", " + (x.status || "") + ")"; }).join("\n");
+            facts.overall_rating = overallRatingFor(review);
+            if (acts.length) facts.actions_summary = acts.map(function (x) { return "- " + (x.findingRef ? x.findingRef + " - " : "") + x.title + " (Owner: " + (x.owner || "Unassigned") + ", due " + (x.due || "TBC") + ", " + (x.status || "") + ", " + actionAgeing(x).label + ")"; }).join("\n");
           }
           if (tplId === "TPL-SIGNOFF") {
             facts.scoping_ref = "Scoping Memo - " + (review.name || "");
-            if (review.status === "Signed off") { facts.signed_by = review.leadReviewer || "Staff 1"; facts.role = "Lead reviewer"; facts.signed_at = fmtDay(todayD()); }
+            facts.overall_rating = overallRatingFor(review);
+            facts.first_line_signoff = review.firstLineSigner ? review.firstLineSigner + (review.status === "Signed off" ? " - acknowledged at sign-off" : " - to acknowledge at sign-off") : "Outstanding - first-line business owner acknowledgement not yet recorded";
+            if (review.status === "Signed off") { facts.signed_by = review.signedOffBy || review.leadReviewer || "Staff 1"; facts.role = "Lead reviewer (Second line)"; facts.signed_at = review.signedOffAt ? fmtISODate(review.signedOffAt) : fmtDay(todayD()); }
           }
           return { facts: facts, track: track };
         }
@@ -14341,12 +14741,16 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           var findings = wsFindingsSafe();
           if (key === "overview" || key === "signoff") {
             var gaps = [];
-            if (!controls.length) gaps.push("no controls in scope yet");
-            if (controls.length && tested.length < controls.length) gaps.push((controls.length - tested.length) + " of " + controls.length + " controls not yet tested");
-            var noResp = findings.filter(function (f) { return !f.managementResponse; }).length;
-            if (noResp) gaps.push(noResp + " finding(s) still awaiting a management response");
-            var noDate = findings.filter(function (f) { return !f.targetDate; }).length;
-            if (noDate) gaps.push(noDate + " finding(s) without an agreed target date");
+            var __sr = null; try { var __rev = getReview(currentReviewId); if (__rev) __sr = signoffReadiness(__rev); } catch (e) {}
+            if (__sr) { gaps = __sr.blockers.slice(); }
+            else {
+              if (!controls.length) gaps.push("no controls in scope yet");
+              if (controls.length && tested.length < controls.length) gaps.push((controls.length - tested.length) + " of " + controls.length + " controls not yet tested");
+              var noResp = findings.filter(function (f) { return !f.managementResponse; }).length;
+              if (noResp) gaps.push(noResp + " finding(s) still awaiting a management response");
+              var noDate = findings.filter(function (f) { return !f.targetDate; }).length;
+              if (noDate) gaps.push(noDate + " finding(s) without an agreed target date");
+            }
             if (key === "signoff") {
               return gaps.length
                 ? "<b>AI pre-review check - not ready for independent review sign-off yet:</b> " + gaps.join("; ") + ". Resolve these, then run the check again. Sign-off stays with the Lead Reviewer, with QA sign-off by the Quality Reviewer."
@@ -14430,7 +14834,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
 
         /* ---------- team capture: attendance, leave, walkthroughs, minutes ---------- */
         function teamItems(key) { return ensureArray(loadData(key, [])).filter(function (x) { return x.reviewId === currentReviewId; }); }
-        function saveTeamItem(key, rec) { var all = ensureArray(loadData(key, [])); saveData(key, all.concat([rec])); }
+        function saveTeamItem(key, rec) { if (!guardUnlocked(rec.reviewId || currentReviewId, "Team record changes")) return; var all = ensureArray(loadData(key, [])); saveData(key, all.concat([rec])); }
         function captureAttendance() {
           var name = currentUserName(), d = todayStr();
           var all = ensureArray(loadData("ra2_attendance", []));
