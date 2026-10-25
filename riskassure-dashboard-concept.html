@@ -1580,7 +1580,7 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
                 <span class="sub">Controls signed off per month, all jurisdictions</span>
               </div>
             </div>
-            <div class="emptyviz">No sign-offs recorded yet in this cycle.<br/>The trend builds here as reviews complete fieldwork.</div>
+            <div class="emptyviz" id="ovTrendBox">No sign-offs recorded yet in this cycle.<br/>The trend builds here as reviews complete fieldwork.</div>
           </div>
           <div class="darkcard span5" style="--i:1">
             <h3>Findings Needing Attention</h3>
@@ -15090,26 +15090,43 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
               if (noteEl) noteEl.textContent = "Calculated live from workspace data: evidence completeness " + (evRate === null ? "n/a" : Math.round(evRate * 100) + "%") + ", on-time fieldwork " + Math.round(onTime * 100) + "%, finding closure " + (closure === null ? "n/a (no findings yet)" : Math.round(closure * 100) + "%") + ".";
             }
           }
-          /* Completion trend: real sign-offs, grouped by month */
-          var trendBox = document.querySelector("#view-overview .emptyviz");
+          /* Completion trend: real sign-offs, grouped by sign-off month.
+             A review counts only when the Reviews list shows it as signed
+             off: status "Signed off" and not archived (the list hides
+             archived reviews by default). Status "Complete" is not a
+             sign-off - it is the seeded payroll review's state, and what
+             the database reports for an archived review - so counting it
+             invented a month entry for a review the list does not show as
+             signed off, bucketed by its due date because such records
+             carry no signedOffAt. The box is located by id, never by its
+             empty-state class: the previous lookup by ".emptyviz" found
+             nothing after the first successful render removed that class,
+             which froze the trend for the rest of the session, so a
+             sign-off never appeared in it. */
+          var trendBox = document.getElementById("ovTrendBox");
           if (trendBox) {
-            var signed = REVIEWS.filter(function (r) { return r.status === "Signed off" || r.status === "Complete"; });
+            var signed = REVIEWS.filter(function (r) { return r.status === "Signed off" && !r.archived; });
             if (signed.length) {
-              var byMonth = {};
+              var buckets = [];
+              var byKey = {};
               signed.forEach(function (r) {
                 var d = r.signedOffAt ? new Date(r.signedOffAt) : parseDayMon(r.endDate);
-                var key = d && !isNaN(d) ? MONTH3[d.getMonth()] + " " + d.getFullYear() : "This cycle";
-                byMonth[key] = byMonth[key] || { reviews: 0, controls: 0 };
-                byMonth[key].reviews++;
-                byMonth[key].controls += getControls(r.id).length;
+                var ok = !!(d && !isNaN(d));
+                var key = ok ? MONTH3[d.getMonth()] + " " + d.getFullYear() : "This cycle";
+                if (!byKey[key]) { byKey[key] = { label: key, sort: ok ? d.getFullYear() * 100 + d.getMonth() : 999999, reviews: 0, controls: 0 }; buckets.push(byKey[key]); }
+                byKey[key].reviews++;
+                byKey[key].controls += getControls(r.id).length;
               });
-              var maxC = Math.max.apply(null, Object.keys(byMonth).map(function (k) { return byMonth[k].controls; }).concat([1]));
+              buckets.sort(function (a, b) { return a.sort - b.sort; });
+              var maxC = Math.max.apply(null, buckets.map(function (b) { return b.controls; }).concat([1]));
               trendBox.classList.remove("emptyviz");
-              trendBox.innerHTML = Object.keys(byMonth).map(function (k) {
-                var m = byMonth[k];
-                return '<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;gap:10px"><span>' + esc(k) + '</span><b>' + m.controls + " controls \u00B7 " + m.reviews + " review" + (m.reviews === 1 ? "" : "s") + ' signed off</b></div><div class="progress" style="margin-top:5px"><i data-fill="' + Math.round(m.controls / maxC * 100) + '"></i></div></div>';
+              trendBox.innerHTML = buckets.map(function (m) {
+                return '<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;gap:10px"><span>' + esc(m.label) + '</span><b>' + m.controls + " controls \u00B7 " + m.reviews + " review" + (m.reviews === 1 ? "" : "s") + ' signed off</b></div><div class="progress" style="margin-top:5px"><i data-fill="' + Math.round(m.controls / maxC * 100) + '"></i></div></div>';
               }).join("");
               try { fillMeters(trendBox); } catch (e) {}
+            } else {
+              trendBox.classList.add("emptyviz");
+              trendBox.innerHTML = "No sign-offs recorded yet in this cycle.<br/>The trend builds here as reviews complete fieldwork.";
             }
           }
           bcFillSevCards($("view-overview"));
