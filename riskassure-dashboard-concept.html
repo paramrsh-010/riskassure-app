@@ -1253,6 +1253,10 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg>
           <span>Overview</span>
         </button>
+        <button type="button" class="side-item" data-view-target="demo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M10 8.5l5 3.5-5 3.5z" fill="currentColor" stroke="none"/></svg>
+          <span>Demo Walkthrough</span>
+        </button>
         <button type="button" class="side-item" data-view-target="annualplan">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/><path d="M7.5 14.5h4M7.5 17.5h6.5"/></svg>
           <span>Annual Plan</span>
@@ -1330,6 +1334,14 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
 
     <div class="main">
     <div class="wrap">
+      <div id="demoBanner" style="display:none;margin:14px 0 0;padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:var(--surface-2);align-items:center;gap:12px;flex-wrap:wrap">
+        <span style="font-size:13.5px;flex:1;min-width:220px"><b>Demo workspace</b> &middot; Example Assurance Group — fictional data, on this device only. The Q3 Access Review is left <b>unsigned</b> at the sign-off scene.</span>
+        <span style="display:inline-flex;gap:8px;flex-wrap:wrap">
+          <button type="button" class="btn small" id="demoGuideBtn">Demo guide</button>
+          <button type="button" class="btn ghost small" id="demoResetBtn">Reset demo data</button>
+          <button type="button" class="btn ghost small" id="demoExitBtn">Exit demo</button>
+        </span>
+      </div>
       <!-- top bar -->
       <header class="topbar">
         <button class="iconbtn menubtn" id="menuBtn" aria-label="Open navigation">
@@ -1618,6 +1630,34 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
       </div>
     </div>
     </section><!-- /view-overview -->
+
+    <!-- ============ VIEW: DEMO WALKTHROUGH ============ -->
+    <section class="view" id="view-demo">
+      <div class="wrap pad">
+        <div class="headline">
+          <h1>Demo walkthrough</h1>
+          <span class="sub">The Q3 Access Review, end to end, in the order the demo is presented. Each scene jumps straight to the screen it is shown on. The review is deliberately left unsigned at Scene 13, so the sign-off moment can be done live.</span>
+        </div>
+        <div class="card">
+          <div class="kv"><span><b>Scene 1 — Overview.</b> Assurance health at 53%: 17 of 20 controls tested, coverage by jurisdiction, findings needing attention.</span><b><button type="button" class="btn ghost small" data-demo-go="view:overview">Go to scene</button></b></div>
+          <div class="kv"><span><b>Scene 2 — Annual plan.</b> The risk-based plan the Q3 review came from, under change control.</span><b><button type="button" class="btn ghost small" data-demo-go="view:annualplan">Go to scene</button></b></div>
+          <div class="kv"><span><b>Scene 3 — Reviews.</b> Five reviews across India, the UK, the US and the EU; the Q3 Access Review in progress.</span><b><button type="button" class="btn ghost small" data-demo-go="view:reviews">Go to scene</button></b></div>
+          <div class="kv"><span><b>Scene 4 — Scope &amp; first-line intake.</b> Inside the Q3 workspace: scope first, then the Controls stage, where a Word, PDF, spreadsheet or photo register is read on this device and previewed before anything is imported — CSV needs no reader and always works.</span><b><button type="button" class="btn ghost small" data-demo-go="ws:controls">Go to scene</button></b></div>
+          <div class="kv"><span><b>Scene 5 — Methodology &amp; COSO mapping.</b> The methodology in force for this review's path, with every control mapped to a COSO principle.</span><b><button type="button" class="btn ghost small" data-demo-go="ws:methodology">Go to scene</button></b></div>
+          <div class="kv"><span><b>Scene 6 — Sampling.</b> Attribute sampling from the review's own population: 57 items from 340 at 95% confidence.</span><b><button type="button" class="btn ghost small" data-demo-go="ws:sampling">Go to scene</button></b></div>
+          <div class="kv"><span><b>Scene 7 — Control testing.</b> Four controls, all tested: two pass, one partial, one fail — the fail is what the findings hang from.</span><b><button type="button" class="btn ghost small" data-demo-go="ws:testing">Go to scene</button></b></div>
+          <div class="kv"><span><b>Scene 8 — Findings.</b> Five findings on the Q3 review, each with root cause, risk impact, recommendation, management response and an agreed target date.</span><b><button type="button" class="btn ghost small" data-demo-go="ws:findings">Go to scene</button></b></div>
+          <div class="kv"><span><b>Scene 9 — Actions.</b> Every finding carries an owned, dated action, tracked to verified closure.</span><b><button type="button" class="btn ghost small" data-demo-go="ws:actions">Go to scene</button></b></div>
+          <div class="kv"><span><b>Scene 10 — Resourcing.</b> Three allocations: lead reviewer, tester and reviewer, planned against actual days.</span><b><button type="button" class="btn ghost small" data-demo-go="ws:resourcing">Go to scene</button></b></div>
+          <div class="kv"><span><b>Scene 11 — Reports.</b> The draft report for management comments, built from the tested controls and findings on this review.</span><b><button type="button" class="btn ghost small" data-demo-go="ws:reports">Go to scene</button></b></div>
+          <div class="kv"><span><b>Scene 12 — Executive Pack.</b> The board-ready pack: live values from the same records, sign-off page still pending.</span><b><button type="button" class="btn ghost small" data-demo-go="view:execpack">Go to scene</button></b></div>
+          <div class="kv"><span><b>Scene 13 — Sign-off.</b> Every checklist criterion met on the current data — and the review still unsigned, so sign-off can be done live to close the demo.</span><b><button type="button" class="btn ghost small" data-demo-go="ws:signoff">Go to scene</button></b></div>
+          <div class="kv"><span><b>Across the workspace — Findings.</b> All 9 findings with live tiles: open, critical, overdue and median age computed from the same records the list shows.</span><b><button type="button" class="btn ghost small" data-demo-go="view:findings">Go to scene</button></b></div>
+          <div class="kv"><span><b>Across the workspace — Actions.</b> All 9 actions with live tiles and ageing by due date, not by label.</span><b><button type="button" class="btn ghost small" data-demo-go="view:actions">Go to scene</button></b></div>
+        </div>
+        <p class="sub" style="margin-top:12px">Worked example throughout: Example Assurance Group (fictional). Staff are shown as Staff 1–5. Nothing in this workspace is a real organisation's data.</p>
+      </div>
+    </section><!-- /view-demo -->
 
     <!-- ============ VIEW: REVIEWS ============ -->
     <section class="view" id="view-reviews">
@@ -5323,6 +5363,11 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
         <div id="agFormWrap">
           <h2 id="agTitle">Sign in to your workspace</h2>
           <span class="sub" id="agSub">Your team's reviews, findings and actions, synced and shared.</span>
+          <div class="auth-create-entry" id="agDemoEntry">
+            <span class="ace-text"><b>Just here to see it work?</b><span>Open the demo workspace: a complete fictional assurance practice — the Q3 Access Review end to end, 20 controls, 9 findings, 9 actions, its sign-off checklist fully met and the review left unsigned at the sign-off scene.</span></span>
+            <button type="button" class="btn small" id="agDemo">Open the demo</button>
+          </div>
+          <p class="sub" style="margin:2px 0 14px">Demo only: fictional data, stored only in this browser — no account, nothing uploaded. Signing in or creating an account still requires reading and accepting the Privacy Notice and Terms below; opening the demo records no acceptance for any account.</p>
           <div class="auth-create-entry" id="agCreateEntry">
             <span class="ace-text"><b id="agTopToggleText">New to RiskAssure?</b><span id="agTopToggleSub">No account yet? Create one and start your own workspace.</span></span>
             <button type="button" class="btn small" id="agTopToggle">Create an account</button>
@@ -8215,6 +8260,25 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
             $("agToggle").addEventListener("click", function () { agSetMode(agMode === "signin" ? "signup" : "signin"); });
             var agTopToggleBtn = $("agTopToggle");
             if (agTopToggleBtn && !agTopToggleBtn.__wired) { agTopToggleBtn.__wired = true; agTopToggleBtn.addEventListener("click", function () { agSetMode(agMode === "signin" ? "signup" : "signin"); }); }
+            var agDemoBtn = $("agDemo");
+            if (agDemoBtn && !agDemoBtn.__wired) {
+              agDemoBtn.__wired = true;
+              agDemoBtn.addEventListener("click", function () {
+                /* Demo entry: the fictional demo workspace only. No
+                   account is created, nothing is uploaded, and - unlike
+                   sign-in and the offline entry - no Privacy Notice or
+                   Terms acceptance is recorded for anyone: the demo
+                   holds no personal data and processes none. The entry
+                   itself is written to the audit trail as a demo entry,
+                   so it is never mistaken for an acceptance or a sign-in. */
+                try { localStorage.setItem("ra_mode_pref", "local"); localStorage.setItem("ra_demo_mode", "1"); } catch (e) {}
+                RA.mode = "local";
+                RA.signInAt = Date.now();
+                accessLog("Demo workspace opened", "The fictional demo workspace (Example Assurance Group) was opened on this device at " + new Date().toLocaleString() + ", with no account, no sign-in and no data uploaded. Demo entry records no Privacy Notice or Terms acceptance.");
+                hideGate();
+                if (!RA.booted) doBoot(); else applyHeaderIdentity();
+              });
+            }
             $("agOffline").addEventListener("click", function () {
               if (!legalAccepted() && !agreeChecked()) { agShowError("Before you continue, please read the Privacy Notice and the Terms of Use to the end in the panels above, then tick each acceptance box. Each is recorded against your account."); return; }
               recordLegalAcceptance($("agEmail").value.trim());
@@ -8629,6 +8693,16 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
         var AI_PROVIDER_IDS = ["builtin", "anthropic", "gemini", "openai", "custom"];
         var BUILTIN_AI_BASE = "https://text.pollinations.ai/openai";
         var BUILTIN_AI_KEY = "built-in"; /* placeholder only - Built-in AI needs no key from the user */
+        /* Built-in AI is the default route: it needs no key from the user
+           and calls the built-in AI service (text.pollinations.ai, an
+           OpenAI-compatible endpoint). It is disclosed in the Privacy
+           Notice and in Settings, and AI features run only while the AI
+           processing consent purpose is granted. A user can instead
+           select and key their own provider in Settings (Anthropic,
+           Gemini, OpenAI or a custom OpenAI-compatible endpoint); with an
+           own-key provider selected and no key saved, AI features report
+           __NO_KEY__ and deterministic features (CSV intake, calculators,
+           testing) keep working. */
         function v7get(k) { try { return localStorage.getItem("riskassure_v7_" + k); } catch (e) { return null; } }
         function v7set(k, v) { try { localStorage.setItem("riskassure_v7_" + k, v); return true; } catch (e) { return false; } }
         function v7sget(k) { try { return sessionStorage.getItem("riskassure_v7_" + k); } catch (e) { return null; } }
@@ -8658,7 +8732,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           return String(keys[p] || "").trim();
         }
         function getAIModels() { try { return JSON.parse(v7get("ai_models") || "{}") || {}; } catch (e) { return {}; } }
-        function getAIModel(provider) { var p = provider || getAIProvider(); var models = getAIModels(); return String(models[p] || "").trim() || AI_PROVIDERS[p].defaultModel; }
+        function getAIModel(provider) { var p = provider || getAIProvider(); var models = getAIModels(); return String(models[p] || "").trim() || (AI_PROVIDERS[p] ? AI_PROVIDERS[p].defaultModel : ""); }
         function getAICustomBase() { return String(v7get("ai_custom_base") || "").trim().replace(/\/+$/, ""); }
         function aiNoKeyMessage() { return "No API key for " + aiProviderLabel() + " - add it in Settings"; }
         function aiKeyMissingMessage() { return "Add an API key for " + aiProviderLabel() + " in Settings first."; }
@@ -8882,7 +8956,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
             { id: "f_1043", ref: "F-1043", reviewId: "rev_access", reviewName: "Q3 Access Review", title: "Emergency change path allows requester self-approval", severity: "Major", classification: "Finding", riskTypes: ["operational"], controlName: "Change approval segregation", rootCause: "The ServiceNow emergency-change workflow lets the requester approve their own change, relying on retrospective CAB ratification; ratifications for CHG0055217 and CHG0055890 were late (6 and 9 business days against a 5-day standard).", riskImpact: "An unauthorised or erroneous emergency change can reach production with no independent check before implementation; late ratification removes the only compensating control. Two instances in a sample of 40 indicates the path is used routinely, not exceptionally.", recommendation: "Enforce four-eyes approval in the ITSM workflow for emergency changes (a second CAB member must approve before implementation), and alert the Change Manager automatically when ratification passes 3 business days.", managementResponse: "Accepted. The workflow change is scheduled for the 25 Oct release train; interim manual four-eyes check is in place from 15 Oct. Owner: Staff 4.", targetDate: "25 Oct 2026", validation: "Pending", status: "In progress", owner: "Staff 4", area: "Change management", fromTestId: "ctl_cm01", createdAt: T },
             { id: "f_1044", ref: "F-1044", reviewId: "rev_access", reviewName: "Q3 Access Review", title: "Evidence retained below policy period", severity: "Major", classification: "Finding", riskTypes: ["compliance"], controlName: "", rootCause: "", riskImpact: "", recommendation: "", managementResponse: "Accepted. Retention for the affected evidence classes is being extended to the full policy period in the archive configuration, and the corrected settings will be evidenced to the review team on completion. Owner: Staff 5.", targetDate: "27 Nov 2026", validation: "Pending", status: "In review", owner: "Staff 5", area: "Records management", fromTestId: "", createdAt: T },
             { id: "f_1050", ref: "F-1050", reviewId: "rev_access", reviewName: "Q3 Access Review", title: "Verbal access requests accepted at one service desk location", severity: "Minor", classification: "Finding", riskTypes: ["operational"], controlName: "User access provisioning", rootCause: "The Hyderabad service desk worked from a local practice of accepting verbal requests from known managers; the Access Management Standard v3.1 was never briefed to that desk after the office opened.", riskImpact: "One undocumented side channel around the approved-request control. The walkthrough found it, the desk closed it during fieldwork, and re-testing was clean, so the residual exposure is low - but the same gap could exist at other locations not covered by this review.", recommendation: "Brief all service desk locations on the no-verbal-requests rule and add a quarterly side-channel check to the IAM team's own monitoring. Owner: Staff 2.", managementResponse: "Accepted. Briefing completed for two locations; the remaining desks are scheduled in November. Owner: Staff 2.", targetDate: "14 Nov 2026", validation: "Pending", status: "In review", owner: "Staff 2", area: "IT general controls", fromTestId: "ctl_ac01", createdAt: T },
-            { id: "f_1051", ref: "F-1051", reviewId: "rev_access", reviewName: "Q3 Access Review", title: "Dormant privileged accounts remain active, including two Finacle DBA accounts", severity: "Major", classification: "Finding", riskTypes: ["cyber"], controlName: "Privileged access recertification", rootCause: "Dormancy is not a recertification trigger: a privileged account with no logon for 90+ days stays fully enabled until the quarterly campaign reaches it, and the stalled Q3 campaign never did. The IAM portal has no automatic dormancy rule.", riskImpact: "Six dormant privileged accounts, two of them Finacle database administrator accounts, hold standing powerful access that nobody is using or watching. Dormant privileged access is the classic path for undetected misuse, and it sits outside the compensating weekly report agreed for F-1042 until the accounts are disabled or justified.", recommendation: "Disable the six dormant accounts or evidence a current business need for each by 30 Nov 2026, and configure the IAM portal to disable privileged accounts automatically after 45 days without a logon, with reactivation only through the standard access request.", managementResponse: "Accepted. The IAM team will work through the six accounts with their owners and configure the 45-day dormancy rule in the IAM portal. Owner: Staff 2.", targetDate: "30 Nov 2026", validation: "Pending", status: "In progress", owner: "Staff 2", area: "IT general controls", fromTestId: "ctl_ac02", createdAt: T },
+            { id: "f_1051", ref: "F-1051", reviewId: "rev_access", reviewName: "Q3 Access Review", title: "Dormant privileged accounts remain active, including two Finacle DBA accounts", severity: "Major", classification: "Finding", riskTypes: ["cyber"], controlName: "Privileged access recertification", rootCause: "Dormancy is not a recertification trigger: a privileged account with no logon for 90+ days stays fully enabled until the quarterly campaign reaches it, and the stalled Q3 campaign never did. The IAM portal has no automatic dormancy rule.", riskImpact: "Six dormant privileged accounts, two of them Finacle database administrator accounts, hold standing powerful access that nobody is using or watching. Dormant privileged access is the classic path for undetected misuse, and it sits outside the compensating weekly report agreed for F-1042 until the accounts are disabled or justified.", recommendation: "Disable the six dormant accounts or evidence a current business need for each by 30 Nov 2026, and configure the IAM portal to disable privileged accounts automatically after 45 days without a logon, with reactivation only through the standard access request.", managementResponse: "Accepted with a remediation plan. The IAM team will work through the six accounts with their owners and configure the 45-day dormancy rule in the IAM portal. Owner: Staff 2.", targetDate: "18 Dec 2026", validation: "Pending", status: "In progress", owner: "Staff 2", area: "IT general controls", fromTestId: "ctl_ac02", createdAt: T },
             { id: "f_1037", ref: "F-1037", reviewId: "rev_vendor", reviewName: "Vendor Assurance FY26", title: "Vendor contracts missing exit clauses", severity: "Critical", classification: "Finding", riskTypes: ["third-party"], controlName: "", rootCause: "Legacy contracts predate the Third-Party Risk Policy v2.0 and were never remediated at renewal; 6 of the 19 critical vendors have no exit, data-return or transition-assistance clause.", riskImpact: "The firm cannot exit or transition away from 6 critical vendors without negotiation from a position of weakness, and has no contractual right to data return on exit - a concentration and continuity risk the OCC and PRA both treat as a board-level exposure.", recommendation: "Add exit, data-return and transition-assistance clauses at renewal or by side letter for the 6 critical vendors by 28 Oct, and gate future renewals on the current policy checklist.", managementResponse: "Accepted. Legal has issued side letters to 4 of the 6 vendors; the remaining 2 are in negotiation. Owner: Staff 3.", targetDate: "28 Oct 2026", validation: "Pending", status: "In progress", owner: "Staff 3", area: "Third-party risk", fromTestId: "", createdAt: T },
             { id: "f_1031", ref: "F-1031", reviewId: "rev_ukchange", reviewName: "UK Change Audit", title: "Change approvals lack segregation", severity: "Major", classification: "Finding", riskTypes: ["operational"], controlName: "", rootCause: "", riskImpact: "", recommendation: "", managementResponse: "", targetDate: "", validation: "Pending", status: "In progress", owner: "Staff 4", area: "Change management", fromTestId: "", createdAt: T },
             { id: "f_1028", ref: "F-1028", reviewId: "rev_eurecords", reviewName: "EU Records Review", title: "Evidence retained below policy period", severity: "Major", classification: "Finding", riskTypes: ["compliance"], controlName: "", rootCause: "", riskImpact: "", recommendation: "", managementResponse: "", targetDate: "", validation: "Pending", status: "In review", owner: "Staff 5", area: "Records management", fromTestId: "", createdAt: T },
@@ -17561,6 +17635,77 @@ comment on column public.evidence_files.sha256 is
             } catch (e) { window.location.href = a.href; }
           });
         });
+      })();
+    </script>
+    <script>
+      /* Demo walkthrough driver. Deliberately DOM-only: it navigates by
+         clicking the application's own sidebar items, review links and
+         workspace tabs, so every scene change goes through the app's real
+         rendering paths (including the list re-renders wired to those
+         controls) instead of reaching into the app's internals. */
+      (function () {
+        "use strict";
+        function $(id) { return document.getElementById(id); }
+        function isDemo() { try { return localStorage.getItem("ra_demo_mode") === "1"; } catch (e) { return false; } }
+        function gateShown() {
+          var g = $("authGate");
+          if (!g) return false;
+          if (g.hidden) return false;
+          var cs = window.getComputedStyle ? getComputedStyle(g) : null;
+          return !cs || (cs.display !== "none" && cs.visibility !== "hidden");
+        }
+        function syncBanner() {
+          var b = $("demoBanner");
+          if (!b) return;
+          b.style.display = (isDemo() && !gateShown()) ? "flex" : "none";
+        }
+        function goView(name) {
+          var item = document.querySelector('.side-item[data-view-target="' + name + '"]');
+          if (item) { item.click(); return; }
+          document.querySelectorAll(".view").forEach(function (v) { v.classList.toggle("active", v.id === "view-" + name); });
+          window.scrollTo(0, 0);
+        }
+        function goScene(target) {
+          if (!target) return;
+          if (target.indexOf("view:") === 0) { goView(target.slice(5)); return; }
+          if (target.indexOf("ws:") === 0) {
+            var tab = target.slice(3);
+            var link = document.querySelector('[data-open-review="Q3 Access Review"]');
+            if (link) link.click();
+            setTimeout(function () {
+              var b = document.querySelector('#wTabs button[data-wtab="' + tab + '"]');
+              if (b) b.click();
+            }, 150);
+          }
+        }
+        document.addEventListener("click", function (e) {
+          var el = e.target && e.target.closest ? e.target.closest("[data-demo-go]") : null;
+          if (el) goScene(el.getAttribute("data-demo-go"));
+        });
+        var guideBtn = $("demoGuideBtn");
+        if (guideBtn) guideBtn.addEventListener("click", function () { goView("demo"); });
+        var exitBtn = $("demoExitBtn");
+        if (exitBtn) exitBtn.addEventListener("click", function () {
+          try { localStorage.removeItem("ra_demo_mode"); localStorage.removeItem("ra_mode_pref"); } catch (e) {}
+          location.reload();
+        });
+        var resetBtn = $("demoResetBtn");
+        if (resetBtn) resetBtn.addEventListener("click", function () {
+          if (resetBtn.getAttribute("data-armed") !== "1") {
+            resetBtn.setAttribute("data-armed", "1");
+            resetBtn.textContent = "Click again to confirm reset";
+            setTimeout(function () { resetBtn.removeAttribute("data-armed"); resetBtn.textContent = "Reset demo data"; }, 4000);
+            return;
+          }
+          try {
+            var drop = [];
+            for (var i = 0; i < localStorage.length; i++) { var k = localStorage.key(i); if (k && (k.indexOf("ra2_") === 0 || k === "ra_org_name")) drop.push(k); }
+            drop.forEach(function (k) { localStorage.removeItem(k); });
+          } catch (e) {}
+          location.reload();
+        });
+        setInterval(syncBanner, 600);
+        syncBanner();
       })();
     </script>
   </body>
