@@ -1987,18 +1987,18 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
             <div class="minirow">
               <div><b>5</b><span>Request types</span></div>
               <div><b>&mdash;</b><span>Completed this cycle</span></div>
-              <div><b>&mdash;</b><span>On time</span></div>
+              <div><b>&mdash;</b><span>Overdue</span></div>
             </div>
           </article>
           <article class="card span7" style="--i:1">
-            <div class="top"><span class="label" style="font-size:16px;font-weight:600">On-time completion by type</span></div>
+            <div class="top"><span class="label" style="font-size:16px;font-weight:600">Completion by type</span></div>
             <div class="regionrows wide">
               <div class="r"><b>Evidence pulls</b><div class="progress"><i data-fill="0"></i></div><span class="pct mono">—</span></div>
               <div class="r"><b>Auditor extracts</b><div class="progress"><i data-fill="0"></i></div><span class="pct mono">—</span></div>
               <div class="r"><b>Data analysis</b><div class="progress"><i data-fill="0"></i></div><span class="pct mono">—</span></div>
               <div class="r"><b>Spot checks</b><div class="progress"><i data-fill="0"></i></div><span class="pct mono">—</span></div>
             </div>
-            <span class="sub">Completed requests this cycle, measured against the date agreed at triage.</span>
+            <span class="sub">Share of each request type completed this cycle, counted from the request list below.</span>
           </article>
           <article class="card span12" style="--i:2">
             <div class="top"><span class="label" style="font-size:16px;font-weight:600">Adhoc requests</span><span class="sub">Newest first</span></div>
@@ -6054,6 +6054,15 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           var iso = s.match(/^(\d{4})-(\d{2})-(\d{2})/); if (iso) return new Date(+iso[1], +iso[2] - 1, +iso[3]);
           var m = s.match(/^(\d{1,2})\s+([A-Za-z]{3,9})\s+(\d{4})$/);
           if (m) { var mi = __MONTHS.indexOf(m[2].slice(0, 3).toLowerCase()); if (mi > -1) return new Date(+m[3], mi, +m[1]); }
+          /* Yearless due dates ("18 Oct") are how due dates are written
+             across the workspace. They used to fall through to
+             new Date("18 Oct"), which JavaScript reads as October
+             2001 - so every ageing label in the Actions table, the
+             SLA card and the due-this-week counts claimed items were
+             nine thousand days overdue. Route them through the same
+             cycle-year rule parseDayMon uses for findings. */
+          var m2 = s.match(/^(\d{1,2})\s+([A-Za-z]{3,9})$/);
+          if (m2) { var pd = parseDayMon(s); if (pd) return pd; }
           var d = new Date(s); return isNaN(d.getTime()) ? null : d;
         }
         function actionAgeing(a) {
@@ -8788,7 +8797,25 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
         /* ---------- seed data (first run only; existing saved data wins) ---------- */
         var currentReviewId = "rev_access";
         function seedIfEmpty() {
-          if (getLocalItem("ra2_reviews") !== null || __raCache.has("ra2_reviews")) return;
+          /* Seed when the workspace is genuinely empty. The old guard
+             treated the mere presence of the reviews key as "data exists",
+             so a profile holding empty arrays (saved by an interrupted
+             first run, a cleared workspace, or an older build) was stuck
+             on a permanently empty demo: every list empty, every tile a
+             dash, and no way back short of clearing site data by hand.
+             Existing real data - any reviews, findings or actions at
+             all - always wins and is never overwritten. */
+          var hasCore = ["ra2_reviews", "ra2_findings", "ra2_actions"].some(function (k) {
+            try { var v = loadData(k, null); return !!(v && v.length); } catch (e) { return false; }
+          });
+          if (hasCore) return;
+          /* The demo workspace carries the fictional organisation name
+             from the demo script. Only set it when the user has not
+             already named their own workspace. */
+          if (!getLocalItem("ra_org_name")) {
+            setLocalItem("ra_org_name", "Example Assurance Group");
+            try { RA.orgName = "Example Assurance Group"; } catch (e) {}
+          }
           var T = "2026-09-22T09:00:00.000Z";
           saveData("ra2_reviews", [
             { id: "rev_access", name: "Q3 Access Review", status: "In progress", reviewType: "Access Assurance Methodology", reviewKind: "Assurance Review", family: "Independent Assurance Review", classType: "Monitoring Review", subcategory: "", needsConfirmType: true, needsConfirmSub: false, jurisdictions: ["India"], methAdopted: true, methSource: "default", businessArea: "IT general controls", jurisdiction: "India", leadReviewer: "Staff 1", startDate: "22 Sep", endDate: "24 Oct", completionPct: 0, scopeRisks: [], createdAt: T },
@@ -8800,7 +8827,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           saveData("ra2_controls", [
             { id: "ctl_ac01", reviewId: "rev_access", code: "AC-01", controlName: "User access provisioning (joiners, movers, leavers)", controlType: "Manual", controlNature: "Preventative", designation: "Key", cosoPrinciple: "P10", owner: "Staff 2", frequency: "Per event", objective: "Access to the core banking platform (Finacle), ERP and ITSM is provisioned only against a line-manager and application-owner approved request (Form IAM-02), and leaver access is removed within 24 hours.", regulationReference: "RBI Master Direction on IT Governance, Risk and Controls (2023), para 8.2 - user access management", sampleSize: 25, population: "1,284 provisioning events, 01 Jul - 30 Sep 2026 (ServiceNow extract SN-EXT-2291, agreed to HR joiner/leaver report)", effectiveness: "Pass", exceptions: "", exceptionCount: "", result_comments: "25 of 25 sampled events traced to approved IAM-02 forms; provisioned Finacle profiles matched the approved access in every case, including transaction limits and branch scope. All 8 leavers in the sample were disabled within 24 hours of the HR exit date, with no post-exit logons in the SIEM extract.", evidence: ["ServiceNow provisioning extract SN-EXT-2291 (Q3 FY26).csv", "IAM-02 approved request forms - sample of 25.pdf", "Finacle user profile screenshots - sample items 1-25.pdf"], source: "Methodology", createdAt: T },
             { id: "ctl_ac02", reviewId: "rev_access", code: "AC-02", controlName: "Privileged access quarterly recertification", controlType: "Manual", controlNature: "Detective", designation: "Material", cosoPrinciple: "P16", owner: "Staff 2", frequency: "Quarterly", objective: "Every privileged account (214 across Finacle, ERP and ITSM) is recertified by the account owner's manager each quarter in the IAM portal, with revoked access removed within 5 business days.", regulationReference: "RBI Master Direction on IT Governance (2023), para 8.4 - privileged access; ISO/IEC 27001:2022 A.5.15", sampleSize: 214, population: "214 privileged accounts at 30 Sep 2026 (IAM portal listing, agreed to the CMDB privileged asset register)", effectiveness: "Fail", exceptions: "31 of 214 privileged accounts had no recertification decision recorded by 30 Sep 2026; 6 of the 31 were dormant (no logon in 90+ days), including 2 Finacle database administrator accounts.", exceptionCount: "31", result_comments: "Re-performance of the Q3 campaign: the campaign stalled in August when two system owners left the business and their accounts were never reassigned for review. Raised as finding F-1042; compensating weekly dormant-account report agreed until closure.", evidence: ["Privileged account listing, 214 accounts (IAM portal, 30 Sep 2026).xlsx", "Recertification campaign tracker Q3 FY26.xlsx"], source: "Methodology", createdAt: T },
-            { id: "ctl_ac03", reviewId: "rev_access", code: "AC-03", controlName: "Password policy enforcement (AD and Finacle)", controlType: "Automated", controlNature: "Preventative", designation: "Material", cosoPrinciple: "P11", owner: "IT Security", frequency: "Continuous", objective: "Password rules from the Group Information Security Standard v4.2 (minimum length 12, complexity on, lockout after 5 attempts, 90-day maximum age) are enforced by configuration in Active Directory and Finacle.", regulationReference: "Group Information Security Standard v4.2, section 6.1; ISO/IEC 27001:2022 A.5.17", sampleSize: 25, population: "Full population of 3,912 accounts - configuration inspection and full-population re-performance, no sampling", effectiveness: "Not Tested", exceptions: "", exceptionCount: "", result_comments: "", evidence: ["Password policy configuration export (AD Group Policy, 02 Oct 2026).xml"], source: "Methodology", createdAt: T },
+            { id: "ctl_ac03", reviewId: "rev_access", code: "AC-03", controlName: "Password policy enforcement (AD and Finacle)", controlType: "Automated", controlNature: "Preventative", designation: "Material", cosoPrinciple: "P11", owner: "IT Security", frequency: "Continuous", objective: "Password rules from the Group Information Security Standard v4.2 (minimum length 12, complexity on, lockout after 5 attempts, 90-day maximum age) are enforced by configuration in Active Directory and Finacle.", regulationReference: "Group Information Security Standard v4.2, section 6.1; ISO/IEC 27001:2022 A.5.17", sampleSize: 25, population: "Full population of 3,912 accounts - configuration inspection and full-population re-performance, no sampling", effectiveness: "Pass", exceptions: "", exceptionCount: "", result_comments: "Configuration in Active Directory and Finacle matches the Group Information Security Standard v4.2 on every parameter (minimum length 12, complexity on, lockout after 5 attempts, history 12, 90-day maximum age). Full-population re-performance over all 3,912 accounts found no account past the 90-day maximum age, none with password-never-expires set outside the approved service-account list, and none with lockout disabled.", evidence: ["Password policy configuration export (AD Group Policy, 02 Oct 2026).xml"], source: "Methodology", createdAt: T },
             { id: "ctl_cm01", reviewId: "rev_access", code: "CM-01", controlName: "Change approval segregation of duties", controlType: "Manual", controlNature: "Preventative", designation: "Key", cosoPrinciple: "P10", owner: "Staff 4", frequency: "Per change", objective: "For every production change, the requester, CAB approver and implementer are three different individuals; emergency changes receive retrospective CAB ratification within 5 business days.", regulationReference: "RBI Master Direction on IT Governance (2023), para 7.3 - change management; ISO/IEC 27001:2022 A.8.32", sampleSize: 40, population: "612 production changes, 01 Jul - 30 Sep 2026 (ServiceNow change register, Q3 extract)", effectiveness: "Partial", exceptions: "2 of 40 sampled changes (CHG0055217, CHG0055890) were emergency changes approved by the requester under the emergency path. Both carried retrospective CAB ratification, 6 and 9 business days after implementation against a 5-day standard.", exceptionCount: "2", result_comments: "Normal and standard changes fully segregated in all 40 sampled items. The emergency path is the exception: it permits self-approval with later ratification, and both ratifications were late. Raised as finding F-1043.", evidence: ["ServiceNow change register extract Q3 FY26.xlsx", "CAB minutes - 14 Aug and 11 Sep 2026.pdf"], source: "Methodology", createdAt: T }
           ]);
           saveData("ra2_test_plans", [
@@ -8838,18 +8865,23 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
             { id: "tr_11", testStepId: "ts_09", testPlanId: "tp_03", controlId: "ctl_cm01", reviewId: "rev_access", result: "Pass", comments: "Sample of 40 drawn across 612 Q3 changes (28 normal, 7 standard, 5 emergency); seed 481516 recorded.", testedBy: "Staff 4", testedAt: "2026-10-13T10:20:00.000Z" },
             { id: "tr_12", testStepId: "ts_10", testPlanId: "tp_03", controlId: "ctl_cm01", reviewId: "rev_access", result: "Pass", comments: "Requester, approver and implementer differed on all 40 sampled changes; CAB approval preceded implementation in every case.", testedBy: "Staff 4", testedAt: "2026-10-13T14:55:00.000Z" },
             { id: "tr_13", testStepId: "ts_11", testPlanId: "tp_03", controlId: "ctl_cm01", reviewId: "rev_access", result: "Fail", comments: "2 of 5 emergency changes in the sample (CHG0055217, CHG0055890) were self-approved by the requester under the emergency path and ratified late, at 6 and 9 business days against the 5-day standard.", testedBy: "Staff 4", testedAt: "2026-10-14T09:41:00.000Z" },
-            { id: "tr_14", controlId: "ctl_cm01", reviewId: "rev_access", result: "Partial", exceptions: "2 of 40 sampled changes (CHG0055217, CHG0055890) were emergency changes approved by the requester; retrospective CAB ratification was late for both.", comments: "Segregation holds for normal and standard changes; the emergency path permits self-approval. Raised as finding F-1043.", evidence: ["CAB minutes - 14 Aug and 11 Sep 2026.pdf"], testedBy: "Staff 4", testedAt: "2026-10-14T09:41:00.000Z" }
+            { id: "tr_14", controlId: "ctl_cm01", reviewId: "rev_access", result: "Partial", exceptions: "2 of 40 sampled changes (CHG0055217, CHG0055890) were emergency changes approved by the requester; retrospective CAB ratification was late for both.", comments: "Segregation holds for normal and standard changes; the emergency path permits self-approval. Raised as finding F-1043.", evidence: ["CAB minutes - 14 Aug and 11 Sep 2026.pdf"], testedBy: "Staff 4", testedAt: "2026-10-14T09:41:00.000Z" },
+            { id: "tr_15", testStepId: "ts_12", testPlanId: "tp_04", controlId: "ctl_ac03", reviewId: "rev_access", result: "Pass", comments: "Enforced configuration inspected in both systems: minimum length 12, complexity on, lockout after 5 failed attempts, password history 12 and 90-day maximum age - every parameter agrees to the Group Information Security Standard v4.2.", testedBy: "Staff 1", testedAt: "2026-10-15T10:12:00.000Z" },
+            { id: "tr_16", testStepId: "ts_13", testPlanId: "tp_04", controlId: "ctl_ac03", reviewId: "rev_access", result: "Pass", comments: "Full-population re-performance over 3,912 accounts: none past the 90-day maximum password age, no password-never-expires outside the approved service-account list, no account with lockout disabled.", testedBy: "Staff 1", testedAt: "2026-10-15T13:37:00.000Z" },
+            { id: "tr_17", controlId: "ctl_ac03", reviewId: "rev_access", result: "Pass", exceptions: "", comments: "Configuration matches the standard on every parameter in AD and Finacle, and the full-population re-performance over 3,912 accounts found no account outside policy.", evidence: ["Password policy configuration export (AD Group Policy, 02 Oct 2026).xml"], testedBy: "Staff 1", testedAt: "2026-10-15T13:37:00.000Z" }
           ]);
           saveData("ra2_findings", [
             { id: "f_1042", ref: "F-1042", reviewId: "rev_access", reviewName: "Q3 Access Review", title: "Privileged access not recertified for 31 of 214 accounts in Q3", severity: "Critical", classification: "Finding", riskTypes: ["cyber"], controlName: "Privileged access recertification", rootCause: "The Q3 recertification campaign stalled when two system owners left the business in August; their review queues in the IAM portal were never reassigned, and the campaign tracker had no escalation for ageing queues.", riskImpact: "31 privileged accounts, including 2 Finacle database administrator accounts dormant for over 90 days, retained powerful access with no management confirmation that it is still needed. This is the highest-impact access exposure in the review and a direct breach of the RBI IT Governance Master Direction (para 8.4).", recommendation: "Recertify all 214 privileged accounts by 18 Oct, remove or justify the 6 dormant accounts immediately, and add an automatic escalation to the IAM portal: queues unassigned or untouched for 10 business days escalate to the Head of IT Security.", managementResponse: "Accepted. The IAM team has reassigned the orphaned queues and the campaign restarted on 13 Oct; the dormant-account report now runs weekly until closure. Owner: Staff 2.", targetDate: "18 Oct 2026", validation: "Pending", status: "Overdue", owner: "Staff 2", area: "IT general controls", fromTestId: "ctl_ac02", createdAt: T },
             { id: "f_1043", ref: "F-1043", reviewId: "rev_access", reviewName: "Q3 Access Review", title: "Emergency change path allows requester self-approval", severity: "Major", classification: "Finding", riskTypes: ["operational"], controlName: "Change approval segregation", rootCause: "The ServiceNow emergency-change workflow lets the requester approve their own change, relying on retrospective CAB ratification; ratifications for CHG0055217 and CHG0055890 were late (6 and 9 business days against a 5-day standard).", riskImpact: "An unauthorised or erroneous emergency change can reach production with no independent check before implementation; late ratification removes the only compensating control. Two instances in a sample of 40 indicates the path is used routinely, not exceptionally.", recommendation: "Enforce four-eyes approval in the ITSM workflow for emergency changes (a second CAB member must approve before implementation), and alert the Change Manager automatically when ratification passes 3 business days.", managementResponse: "Accepted. The workflow change is scheduled for the 25 Oct release train; interim manual four-eyes check is in place from 15 Oct. Owner: Staff 4.", targetDate: "25 Oct 2026", validation: "Pending", status: "In progress", owner: "Staff 4", area: "Change management", fromTestId: "ctl_cm01", createdAt: T },
             { id: "f_1044", ref: "F-1044", reviewId: "rev_access", reviewName: "Q3 Access Review", title: "Evidence retained below policy period", severity: "Major", classification: "Finding", riskTypes: ["compliance"], controlName: "", rootCause: "", riskImpact: "", recommendation: "", managementResponse: "", targetDate: "", validation: "Pending", status: "In review", owner: "Staff 5", area: "Records management", fromTestId: "", createdAt: T },
+            { id: "f_1050", ref: "F-1050", reviewId: "rev_access", reviewName: "Q3 Access Review", title: "Verbal access requests accepted at one service desk location", severity: "Minor", classification: "Finding", riskTypes: ["operational"], controlName: "User access provisioning", rootCause: "The Hyderabad service desk worked from a local practice of accepting verbal requests from known managers; the Access Management Standard v3.1 was never briefed to that desk after the office opened.", riskImpact: "One undocumented side channel around the approved-request control. The walkthrough found it, the desk closed it during fieldwork, and re-testing was clean, so the residual exposure is low - but the same gap could exist at other locations not covered by this review.", recommendation: "Brief all service desk locations on the no-verbal-requests rule and add a quarterly side-channel check to the IAM team's own monitoring. Owner: Staff 2.", managementResponse: "Accepted. Briefing completed for two locations; the remaining desks are scheduled in November. Owner: Staff 2.", targetDate: "14 Nov 2026", validation: "Pending", status: "In review", owner: "Staff 2", area: "IT general controls", fromTestId: "ctl_ac01", createdAt: T },
+            { id: "f_1051", ref: "F-1051", reviewId: "rev_access", reviewName: "Q3 Access Review", title: "Dormant privileged accounts remain active, including two Finacle DBA accounts", severity: "Major", classification: "Finding", riskTypes: ["cyber"], controlName: "Privileged access recertification", rootCause: "Dormancy is not a recertification trigger: a privileged account with no logon for 90+ days stays fully enabled until the quarterly campaign reaches it, and the stalled Q3 campaign never did. The IAM portal has no automatic dormancy rule.", riskImpact: "Six dormant privileged accounts, two of them Finacle database administrator accounts, hold standing powerful access that nobody is using or watching. Dormant privileged access is the classic path for undetected misuse, and it sits outside the compensating weekly report agreed for F-1042 until the accounts are disabled or justified.", recommendation: "Disable the six dormant accounts or evidence a current business need for each by 30 Nov 2026, and configure the IAM portal to disable privileged accounts automatically after 45 days without a logon, with reactivation only through the standard access request.", managementResponse: "Accepted. The IAM team will work through the six accounts with their owners and configure the 45-day dormancy rule in the IAM portal. Owner: Staff 2.", targetDate: "30 Nov 2026", validation: "Pending", status: "In progress", owner: "Staff 2", area: "IT general controls", fromTestId: "ctl_ac02", createdAt: T },
             { id: "f_1037", ref: "F-1037", reviewId: "rev_vendor", reviewName: "Vendor Assurance FY26", title: "Vendor contracts missing exit clauses", severity: "Critical", classification: "Finding", riskTypes: ["third-party"], controlName: "", rootCause: "Legacy contracts predate the Third-Party Risk Policy v2.0 and were never remediated at renewal; 6 of the 19 critical vendors have no exit, data-return or transition-assistance clause.", riskImpact: "The firm cannot exit or transition away from 6 critical vendors without negotiation from a position of weakness, and has no contractual right to data return on exit - a concentration and continuity risk the OCC and PRA both treat as a board-level exposure.", recommendation: "Add exit, data-return and transition-assistance clauses at renewal or by side letter for the 6 critical vendors by 28 Oct, and gate future renewals on the current policy checklist.", managementResponse: "Accepted. Legal has issued side letters to 4 of the 6 vendors; the remaining 2 are in negotiation. Owner: Staff 3.", targetDate: "28 Oct 2026", validation: "Pending", status: "In progress", owner: "Staff 3", area: "Third-party risk", fromTestId: "", createdAt: T },
             { id: "f_1031", ref: "F-1031", reviewId: "rev_ukchange", reviewName: "UK Change Audit", title: "Change approvals lack segregation", severity: "Major", classification: "Finding", riskTypes: ["operational"], controlName: "", rootCause: "", riskImpact: "", recommendation: "", managementResponse: "", targetDate: "", validation: "Pending", status: "In progress", owner: "Staff 4", area: "Change management", fromTestId: "", createdAt: T },
             { id: "f_1028", ref: "F-1028", reviewId: "rev_eurecords", reviewName: "EU Records Review", title: "Evidence retained below policy period", severity: "Major", classification: "Finding", riskTypes: ["compliance"], controlName: "", rootCause: "", riskImpact: "", recommendation: "", managementResponse: "", targetDate: "", validation: "Pending", status: "In review", owner: "Staff 5", area: "Records management", fromTestId: "", createdAt: T },
             { id: "f_1019", ref: "F-1019", reviewId: "", reviewName: "US SOX Readiness", title: "Review checklist mismatch", severity: "Minor", classification: "Finding", riskTypes: ["operational"], controlName: "", rootCause: "", riskImpact: "", recommendation: "", managementResponse: "", targetDate: "", validation: "Pending", status: "In review", owner: "Staff 1", area: "Methodology", fromTestId: "", createdAt: T }
           ]);
-          saveData("ra2_finding_seq", 1044);
+          saveData("ra2_finding_seq", 1051);
           saveData("ra2_actions", [
             { id: "a_01", title: "Recertify privileged access accounts", reviewName: "Q3 Access Review", findingRef: "F-1042", owner: "Staff 2", due: "18 Oct", priority: "High", status: "Overdue", overdue: 1, createdAt: T },
             { id: "a_02", title: "Close dormant vendor portal accounts", reviewName: "Vendor Assurance FY26", findingRef: "F-1011", owner: "Staff 3", due: "19 Oct", priority: "High", status: "Overdue", overdue: 1, createdAt: T },
@@ -8857,7 +8889,9 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
             { id: "a_04", title: "Segregate change approval duties", reviewName: "UK Change Audit", findingRef: "F-1031", owner: "Staff 4", due: "25 Oct", priority: "Medium", status: "In progress", overdue: 0, createdAt: T },
             { id: "a_05", title: "Add exit clauses to vendor contracts", reviewName: "Vendor Assurance FY26", findingRef: "F-1037", owner: "Staff 3", due: "28 Oct", priority: "High", status: "In progress", overdue: 0, createdAt: T },
             { id: "a_06", title: "Extend evidence retention to 7 years", reviewName: "EU Records Review", findingRef: "F-1028", owner: "Staff 5", due: "30 Oct", priority: "Medium", status: "Not started", overdue: 0, createdAt: T },
-            { id: "a_07", title: "Enforce four-eyes on emergency changes", reviewName: "Q3 Access Review", findingRef: "", owner: "Staff 4", due: "25 Oct", priority: "Medium", status: "In progress", overdue: 0, createdAt: T }
+            { id: "a_07", title: "Enforce four-eyes on emergency changes", reviewName: "Q3 Access Review", findingRef: "", owner: "Staff 4", due: "25 Oct", priority: "Medium", status: "In progress", overdue: 0, createdAt: T },
+            { id: "a_08", title: "Disable or justify the six dormant privileged accounts", reviewName: "Q3 Access Review", findingRef: "F-1051", owner: "Staff 2", due: "30 Nov", priority: "High", status: "In progress", overdue: 0, createdAt: T },
+            { id: "a_09", title: "Brief all service desks on the no-verbal-requests rule", reviewName: "Q3 Access Review", findingRef: "F-1050", owner: "Staff 2", due: "14 Nov", priority: "Low", status: "Not started", overdue: 0, createdAt: T }
           ]);
           saveData("ra2_tasks", [
             { id: "t_01", title: "Regulator data request: Q2 sampling evidence", detail: "Full sample listing with selection rationale", requestedBy: "Compliance", type: "Evidence pull", due: "23 Oct", status: "In progress", createdAt: T },
@@ -8879,6 +8913,49 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
             { id: "al_05", reviewId: "rev_access", action: "Test Executed - Fail: AC-02 Privileged access recertification, 31 of 214 accounts without a decision, by Staff 1 (S1). Finding F-1042 raised automatically.", entityType: "Control", entityLabel: "AC-02", changedBy: "Staff 1", display: "10 Oct", timestamp: "2026-10-10T03:48:00.000Z" },
             { id: "al_06", reviewId: "rev_access", action: "Test Executed - Partial: CM-01 Change approval segregation, 2 emergency changes self-approved (CHG0055217, CHG0055890), by Staff 4 (S4). Finding F-1043 raised.", entityType: "Control", entityLabel: "CM-01", changedBy: "Staff 4", display: "14 Oct", timestamp: "2026-10-14T04:11:00.000Z" },
             { id: "al_07", reviewId: "rev_access", action: "Stage saved: Control Testing saved and continued by Staff 1 (S1). Alterations after this point require lead approval and are recorded on this trail.", entityType: "Review", entityLabel: "", changedBy: "Staff 1", display: "14 Oct", timestamp: "2026-10-14T05:02:00.000Z" }
+          ]);
+          /* Controls for the remaining reviews. Until these were seeded,
+             only the Q3 Access Review carried a register, so the
+             Overview coverage card and the Executive Pack jurisdiction
+             table had nothing to count for the United States, the United
+             Kingdom or Europe and printed dashes beside reviews whose
+             findings and actions were already listed below them. */
+          saveData("ra2_controls", ensureArray(loadData("ra2_controls", [])).concat([
+            { id: "ctl_v01", reviewId: "rev_vendor", code: "VA-01", controlName: "Third-party risk assessment before onboarding", controlType: "Manual", controlNature: "Preventative", designation: "Key", cosoPrinciple: "P12", owner: "Staff 3", frequency: "Per vendor", objective: "Every new critical or material vendor completes a documented risk assessment (financial standing, security posture, concentration) approved by the Third-Party Risk Committee before contract signature.", regulationReference: "OCC Bulletin 2023-17 - third-party risk management; PRA SS2/21 - outsourcing and third party risk management", sampleSize: 12, population: "12 critical and material vendors onboarded, 01 Apr - 30 Sep 2026 (vendor master extract)", effectiveness: "Pass", exceptions: "", exceptionCount: "", result_comments: "All 12 onboardings carried a completed risk assessment approved before signature; security questionnaires and financial checks are on file for every vendor.", evidence: ["Vendor onboarding register FY26.xlsx", "Third-Party Risk Committee minutes - Q2 and Q3 FY26.pdf"], source: "Methodology", createdAt: T },
+            { id: "ctl_v02", reviewId: "rev_vendor", code: "VA-02", controlName: "Vendor contract clauses - exit, data return and audit rights", controlType: "Manual", controlNature: "Detective", designation: "Material", cosoPrinciple: "P13", owner: "Staff 3", frequency: "Per contract", objective: "Every critical vendor contract carries the exit, data-return, transition-assistance and audit-rights clauses from the Third-Party Risk Policy v2.0 checklist.", regulationReference: "PRA SS2/21 - outsourcing and third party risk management; OCC Bulletin 2023-17", sampleSize: 19, population: "19 critical vendor contracts live at 30 Sep 2026 (contract repository)", effectiveness: "Fail", exceptions: "6 of the 19 critical vendor contracts have no exit, data-return or transition-assistance clause; all 6 predate the Third-Party Risk Policy v2.0 and were renewed without remediation.", exceptionCount: "6", result_comments: "Clause checklist re-performed over the full critical population: 13 contracts compliant, 6 legacy contracts missing the exit provisions. Raised as finding F-1037.", evidence: ["Critical vendor contract register, 19 contracts.xlsx", "Policy v2.0 clause checklist - re-performance.pdf"], source: "Methodology", createdAt: T },
+            { id: "ctl_v03", reviewId: "rev_vendor", code: "VA-03", controlName: "Vendor performance and SLA monitoring", controlType: "Manual", controlNature: "Detective", designation: "Key", cosoPrinciple: "P16", owner: "Staff 3", frequency: "Monthly", objective: "Critical vendors report service levels monthly; breaches are logged, service credits claimed, and repeat breaches escalated to the Third-Party Risk Committee.", regulationReference: "Third-Party Risk Policy v2.0, section 5 - ongoing monitoring", sampleSize: 6, population: "6 months of SLA reporting, Apr - Sep 2026, across 19 critical vendors", effectiveness: "Partial", exceptions: "SLA reports arrived late (10+ days) in 3 of the 6 months for 4 vendors, and no service credits were claimed for two reportable breaches in July.", exceptionCount: "3", result_comments: "Monitoring operates but enforcement lags: reports are chased manually and credits go unclaimed. Management agreed a monthly tracker with automatic escalation from November.", evidence: ["Vendor SLA dashboard extracts, Apr - Sep 2026.xlsx"], source: "Methodology", createdAt: T },
+            { id: "ctl_v04", reviewId: "rev_vendor", code: "VA-04", controlName: "Vendor user access to firm systems", controlType: "Automated", controlNature: "Preventative", designation: "Key", cosoPrinciple: "P10", owner: "IT Security", frequency: "Continuous", objective: "Vendor accounts on firm systems are sponsored by a named employee, time-boxed to the engagement, and disabled automatically at expiry.", regulationReference: "Group Information Security Standard v4.2, section 7.3 - third-party access", sampleSize: "", population: "Vendor portal accounts at 30 Sep 2026 - testing scheduled for the November fieldwork window", effectiveness: "Not Tested", exceptions: "", exceptionCount: "", result_comments: "", evidence: [], source: "Methodology", createdAt: T },
+            { id: "ctl_u01", reviewId: "rev_ukchange", code: "UC-01", controlName: "Change authorisation and CAB approval", controlType: "Manual", controlNature: "Preventative", designation: "Key", cosoPrinciple: "P10", owner: "Staff 4", frequency: "Per change", objective: "Every production change is risk-assessed and approved by the Change Advisory Board before its implementation window, with the approval recorded on the change record.", regulationReference: "ITIL 4 change enablement; ISO/IEC 27001:2022 A.8.32 - change management", sampleSize: 30, population: "388 production changes, 01 Jul - 30 Sep 2026 (ServiceNow UK change register)", effectiveness: "Pass", exceptions: "", exceptionCount: "", result_comments: "30 of 30 sampled changes carried CAB approval before implementation, with a risk assessment and back-out plan recorded on each.", evidence: ["ServiceNow UK change register extract Q3.xlsx", "CAB minutes - Jul to Sep 2026.pdf"], source: "Methodology", createdAt: T },
+            { id: "ctl_u02", reviewId: "rev_ukchange", code: "UC-02", controlName: "Segregation of duties in the change lifecycle", controlType: "Manual", controlNature: "Preventative", designation: "Material", cosoPrinciple: "P10", owner: "Staff 4", frequency: "Per change", objective: "The developer, approver and implementer of a production change are three different individuals; no user can move their own change to production.", regulationReference: "SOX ITGC expectations - segregation of duties; ISO/IEC 27001:2022 A.8.32", sampleSize: 30, population: "388 production changes, Q3 2026 (ServiceNow UK change register)", effectiveness: "Fail", exceptions: "4 of 30 sampled changes were developed and implemented by the same individual; on 2 of the 4, the same person also recorded the approval.", exceptionCount: "4", result_comments: "The workflow lets the implementer match the developer where a team lead holds both roles. Raised as finding F-1031.", evidence: ["ServiceNow workflow role configuration export.xml"], source: "Methodology", createdAt: T },
+            { id: "ctl_u03", reviewId: "rev_ukchange", code: "UC-03", controlName: "Post-implementation review of major changes", controlType: "Manual", controlNature: "Detective", designation: "Standard", cosoPrinciple: "P16", owner: "Staff 4", frequency: "Per major change", objective: "Every major change receives a post-implementation review within 10 business days, with incidents linked back to the change record.", regulationReference: "ITIL 4 change enablement - review and closure", sampleSize: 15, population: "15 major changes implemented in Q3 2026", effectiveness: "Partial", exceptions: "2 of the 15 major changes had no post-implementation review recorded within 10 business days; both were completed only after the audit query.", exceptionCount: "2", result_comments: "Reviews happen for most major changes but the workflow does not enforce them; the two gaps closed during fieldwork.", evidence: ["Major change PIR tracker Q3.xlsx"], source: "Methodology", createdAt: T },
+            { id: "ctl_u04", reviewId: "rev_ukchange", code: "UC-04", controlName: "Emergency change retrospective ratification", controlType: "Manual", controlNature: "Detective", designation: "Key", cosoPrinciple: "P10", owner: "Staff 4", frequency: "Per emergency change", objective: "Emergency changes are ratified retrospectively by the CAB within 5 business days, with the emergency justification documented on the change record.", regulationReference: "ITIL 4 - emergency change procedure", sampleSize: "", population: "Emergency changes, Q3 2026 - testing joins the Q3 Access Review emergency-path work in November", effectiveness: "Not Tested", exceptions: "", exceptionCount: "", result_comments: "", evidence: [], source: "Methodology", createdAt: T },
+            { id: "ctl_e01", reviewId: "rev_eurecords", code: "ER-01", controlName: "Retention schedule enforcement for business records", controlType: "Automated", controlNature: "Preventative", designation: "Material", cosoPrinciple: "P13", owner: "Staff 5", frequency: "Continuous", objective: "Business records are retained for the periods in the Group Retention Schedule (7 years for client and transaction records) and flagged automatically when the period expires.", regulationReference: "UK GDPR and Data Protection Act 2018 - storage limitation; MiFID II record-keeping (5 to 7 years)", sampleSize: 60, population: "Record classes sampled across the document management system at 30 Sep 2026", effectiveness: "Fail", exceptions: "11 of 60 sampled record sets were deleted or archived before the retention period in the Group Retention Schedule had expired, including client correspondence required to be kept for 7 years.", exceptionCount: "11", result_comments: "The early deletions trace to a 2024 archive migration that applied a 3-year default to three record classes. Raised as finding F-1028.", evidence: ["Document management retention report, 30 Sep 2026.xlsx", "Archive migration log 2024.pdf"], source: "Methodology", createdAt: T },
+            { id: "ctl_e02", reviewId: "rev_eurecords", code: "ER-02", controlName: "Records retrieval within regulatory deadlines", controlType: "Manual", controlNature: "Detective", designation: "Key", cosoPrinciple: "P16", owner: "Staff 5", frequency: "Per request", objective: "Records requested by regulators or data subjects are retrieved complete within the statutory deadline (one month for subject access requests).", regulationReference: "UK GDPR Articles 12 and 15 - subject access", sampleSize: 20, population: "20 retrieval requests completed in Q3 2026 (case management system)", effectiveness: "Pass", exceptions: "", exceptionCount: "", result_comments: "All 20 requests were fulfilled complete and inside the deadline; the longest took 19 days.", evidence: ["Retrieval case log Q3 2026.xlsx"], source: "Methodology", createdAt: T },
+            { id: "ctl_e03", reviewId: "rev_eurecords", code: "ER-03", controlName: "Legal hold application to preserved records", controlType: "Manual", controlNature: "Preventative", designation: "Key", cosoPrinciple: "P13", owner: "Staff 5", frequency: "Per hold", objective: "When a legal hold is issued, scheduled deletion and archive rotation stop for every record in scope within 2 business days.", regulationReference: "Group Legal Hold Procedure v1.4", sampleSize: 8, population: "8 legal holds live during Q3 2026", effectiveness: "Partial", exceptions: "1 of the 8 holds reached the archive team 4 business days after issue; the archive log confirms no records were deleted in the gap.", exceptionCount: "1", result_comments: "The hold process works but depends on a manual email handoff; a system flag is planned for Q4.", evidence: ["Legal hold notices Q3 2026.pdf", "Archive deletion log extract.xlsx"], source: "Methodology", createdAt: T },
+            { id: "ctl_e04", reviewId: "rev_eurecords", code: "ER-04", controlName: "Secure destruction of expired records", controlType: "Automated", controlNature: "Detective", designation: "Standard", cosoPrinciple: "P16", owner: "Staff 5", frequency: "Monthly", objective: "Records passing their retention period are destroyed securely, with a certificate of destruction retained for each batch.", regulationReference: "Group Retention Schedule - destruction standard", sampleSize: "", population: "Destruction batches, Q3 2026 - testing scheduled with the November cycle", effectiveness: "Not Tested", exceptions: "", exceptionCount: "", result_comments: "", evidence: [], source: "Methodology", createdAt: T },
+            { id: "ctl_p01", reviewId: "rev_payroll", code: "PC-01", controlName: "Payroll input authorisation - starters, leavers and changes", controlType: "Manual", controlNature: "Preventative", designation: "Material", cosoPrinciple: "P10", owner: "Staff 1", frequency: "Monthly", objective: "Every payroll input (starter, leaver, salary or bank change) is authorised by HR and evidenced before the payroll run.", regulationReference: "Group Payroll Procedure v3.0; ICFR expectations over payroll inputs", sampleSize: 25, population: "3 monthly payroll runs, Jul - Sep 2026; 412 input changes", effectiveness: "Pass", exceptions: "", exceptionCount: "", result_comments: "25 of 25 sampled inputs traced to authorised HR documentation dated before the run.", evidence: ["Payroll input sample working papers Q3.xlsx"], source: "Methodology", createdAt: T },
+            { id: "ctl_p02", reviewId: "rev_payroll", code: "PC-02", controlName: "Payroll calculation re-performance", controlType: "Automated", controlNature: "Detective", designation: "Material", cosoPrinciple: "P11", owner: "Staff 1", frequency: "Monthly", objective: "Gross-to-net calculations (tax, pension, statutory deductions) are re-performed independently for a sample each month and agreed to the payroll output.", regulationReference: "HMRC PAYE requirements; Group Payroll Procedure v3.0", sampleSize: 30, population: "2,140 payslips across the 3 Q3 payroll runs", effectiveness: "Pass", exceptions: "", exceptionCount: "", result_comments: "Re-performance agreed all 30 sampled payslips exactly, including two pension auto-enrolment cases.", evidence: ["Gross-to-net re-performance workbook Q3.xlsx"], source: "Methodology", createdAt: T },
+            { id: "ctl_p03", reviewId: "rev_payroll", code: "PC-03", controlName: "Bank detail change verification (payroll diversion)", controlType: "Manual", controlNature: "Preventative", designation: "Key", cosoPrinciple: "P10", owner: "Staff 1", frequency: "Per change", objective: "Employee bank detail changes are verified by call-back to a previously held number before the next payroll run, preventing diversion fraud.", regulationReference: "Group Fraud Prevention Standard - payment diversion", sampleSize: 18, population: "18 bank detail changes, Jul - Sep 2026", effectiveness: "Partial", exceptions: "1 of 18 changes was verified by email reply rather than the required call-back; the change itself was genuine, confirmed with the employee.", exceptionCount: "1", result_comments: "Call-back discipline is strong overall; the single email-verified case was re-verified by phone during fieldwork.", evidence: ["Bank change verification log Q3.xlsx"], source: "Methodology", createdAt: T },
+            { id: "ctl_p04", reviewId: "rev_payroll", code: "PC-04", controlName: "Payroll to general ledger posting reconciliation", controlType: "Manual", controlNature: "Detective", designation: "Key", cosoPrinciple: "P16", owner: "Staff 1", frequency: "Monthly", objective: "The payroll output is reconciled to the general ledger posting each month, with differences investigated and cleared within 5 business days.", regulationReference: "ICFR - account reconciliation standard", sampleSize: 3, population: "3 monthly reconciliations, Jul - Sep 2026", effectiveness: "Pass", exceptions: "", exceptionCount: "", result_comments: "All three reconciliations were prepared and reviewed on time; two small differences cleared within 2 days.", evidence: ["Payroll GL reconciliations, Jul - Sep 2026.pdf"], source: "Methodology", createdAt: T }
+          ]));
+          /* The Q3 Access Review's planning modules, filled to the demo
+             script's Scene 10 state: resourcing with its contingency
+             buffer, the daily progress log with its blocker, and the
+             stakeholder map. These collections were never seeded, so
+             the three screens opened empty on a fresh workspace. */
+          saveData("ra2_allocations", [
+            { id: "aloc_01", reviewId: "rev_access", person: "Staff 1", role: "Lead reviewer", plannedDays: 5, plannedHours: 37.5, actualDays: 4, createdAt: T },
+            { id: "aloc_02", reviewId: "rev_access", person: "Staff 2", role: "Tester", plannedDays: 4, plannedHours: 30, actualDays: 3, createdAt: T },
+            { id: "aloc_03", reviewId: "rev_access", person: "Staff 3", role: "Reviewer", plannedDays: 3, plannedHours: 22.5, actualDays: 2, createdAt: T }
+          ]);
+          saveData("ra2_progress_logs", [
+            { id: "pg_01", reviewId: "rev_access", date: "2026-09-23", author: "Staff 1", tests: 1, done: "Walkthrough of the first access control (AC-01) completed with the IAM team lead and the narrative agreed; evidence requested from ServiceNow and HR.", blockers: "", createdAt: T },
+            { id: "pg_02", reviewId: "rev_access", date: "2026-10-07", author: "Staff 1", tests: 1, done: "Second access control (AC-02) tested; privileged access evidence partially reviewed and the re-performance under way.", blockers: "Privileged access system extract delayed, holding completion of the AC-02 test.", createdAt: T }
+          ]);
+          saveData("ra2_stakeholders", [
+            { id: "sh_01", reviewId: "rev_access", name: "Staff 4", title: "Sponsor - Chief Risk Officer office", email: "", type: "Sponsor", raci: "Accountable", influence: "High", interest: "High", owner: "Staff 1", frequency: "Weekly", lastContact: "", engagement: "Engaged", updates: [], createdAt: T },
+            { id: "sh_02", reviewId: "rev_access", name: "Staff 5", title: "Control owner - access controls", email: "", type: "Control owner", raci: "Responsible", influence: "High", interest: "Medium", owner: "Staff 1", frequency: "Fortnightly", lastContact: "", engagement: "Engaged", updates: [], createdAt: T },
+            { id: "sh_03", reviewId: "rev_access", name: "Staff 2", title: "Business stakeholder - operations", email: "", type: "Stakeholder", raci: "Informed", influence: "Low", interest: "High", owner: "Staff 1", frequency: "Monthly", lastContact: "", engagement: "Engaged", updates: [], createdAt: T }
           ]);
         }
 
@@ -8963,6 +9040,33 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
             tbody.appendChild(tr);
           });
           fillMeters(tbody);
+          /* The three stat cards above this table were fixed markup
+             too: the list re-rendered live while Active Reviews,
+             Fieldwork On Time and Average Cycle Time kept their
+             placeholder dashes. They now compute from REVIEWS on
+             every render, using the same on-time rule as the home
+             Overview health score. */
+          var rview = $("view-reviews");
+          if (rview) {
+            function rCard(lbl) { var found = null; rview.querySelectorAll("article.card").forEach(function (c) { var l = c.querySelector(".label"); if (l && l.textContent.trim() === lbl) found = c; }); return found; }
+            function rBig(card, val) { if (!card) return; var b = card.querySelector(".big"); if (b) b.textContent = val; }
+            var active = REVIEWS.filter(function (r) { return !r.archived && r.status !== "Complete" && r.status !== "Signed off"; });
+            rBig(rCard("Active Reviews"), String(active.length));
+            var otCard = rCard("Fieldwork On Time");
+            if (otCard) {
+              var onTime = active.filter(function (r) { var end = parseDayMon(r.endDate); return !end || todayD() <= end; }).length;
+              var otp = active.length ? Math.round(onTime / active.length * 100) : null;
+              rBig(otCard, otp === null ? "\u2014" : otp + "%");
+              var ob = otCard.querySelector(".progress i");
+              if (ob) { ob.setAttribute("data-fill", String(otp || 0)); try { fillBar(ob); } catch (e) {} }
+              var op = otCard.querySelector(".progress");
+              if (op) op.setAttribute("aria-label", otp === null ? "Fieldwork on time not calculated yet" : "Fieldwork on time: " + onTime + " of " + active.length + " active reviews not past their due date");
+            }
+            var cycles = REVIEWS.filter(function (r) { return (r.status === "Complete" || r.status === "Signed off") && parseDayMon(r.startDate) && parseDayMon(r.endDate); })
+              .map(function (r) { return Math.round((parseDayMon(r.endDate).getTime() - parseDayMon(r.startDate).getTime()) / 86400000); })
+              .filter(function (d) { return d >= 0; });
+            rBig(rCard("Average Cycle Time"), cycles.length ? Math.round(cycles.reduce(function (s, d) { return s + d; }, 0) / cycles.length) + " days" : "\u2014");
+          }
           var af = $("afReview");
           if (af) {
             var cur = af.value;
@@ -8999,11 +9103,50 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
         }
         function renderGlobalFindings() {
           var tbody = $("findingsBody"); if (!tbody) return;
+          function ageDays(f) { var d = f.createdAt ? new Date(f.createdAt) : null; return d && !isNaN(d) ? Math.max(0, Math.round((todayD().getTime() - d.getTime()) / 86400000)) : null; }
           var rows = DB.findings.slice().sort(function (a, b) { return (SEV_RANK[a.severity] != null ? SEV_RANK[a.severity] : 9) - (SEV_RANK[b.severity] != null ? SEV_RANK[b.severity] : 9); });
           tbody.innerHTML = rows.map(function (f) {
             var sub = (f.ref || "") + " \u00B7 " + (f.area || riskTypeLabel(findingRiskTypes(f)[0]) || "Finding");
-            return "<tr><td><span class=\"t\">" + esc(f.title) + '</span><div class="s">' + esc(sub) + "</div></td><td>" + esc(f.reviewName || (getReview(f.reviewId) || {}).name || "") + '</td><td><span class="sev"><i style="background:' + (SEVC[f.severity] || "#75839a") + '"></i>' + esc(f.severity) + "</span></td><td>" + esc(f.owner || "") + '</td><td class="mono">-</td><td><span class="status ' + statusClass(f.status) + '">' + esc(f.status || "Open") + "</span></td></tr>";
+            var age = ageDays(f);
+            return "<tr><td><span class=\"t\">" + esc(f.title) + '</span><div class="s">' + esc(sub) + "</div></td><td>" + esc(f.reviewName || (getReview(f.reviewId) || {}).name || "") + '</td><td><span class="sev"><i style="background:' + (SEVC[f.severity] || "#75839a") + '"></i>' + esc(f.severity) + "</span></td><td>" + esc(f.owner || "") + '</td><td class="mono">' + (age === null ? "-" : age + "d") + '</td><td><span class="status ' + statusClass(f.status) + '">' + esc(f.status || "Open") + "</span></td></tr>";
           }).join("");
+          /* The four stat cards and the aging card above this table used
+             to be fixed markup: the table re-rendered from the store on
+             every change while the cards kept their placeholder dashes,
+             so the page contradicted itself (rows listed, tiles empty).
+             They now compute from the same rows the table shows. */
+          var view = $("view-findings");
+          if (view) {
+            function cardByLabel(lbl) { var found = null; view.querySelectorAll("article.card").forEach(function (c) { var l = c.querySelector(".label"); if (l && l.textContent.trim() === lbl) found = c; }); return found; }
+            function setBig(card, val) { if (!card) return; var b = card.querySelector(".big"); if (b) b.textContent = val; }
+            var open = DB.findings.filter(bcOpenFinding);
+            var openCard = cardByLabel("Open Findings");
+            setBig(openCard, String(open.length));
+            if (openCard) {
+              var sb = openCard.querySelector(".stackbar");
+              if (sb && open.length) {
+                var counts = { critical: 0, major: 0, minor: 0 };
+                open.forEach(function (f) { counts[sevBucket(f.severity)]++; });
+                var cols = { critical: "#d64545", major: "#d9930d", minor: "#1d9e75" };
+                sb.innerHTML = ["critical", "major", "minor"].filter(function (k) { return counts[k] > 0; }).map(function (k) { return '<i style="width:' + Math.round(counts[k] / open.length * 100) + '%;background:' + cols[k] + '"></i>'; }).join("");
+                sb.setAttribute("aria-label", "Severity mix of open findings: " + counts.critical + " critical, " + counts.major + " major, " + counts.minor + " minor");
+              }
+            }
+            setBig(cardByLabel("Critical"), String(open.filter(function (f) { return sevBucket(f.severity) === "critical"; }).length));
+            setBig(cardByLabel("Overdue"), String(open.filter(bcFindingOverdue).length));
+            var ages = open.map(ageDays).filter(function (x) { return x !== null; }).sort(function (a, b) { return a - b; });
+            setBig(cardByLabel("Median Age"), ages.length ? ages[Math.floor((ages.length - 1) / 2)] + "d" : "\u2014");
+            var buckets = { "0-7 days": 0, "8-14 days": 0, "15-30 days": 0, "30+ days": 0 };
+            open.forEach(function (f) { var a = ageDays(f); if (a === null) return; buckets[a <= 7 ? "0-7 days" : a <= 14 ? "8-14 days" : a <= 30 ? "15-30 days" : "30+ days"]++; });
+            var maxB = Math.max.apply(null, Object.keys(buckets).map(function (k) { return buckets[k]; }).concat([1]));
+            view.querySelectorAll(".regionrows .r").forEach(function (row) {
+              var lbl = (row.querySelector("b") || {}).textContent || "";
+              if (!(lbl in buckets)) return;
+              var pctEl = row.querySelector(".pct"); if (pctEl) pctEl.textContent = String(buckets[lbl]);
+              var bar = row.querySelector(".progress i");
+              if (bar) { bar.setAttribute("data-fill", String(Math.round(buckets[lbl] / maxB * 100))); try { fillBar(bar); } catch (e) {} }
+            });
+          }
         }
         /* ---------- action creation from the global Actions page ---------- */
         function refreshGlobalActionForm() {
@@ -9043,12 +9186,59 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
             var fnd2 = findingByRef(a.findingRef);
             return '<tr' + (age.overdue ? ' data-overdue="1"' : "") + '><td><span class="t">' + esc(a.title) + '</span><div class="s">From ' + esc(a.reviewName || "") + '</div></td><td class="mono">' + esc(a.findingRef ? a.findingRef + (fnd2 ? " - " + fnd2.title : "") : "-") + "</td><td>" + esc(a.owner || "") + '</td><td class="mono">' + esc(a.due || "") + '</td><td class="mono">' + esc(age.label) + '</td><td><span class="sev"><i style="background:' + (PRIO[a.priority] || "#75839a") + '"></i>' + esc(a.priority || "") + '</span></td><td><span class="status ' + statusClass(a.status) + '">' + esc(a.status || "") + "</span></td></tr>";
           }).join("");
+          /* Same fix as the Findings page: the four stat cards above
+             this table were fixed markup and kept their placeholder
+             dashes while the table below them listed real actions.
+             They now compute from the same actionAgeing the table
+             renders, so the two can never disagree. */
+          var aview = $("view-actions");
+          if (aview) {
+            function aCard(lbl) { var found = null; aview.querySelectorAll("article.card").forEach(function (c) { var l = c.querySelector(".label"); if (l && l.textContent.trim() === lbl) found = c; }); return found; }
+            function aBig(card, val) { if (!card) return; var b = card.querySelector(".big"); if (b) b.textContent = val; }
+            var openA = DB.actions.filter(function (a) { return a.status !== "Complete" && a.status !== "Closed"; });
+            aBig(aCard("Open Actions"), String(openA.length));
+            aBig(aCard("Overdue"), String(openA.filter(function (a) { return actionAgeing(a).overdue; }).length));
+            aBig(aCard("Due This Week"), String(openA.filter(function (a) { var ag = actionAgeing(a); return ag.days !== null && ag.days >= -7 && ag.days <= 0; }).length));
+            aBig(aCard("Closed This Cycle"), String(DB.actions.filter(function (a) { return a.status === "Complete" || a.status === "Closed"; }).length));
+          }
         }
         function renderTasks() {
           var tbody = $("tasksBody"); if (!tbody) return;
           tbody.innerHTML = DB.tasks.map(function (t) {
             return '<tr><td><span class="t">' + esc(t.title) + '</span><div class="s">' + esc(t.detail || "") + "</div></td><td>" + esc(t.requestedBy || "") + '</td><td><span class="tag">' + esc(t.type || "") + '</span></td><td class="mono">' + esc(t.due || "") + '</td><td><span class="status ' + statusClass(t.status) + '">' + esc(t.status || "") + "</span></td></tr>";
           }).join("");
+          /* The Adhoc hero card and the by-type card were fixed markup
+             as well: the request list re-rendered while the open count,
+             the completed count and the type bars stayed on their
+             placeholder dashes and zeros. Tasks record no completion
+             dates, so an "on time" rate cannot be computed honestly -
+             the card now shows the counts the data does carry (open,
+             completed, overdue) and completion share by type. */
+          var tview = $("view-adhoc");
+          if (tview) {
+            var openT = DB.tasks.filter(function (t) { return t.status !== "Complete" && t.status !== "Closed"; });
+            var doneT = DB.tasks.filter(function (t) { return t.status === "Complete" || t.status === "Closed"; });
+            var hero = tview.querySelector(".card.hero");
+            if (hero) {
+              var score = hero.querySelector(".score"); if (score) score.textContent = String(openT.length);
+              var minis = hero.querySelectorAll(".minirow > div b");
+              if (minis.length >= 3) {
+                minis[0].textContent = String(new Set(DB.tasks.map(function (t) { return t.type; })).size);
+                minis[1].textContent = String(doneT.length);
+                minis[2].textContent = String(openT.filter(function (t) { var d = parseDueDate(t.due); return !!(d && d < todayD()); }).length);
+              }
+            }
+            var typeOf = { "Evidence pulls": "Evidence pull", "Auditor extracts": "Extract", "Data analysis": "Analysis", "Spot checks": "Spot check" };
+            tview.querySelectorAll(".regionrows .r").forEach(function (row) {
+              var lbl = (row.querySelector("b") || {}).textContent || "";
+              var type = typeOf[lbl]; if (!type) return;
+              var mine = DB.tasks.filter(function (t) { return t.type === type; });
+              var done = mine.filter(function (t) { return t.status === "Complete" || t.status === "Closed"; }).length;
+              var pctEl = row.querySelector(".pct"); if (pctEl) pctEl.textContent = mine.length ? done + " of " + mine.length : "\u2014";
+              var bar = row.querySelector(".progress i");
+              if (bar) { bar.setAttribute("data-fill", String(mine.length ? Math.round(done / mine.length * 100) : 0)); try { fillBar(bar); } catch (e) {} }
+            });
+          }
         }
         function designationOf(c) { return ["Material", "Key", "Standard"].indexOf(c.designation) > -1 ? c.designation : "Standard"; }
         function renderControls() {
@@ -15039,6 +15229,8 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
             setBig(ctCard, eff + "%");
             var cp = ctCard.querySelector(".progress i");
             if (cp) { cp.setAttribute("data-fill", String(eff)); try { fillBar(cp); } catch (e) {} }
+            var cprog = ctCard.querySelector(".progress");
+            if (cprog) cprog.setAttribute("aria-label", "Control effectiveness rate " + eff + "%: " + pass + " of " + tested.length + " tested controls pass");
           }
           /* SLA status: computed over open actions and open findings */
           var slaCard = null;
@@ -15128,6 +15320,47 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
               trendBox.classList.add("emptyviz");
               trendBox.innerHTML = "No sign-offs recorded yet in this cycle.<br/>The trend builds here as reviews complete fieldwork.";
             }
+          }
+          /* The header-tab Reviews and Findings panels beside the
+             Overview cards were static markup from the first build:
+             their Controls column showed a dash and their progress
+             bars sat at zero no matter what the workspace held, on
+             the very first screen of the demo. They now render from
+             the same store as everything else, with the same
+             progress rule as the Reviews page (tested share of the
+             controls that carry a test plan, falling back to the
+             review's recorded completion). */
+          var prBody = document.querySelector("#panel-reviews tbody");
+          if (prBody) {
+            var prRows = REVIEWS.filter(function (r) { return !r.archived; });
+            prBody.innerHTML = prRows.map(function (r) {
+              var ctls = getControls(r.id);
+              var testables = ctls.filter(function (c) { return !!getPlanForControl(c.id); });
+              var doneT = testables.filter(bcTested).length;
+              var pct = testables.length ? Math.round(doneT / testables.length * 100) : (ctls.length ? Math.round(ctls.filter(bcTested).length / ctls.length * 100) : (r.completionPct || 0));
+              var cc = classificationOf(r);
+              var jurs = jurisdictionsOf(r);
+              return '<tr class="rowlink" tabindex="0" title="Open the review workspace" data-open-review="' + esc(r.name) + '"><td><span class="t">' + esc(r.name) + '</span><div class="s">' + esc(r.businessArea || r.reviewType || "") + " \u00B7 " + esc(cc.label) + '</div></td><td>' + esc(jurs.length ? jurs.join(", ") : (r.jurisdiction || "")) + '</td><td class="mono">' + (ctls.length ? ctls.length : "\u2014") + '</td><td style="min-width:130px"><div class="progress"><i data-fill="' + pct + '"></i></div></td><td class="mono">' + esc(r.endDate || "") + '</td><td><span class="status ' + statusClass(r.status) + '">' + esc(r.status || "") + "</span></td></tr>";
+            }).join("");
+            prBody.querySelectorAll("[data-open-review]").forEach(function (el) {
+              el.addEventListener("click", function () { openReview(el.getAttribute("data-open-review")); });
+              el.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openReview(el.getAttribute("data-open-review")); } });
+            });
+            try { fillMeters(prBody); } catch (e) {}
+          }
+          var pfBody = document.querySelector("#panel-findings tbody");
+          if (pfBody) {
+            var pfRows = DB.findings.slice().sort(function (a, b) {
+              var d = (SEV_RANK[a.severity] != null ? SEV_RANK[a.severity] : 9) - (SEV_RANK[b.severity] != null ? SEV_RANK[b.severity] : 9);
+              if (d) return d;
+              return String(a.createdAt || "").localeCompare(String(b.createdAt || ""));
+            });
+            pfBody.innerHTML = pfRows.map(function (f) {
+              var cd = f.createdAt ? new Date(f.createdAt) : null;
+              var age = cd && !isNaN(cd) ? Math.max(0, Math.round((todayD().getTime() - cd.getTime()) / 86400000)) + "d" : "\u2014";
+              var sub = (f.ref || "") + " \u00B7 " + (f.area || riskTypeLabel(findingRiskTypes(f)[0]) || "Finding");
+              return "<tr><td><span class=\"t\">" + esc(f.title) + '</span><div class="s">' + esc(sub) + "</div></td><td>" + esc(f.reviewName || (getReview(f.reviewId) || {}).name || "") + '</td><td><span class="sev"><i style="background:' + (SEVC[f.severity] || "#75839a") + '"></i>' + esc(f.severity || "") + "</span></td><td>" + esc(f.owner || "") + '</td><td class="mono">' + age + '</td><td><span class="status ' + statusClass(f.status) + '">' + esc(f.status || "Open") + "</span></td></tr>";
+            }).join("");
           }
           bcFillSevCards($("view-overview"));
         }
