@@ -5963,12 +5963,12 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
         function reviewByName(name) { return REVIEWS.find(function (r) { return r.name === name; }) || null; }
         function getControls(reviewId) { return ensureArray(loadData("ra2_controls", [])).filter(function (c) { return c.reviewId === reviewId; }); }
         function getAllControls() { return ensureArray(loadData("ra2_controls", [])); }
-        function saveControl(c) { if (!guardUnlocked(c.reviewId, "Control changes")) return; saveData("ra2_controls", getAllControls().filter(function (x) { return x.id !== c.id; }).concat([c])); }
+        function saveControl(c) { if (!guardUnlocked(c.reviewId, "Control changes")) return false; saveData("ra2_controls", getAllControls().filter(function (x) { return x.id !== c.id; }).concat([c])); return true; }
         function getPlans(reviewId) { return ensureArray(loadData("ra2_test_plans", [])).filter(function (p) { return p.reviewId === reviewId; }); }
         function getPlanForControl(controlId) { return ensureArray(loadData("ra2_test_plans", [])).find(function (p) { return p.controlId === controlId; }) || null; }
-        function saveTestPlanRecord(p) { if (!guardUnlocked(p.reviewId, "Test plan changes")) return; var all = ensureArray(loadData("ra2_test_plans", [])); saveData("ra2_test_plans", all.filter(function (x) { return x.id !== p.id; }).concat([p])); }
-        function saveTestStepRecord(s) { var plan = ensureArray(loadData("ra2_test_plans", [])).find(function (x) { return x.id === s.testPlanId; }); if (plan && !guardUnlocked(plan.reviewId, "Test plan changes")) return; var all = ensureArray(loadData("ra2_test_steps", [])); saveData("ra2_test_steps", all.filter(function (x) { return x.id !== s.id; }).concat([s])); }
-        function saveTestResultRecord(r) { if (!guardUnlocked(r.reviewId, "Test result changes")) return; var all = ensureArray(loadData("ra2_test_results", [])); saveData("ra2_test_results", all.filter(function (x) { return x.id !== r.id; }).concat([r])); }
+        function saveTestPlanRecord(p) { if (!guardUnlocked(p.reviewId, "Test plan changes")) return false; var all = ensureArray(loadData("ra2_test_plans", [])); saveData("ra2_test_plans", all.filter(function (x) { return x.id !== p.id; }).concat([p])); return true; }
+        function saveTestStepRecord(s) { var plan = ensureArray(loadData("ra2_test_plans", [])).find(function (x) { return x.id === s.testPlanId; }); if (plan && !guardUnlocked(plan.reviewId, "Test plan changes")) return false; var all = ensureArray(loadData("ra2_test_steps", [])); saveData("ra2_test_steps", all.filter(function (x) { return x.id !== s.id; }).concat([s])); return true; }
+        function saveTestResultRecord(r) { if (!guardUnlocked(r.reviewId, "Test result changes")) return false; var all = ensureArray(loadData("ra2_test_results", [])); saveData("ra2_test_results", all.filter(function (x) { return x.id !== r.id; }).concat([r])); return true; }
         /* ================================================================
            SHARED RULES - one implementation each, used by every screen.
            parseAiJson is the only AI-JSON parser; overallRatingFor is
@@ -6060,8 +6060,9 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           return true;
         }
         function deleteKri(id, reviewId) {
-          if (!guardUnlocked(reviewId, "KRI changes")) return;
+          if (!guardUnlocked(reviewId, "KRI changes")) return false;
           saveData("ra2_kris", ensureArray(loadData("ra2_kris", [])).filter(function (x) { return x.id !== id; }));
+          return true;
         }
         function kriStatus(k) {
           var v = parseFloat(k && k.value), t = parseFloat(k && k.threshold);
@@ -8532,6 +8533,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           return "Low";
         }
         function generateFindingFromControl(controlId, reviewId, silent) {
+          if (!guardUnlocked(reviewId, "Finding changes")) return null;
           var control = getAllControls().find(function (c) { return c.id === controlId; });
           if (!control) return null;
           var excRate = exceptionRateForControl(control);
@@ -9054,7 +9056,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
             sel.addEventListener("change", function () {
               var c = getAllControls().find(function (x) { return x.id === sel.getAttribute("data-desig"); });
               if (!c) return;
-              saveControl(Object.assign({}, c, { designation: sel.value }));
+              if (!saveControl(Object.assign({}, c, { designation: sel.value }))) { renderControls(); return; }
               addAudit("Control designation set: " + c.controlName + " is now " + sel.value + (sel.value === "Standard" ? "" : " (mapped to the methodology's Material/Key testing requirements)") + ".");
               renderControls(); renderTests(); renderOverviewCounts();
               toast(c.controlName + " designated " + sel.value + ".");
@@ -9064,8 +9066,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
             sel.addEventListener("change", function () {
               var c = getAllControls().find(function (x) { return x.id === sel.getAttribute("data-firstline"); });
               if (!c) return;
-              saveControl(Object.assign({}, c, { firstLineAssessment: sel.value }));
-              if (isReviewSignedOff(currentReviewId)) return;
+              if (!saveControl(Object.assign({}, c, { firstLineAssessment: sel.value }))) { renderControls(); return; }
               addAudit("First-line assessment recorded: " + c.controlName + " assessed by the first line as " + (sel.value || "not assessed") + " (second-line result: " + secondLineResultOf(c) + ").");
               renderControls();
               try { renderFramework(); } catch (e) {}
@@ -9076,7 +9077,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
             sel.addEventListener("change", function () {
               var c = getAllControls().find(function (x) { return x.id === sel.getAttribute("data-coso"); });
               if (!c) return;
-              saveControl(Object.assign({}, c, { cosoPrinciple: sel.value }));
+              if (!saveControl(Object.assign({}, c, { cosoPrinciple: sel.value }))) { renderControls(); return; }
               addAudit("COSO mapping set: " + c.controlName + " now evidences " + (sel.value ? cosoLabel(sel.value) : "no principle (unmapped)") + ".");
               renderControls(); renderOverviewCounts();
               toast(sel.value ? c.controlName + " mapped to COSO " + sel.value + "." : "COSO mapping cleared for " + c.controlName + ".");
@@ -9251,6 +9252,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           effUpdate();
         }
         function executeControl(controlId, result) {
+          if (!guardUnlocked(currentReviewId, "Test result changes")) return;
           var control = getAllControls().find(function (c) { return c.id === controlId; });
           if (!control) return;
           var plan = getPlanForControl(controlId);
@@ -9276,10 +9278,11 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           var v = String(text || "").trim();
           var m = v.match(/(\d+)\s+of\s+(\d+)/);
           var updated = Object.assign({}, control, { exceptions: v, exceptionCount: m ? m[1] : (control.exceptionCount || "") });
-          saveControl(updated);
+          if (!saveControl(updated)) return;
           if (v) { addAudit("Exception logged on " + control.controlName + ": " + v); toast("Exception logged on the audit trail."); }
         }
         async function attachEvidence(controlId, fileName, file) {
+          if (!guardUnlocked(currentReviewId, "Evidence uploads")) return;
           var control = getAllControls().find(function (c) { return c.id === controlId; });
           if (!control) return;
           var ev = ensureArray(control.evidence).concat([fileName]);
@@ -9308,10 +9311,11 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           var ov = $("ovFindings"); if (ov) ov.textContent = wsFindings().length;
           renderTax();
         }
-        function saveFindingUpdate(f, patch, auditAction) { if (!guardUnlocked(f.reviewId || currentReviewId, "Finding changes")) return;
+        function saveFindingUpdate(f, patch, auditAction) { if (!guardUnlocked(f.reviewId || currentReviewId, "Finding changes")) return false;
           var all = DB.findings.map(function (x) { return x.id === f.id ? Object.assign({}, x, patch) : x; });
           saveData("ra2_findings", all);
           appendAuditLog({ reviewId: f.reviewId || currentReviewId, action: auditAction || "Finding updated", entityType: "Finding", entityLabel: f.title, changedBy: currentActorName() });
+          return true;
         }
         function findingCard(f) {
           var d = document.createElement("div"); d.className = "testitem";
@@ -9324,7 +9328,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
             var o = document.createElement("option"); o.value = x.id; o.textContent = x.label; o.selected = x.id === cur; sel.appendChild(o);
           });
           sel.addEventListener("change", function () {
-            saveFindingUpdate(f, { riskTypes: sel.value ? [sel.value] : [] }, sel.value ? "Finding tagged to the risk taxonomy: " + riskTypeLabel(sel.value) : "Finding taxonomy tag cleared");
+            if (!saveFindingUpdate(f, { riskTypes: sel.value ? [sel.value] : [] }, sel.value ? "Finding tagged to the risk taxonomy: " + riskTypeLabel(sel.value) : "Finding taxonomy tag cleared")) { renderWsFindings(); return; }
             renderWsFindings();
             toast(sel.value ? "Finding tagged: " + riskTypeLabel(sel.value) : "Taxonomy tag cleared.");
           });
@@ -9391,13 +9395,13 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           var btnRow = document.createElement("div"); btnRow.className = "btnrow";
           var saveBtn = document.createElement("button"); saveBtn.type = "button"; saveBtn.className = "btn small"; saveBtn.textContent = "Save finding";
           saveBtn.addEventListener("click", function () {
-            saveFindingUpdate(f, {
+            if (!saveFindingUpdate(f, {
               title: inTitle.value.trim() || f.title, severity: inSev.value,
               rootCause: inCause.value.trim(), riskImpact: inImpact.value.trim(), riskExposure: inExposure.value,
               recommendation: inRec.value.trim(), managementResponse: inResp.value.trim(),
               evidenceLinks: inEv.value.split("\n").map(function (s) { return s.trim(); }).filter(Boolean),
               targetDate: inTarget.value.trim(), owner: inOwner.value.trim(), status: inStatus.value
-            }, "Finding edited (root cause, impact, recommendation, management response, severity, target date)");
+            }, "Finding edited (root cause, impact, recommendation, management response, severity, target date)")) { renderWsFindings(); return; }
             renderWsFindings(); renderGlobalFindings();
             toast("Finding saved: " + (f.ref || f.title));
           });
@@ -9459,7 +9463,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
             var left = document.createElement("span");
             var ttl = document.createElement("b"); ttl.textContent = a.title; left.appendChild(ttl);
             if (a.findingRef) {
-              var fnd = findingByRef(a.findingRef);
+              var fnd = findingByRef(a.findingRef) || DB.findings.find(function (x) { return x.id === a.findingRef; }) || null;
               var chip = document.createElement("button");
               chip.type = "button"; chip.className = "tag"; chip.style.cssText = "cursor:pointer;margin-left:8px";
               chip.textContent = "Finding: " + a.findingRef + (fnd ? " - " + fnd.title : "");
@@ -9494,6 +9498,11 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
         }
         /* ---------- follow-up action creation (workspace Actions tab) ---------- */
         function prefillActionForm(f) {
+          /* rebuild the Linked finding dropdown first: it is only refreshed
+             when the Actions tab renders, so a finding raised earlier in this
+             session may not be an option yet - setting .value before the
+             option exists silently clears the pre-set link */
+          try { renderWsActions(); } catch (e) {}
           var t = $("wsActTitle"); if (t && !t.value) t.value = "Remediate: " + (f.title || "").replace(/^Control (Failure|Partially Effective): /, "");
           var o = $("wsActOwner"); if (o && !o.value) o.value = f.owner || "";
           var du = $("wsActDue"); if (du && !du.value) du.value = f.targetDate || "";
@@ -9633,6 +9642,8 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           try { updateStageChip(key); } catch (e) {}
           if (key === "signoff") { try { renderSignoffGate(); } catch (e) {} }
           if (key === "reports") { try { renderFramework(); renderKris(); renderReportInputs(false); } catch (e) {} }
+          if (key === "actions") { try { renderWsActions(); } catch (e) {} }
+          if (key === "sampling") { try { restoreSamplingCalc(); } catch (e) {} }
         }
         var REVIEW_META = {
           "Q3 Access Review": "IT general controls \u00B7 India \u00B7 Lead: Staff 1 \u00B7 Due 24 Oct",
@@ -9647,6 +9658,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           if (!r) { toast("That review is not in the workspace store yet."); return; }
           currentReviewId = r.id;
           renderWorkspace();
+          try { restoreSamplingCalc(); } catch (e) {}
           selectWTab("overview");
           goView("review");
         }
@@ -9668,7 +9680,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
             objective: "", sampleSize: 25, population: "", effectiveness: "Not Tested",
             exceptions: "", exceptionCount: "", result_comments: "", evidence: [], source: "Added in workspace", createdAt: nowISO()
           };
-          saveControl(c);
+          if (!saveControl(c)) return;
           saveTestPlanRecord({ id: uid(), controlId: c.id, reviewId: currentReviewId, code: "TP-" + (getPlans(currentReviewId).length + 1), label: c.controlName + " - operating effectiveness test", passCriteria: "", population: "", sampleSize: 25, createdAt: nowISO() });
           $("ncName").value = ""; $("ncOwner").value = "";
           renderControls(); renderPlans(); renderTests(); renderOverviewCounts(); renderReviews();
@@ -9705,6 +9717,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           "Control 2 - Terminated user access removal. Manual, detective. Objective: verify access for leavers is removed within 24 hours of the leaving date. Population: all leavers in the period. Sample size 25. Pass criteria: access removed within 24 hours for every sampled leaver. Steps: (1) Obtain the leaver list from HR for the period; expected outcome: list reconciles to HR records. (2) For each sampled leaver, compare the leaving date with the account disable timestamp; expected outcome: disable timestamp is within 24 hours of the leaving date."
         ].join("\n");
         async function runMethodologyText(docContent, sourceName, fileSize) {
+          if (!guardUnlocked(currentReviewId, "Methodology imports")) { $("methStatus").textContent = "This review is signed off and locked, so no controls were created. Reopen the review from the Sign-off tab to import a methodology."; return; }
           if (!aiGate()) return;
           var review = getReview(currentReviewId);
           $("methStatus").textContent = "AI is reading " + sourceName + " (" + aiProviderLabel() + ")...";
@@ -9945,6 +9958,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
         $("csvImport").addEventListener("click", function () {
           if (!flImport) return;
           if (flImport.mapping.indexOf("risk") === -1 && flImport.mapping.indexOf("controlId") === -1 && flImport.mapping.indexOf("controlName") === -1) return;
+          if (!guardUnlocked(flImport.reviewId, "Control imports")) return;
           var dateStr = new Date().toISOString().slice(0, 10);
           var items = [], controlOnly = [];
           function mkItem(row, risk) {
@@ -10358,6 +10372,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           "99": { 0: 4.61, 1: 6.64 }
         };
         var scLast = null;
+        var scForReviewId = null;
         function calcSampleSize() {
           var popRaw = $("popSize").value.trim();
           var conf = $("confSel").value;
@@ -10378,6 +10393,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
             fpcNote = "Finite population correction applied (N=" + N + "), capped at N.";
           }
           scLast = { N: N, conf: conf, tol: tol, exp: exp, R: R, n: n };
+          scForReviewId = currentReviewId;
           try { var __sc = ensureArray(loadData("ra2_sampling_calc", [])).filter(function (x) { return x.reviewId !== currentReviewId; }); __sc.push({ reviewId: currentReviewId, state: scLast, pop: popRaw, updatedAt: nowISO() }); saveData("ra2_sampling_calc", __sc); } catch (e) {}
           $("calcResult").textContent = n;
           $("calcExplain").textContent = "Reliability factor R = " + R.toFixed(2) + " (" + conf + "% confidence, " + (exp > 0 ? "1 expected deviation" : "0 expected deviations") + "). n = ceil(" + R.toFixed(2) + " / " + t + ") = ceil(" + (R / t).toFixed(2) + "). " + fpcNote + " Guidance only - the practitioner sets the final sample size.";
@@ -10385,9 +10401,25 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
         }
         function restoreSamplingCalc() {
           try {
-            if (scLast) return;
+            /* per-review restore: the calculator state is keyed by review, so
+               it must be re-read whenever the open review changes. The old
+               version ran once at page load (for the boot review only) behind
+               an "if (scLast) return" latch, so a calculation saved for any
+               other review was never loaded and the inputs fell back to the
+               path defaults (340 / 57) after a reload. */
+            if (scForReviewId === currentReviewId) return;
+            scForReviewId = currentReviewId;
+            scLast = null;
             var rec = ensureArray(loadData("ra2_sampling_calc", [])).find(function (x) { return x.reviewId === currentReviewId; });
-            if (!rec || !rec.state) return;
+            if (!rec || !rec.state) {
+              /* no saved calculation for this review: reset the inputs to the
+                 shipped defaults rather than leaving another review's (or the
+                 boot review's) values on screen */
+              $("popSize").value = "340"; $("confSel").value = "95"; $("tolDev").value = "7"; $("expDev").value = "2";
+              $("calcResult").textContent = "57";
+              $("calcExplain").textContent = "Population 340 \u00B7 95% confidence \u00B7 7% tolerable \u00B7 2% expected. Select 57 items at random and log every exception.";
+              return;
+            }
             scLast = rec.state;
             if (rec.pop !== "" && rec.pop != null) $("popSize").value = rec.pop;
             $("confSel").value = String(scLast.conf); $("tolDev").value = scLast.tol; $("expDev").value = scLast.exp;
@@ -10405,6 +10437,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           var controlId = $("calcControl").value;
           var control = getAllControls().find(function (x) { return x.id === controlId; });
           if (!control) { toast("Control not found."); return; }
+          if (!guardUnlocked(currentReviewId, "Sample size changes")) return;
           saveControl(Object.assign({}, control, { sampleSize: scLast.n }));
           var plan = getPlanForControl(controlId);
           if (plan) saveTestPlanRecord(Object.assign({}, plan, { sampleSize: scLast.n }));
@@ -10491,6 +10524,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
         function acceptAIFinding(idx) {
           var f = AIQ[idx];
           if (!f || f._accepted) return;
+          if (!guardUnlocked(currentReviewId, "Finding changes")) return;
           var finding = {
             id: uid(), ref: nextFindingRef(), reviewId: currentReviewId, reviewName: (getReview(currentReviewId) || {}).name || "",
             fromTestId: f.testId,
@@ -10513,6 +10547,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           toast("Finding saved to the Findings tab.");
         }
         function acceptAllAIFindings() {
+          if (!guardUnlocked(currentReviewId, "Finding changes")) return;
           var review = getReview(currentReviewId);
           var newFindings = [];
           AIQ.forEach(function (f, idx) {
@@ -10629,7 +10664,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
             var right = document.createElement("span"); right.style.cssText = "display:inline-flex;align-items:center;gap:8px";
             var badge = document.createElement("span"); badge.className = "status " + (st === "Breach" ? "over" : st === "Nearing" ? "review" : st === "Within appetite" ? "done" : "todo"); badge.textContent = st;
             var del = document.createElement("button"); del.type = "button"; del.className = "btn ghost small"; del.textContent = "Remove";
-            del.addEventListener("click", function () { deleteKri(k.id, currentReviewId); renderKris(); toast("KRI removed: " + k.name); });
+            del.addEventListener("click", function () { var okK = deleteKri(k.id, currentReviewId); renderKris(); if (okK) toast("KRI removed: " + k.name); });
             right.appendChild(badge); right.appendChild(del);
             row.appendChild(left); row.appendChild(right);
             box.appendChild(row);
@@ -12559,6 +12594,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           closeModal();
           currentReviewId = r.id;
           renderWorkspace();
+          try { restoreSamplingCalc(); } catch (e) {}
           goView("review");
           selectWTab("methodology");
           toast("Review created (" + label + "): " + name + ". Now upload or adopt the methodology for this path.");
@@ -12572,6 +12608,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           if (!title) { toast("Give the finding a title first."); return; }
           var sev = $("afSev").value, reviewName = $("afReview").value, owner = $("afOwner").value.trim() || "Unassigned", taxId = afTax.value;
           var review = reviewByName(reviewName);
+          if (review && !guardUnlocked(review.id, "Finding changes")) return;
           var ref = nextFindingRef();
           var finding = {
             id: uid(), ref: ref, reviewId: review ? review.id : "", reviewName: reviewName,
@@ -13405,9 +13442,10 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
 
         /* ---------- 2. Resourcing with contingency ---------- */
         function getAllocations() { return ensureArray(loadData("ra2_allocations", [])).filter(function (a) { return a.reviewId === currentReviewId; }); }
-        function saveAllocations(mine) { if (!guardUnlocked(currentReviewId, "Resourcing changes")) return;
+        function saveAllocations(mine) { if (!guardUnlocked(currentReviewId, "Resourcing changes")) return false;
           var rest = ensureArray(loadData("ra2_allocations", [])).filter(function (a) { return a.reviewId !== currentReviewId; });
           saveData("ra2_allocations", rest.concat(mine));
+          return true;
         }
         function fmtDays(n) { return (Math.round(n * 10) / 10).toString(); }
         function renderResourcing() {
@@ -13429,8 +13467,8 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
             inp.setAttribute("aria-label", "Actual days for " + a.person);
             inp.addEventListener("change", function () {
               var all = getAllocations().map(function (x) { return x.id === a.id ? Object.assign({}, x, { actualDays: parseFloat(inp.value) || 0 }) : x; });
-              saveAllocations(all); renderResourcing();
-              toast("Actuals updated for " + a.person + ".");
+              var okAct = saveAllocations(all); renderResourcing();
+              if (okAct) toast("Actuals updated for " + a.person + ".");
             });
             tdAct.appendChild(inp);
             tr.appendChild(tdAct);
@@ -13440,7 +13478,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
             var tdDel = document.createElement("td");
             var del = document.createElement("button"); del.type = "button"; del.className = "btn ghost small"; del.textContent = "Remove";
             del.addEventListener("click", function () {
-              saveAllocations(getAllocations().filter(function (x) { return x.id !== a.id; }));
+              if (!saveAllocations(getAllocations().filter(function (x) { return x.id !== a.id; }))) { renderResourcing(); return; }
               renderResourcing();
               addAudit("Resource allocation removed: " + a.person + " (" + (a.role || "role not stated") + ").");
               toast("Allocation removed: " + a.person);
@@ -13469,7 +13507,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
         $("rsAdd").addEventListener("click", function () {
           var person = $("rsPerson").value;
           var rec = { id: uid(), reviewId: currentReviewId, person: person, role: $("rsRole").value.trim() || "Reviewer", plannedDays: parseFloat($("rsPlanDays").value) || 0, plannedHours: parseFloat($("rsPlanHours").value) || 0, actualDays: parseFloat($("rsActDays").value) || 0, createdAt: nowISO() };
-          saveAllocations(getAllocations().concat([rec]));
+          if (!saveAllocations(getAllocations().concat([rec]))) return;
           $("rsRole").value = "";
           renderResourcing();
           addAudit("Resource allocated: " + person + " as " + rec.role + ", " + fmtDays(rec.plannedDays) + " planned days.");
@@ -13479,6 +13517,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           var r = getReview(currentReviewId); if (!r) return;
           var v = parseFloat($("rsContingency").value);
           if (isNaN(v) || v < 0 || v > 100) { toast("Contingency must be between 0 and 100%."); return; }
+          if (!guardUnlocked(currentReviewId, "Resourcing changes")) return;
           REVIEWS = REVIEWS.map(function (x) { return x.id === r.id ? Object.assign({}, x, { contingencyPct: v }) : x; });
           persistReviews();
           renderResourcing();
@@ -13491,9 +13530,10 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           return ensureArray(loadData("ra2_progress_logs", [])).filter(function (l) { return l.reviewId === currentReviewId; })
             .sort(function (a, b) { return (b.date || "").localeCompare(a.date || "") || (b.createdAt || "").localeCompare(a.createdAt || ""); });
         }
-        function saveProgressLogs(mine) { if (!guardUnlocked(currentReviewId, "Progress changes")) return;
+        function saveProgressLogs(mine) { if (!guardUnlocked(currentReviewId, "Progress changes")) return false;
           var rest = ensureArray(loadData("ra2_progress_logs", [])).filter(function (l) { return l.reviewId !== currentReviewId; });
           saveData("ra2_progress_logs", rest.concat(mine));
+          return true;
         }
         function renderProgress() {
           var listEl = $("pgList"); if (!listEl) return;
@@ -13524,9 +13564,9 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
               (l.blockers ? '<span class="blocker">Blocker: ' + esc(l.blockers) + "</span>" : "");
             var del = document.createElement("button"); del.type = "button"; del.className = "btn ghost small"; del.textContent = "Delete entry"; del.style.marginLeft = "auto";
             del.addEventListener("click", function () {
-              saveProgressLogs(getProgressLogs().filter(function (x) { return x.id !== l.id; }));
+              var okDel = saveProgressLogs(getProgressLogs().filter(function (x) { return x.id !== l.id; }));
               renderProgress();
-              toast("Progress entry deleted.");
+              if (okDel) toast("Progress entry deleted.");
             });
             head.appendChild(del);
             d.appendChild(head);
@@ -13594,7 +13634,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           var blockers = $("pgBlocker").value.trim();
           if (!done && !tests && !blockers) { toast("Write what was done, or record tests or a blocker, before logging the day."); return; }
           var rec = { id: uid(), reviewId: currentReviewId, date: $("pgDate").value || isoDateOf(todayD()), author: $("pgBy").value, done: done, tests: tests, blockers: blockers, createdAt: nowISO() };
-          saveProgressLogs(getProgressLogs().concat([rec]));
+          if (!saveProgressLogs(getProgressLogs().concat([rec]))) return;
           $("pgDone").value = ""; $("pgBlocker").value = ""; $("pgTestsIn").value = "0";
           renderProgress();
           addAudit("Daily progress logged for " + fmtISODate(rec.date) + " by " + rec.author + ": " + (done || tests + " tests executed") + (blockers ? " Blocker: " + blockers : ""));
@@ -13604,9 +13644,10 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
         /* ---------- 4. Stakeholder mapping ---------- */
         var ENGAGE_CLASS = { "Engaged": "done", "Neutral": "prog", "At risk": "review", "Disengaged": "over" };
         function getStakeholders() { return ensureArray(loadData("ra2_stakeholders", [])).filter(function (s) { return s.reviewId === currentReviewId; }); }
-        function saveStakeholders(mine) { if (!guardUnlocked(currentReviewId, "Stakeholder changes")) return;
+        function saveStakeholders(mine) { if (!guardUnlocked(currentReviewId, "Stakeholder changes")) return false;
           var rest = ensureArray(loadData("ra2_stakeholders", [])).filter(function (s) { return s.reviewId !== currentReviewId; });
           saveData("ra2_stakeholders", rest.concat(mine));
+          return true;
         }
         function quadrantOf(s) {
           var hi = s.influence === "High", ht = s.interest === "High";
@@ -13635,7 +13676,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
             eng.className = "insel"; eng.setAttribute("aria-label", "Engagement status for " + s.name);
             eng.innerHTML = ["Engaged", "Neutral", "At risk", "Disengaged"].map(function (e) { return '<option value="' + e + '"' + (s.engagement === e ? " selected" : "") + ">" + e + "</option>"; }).join("");
             eng.addEventListener("change", function () {
-              saveStakeholders(getStakeholders().map(function (x) { return x.id === s.id ? Object.assign({}, x, { engagement: eng.value }) : x; }));
+              if (!saveStakeholders(getStakeholders().map(function (x) { return x.id === s.id ? Object.assign({}, x, { engagement: eng.value }) : x; }))) { renderStakeholders(); return; }
               renderStakeholders();
               addAudit("Stakeholder engagement updated: " + s.name + " is now " + eng.value + ".");
               toast(s.name + " marked " + eng.value + ".");
@@ -13643,7 +13684,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
             head.appendChild(eng);
             var del = document.createElement("button"); del.type = "button"; del.className = "btn ghost small"; del.textContent = "Remove";
             del.addEventListener("click", function () {
-              saveStakeholders(getStakeholders().filter(function (x) { return x.id !== s.id; }));
+              if (!saveStakeholders(getStakeholders().filter(function (x) { return x.id !== s.id; }))) { renderStakeholders(); return; }
               renderStakeholders();
               toast("Stakeholder removed: " + s.name);
             });
@@ -13670,9 +13711,9 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
               var note = inp.value.trim();
               if (!note) { toast("Write the update first."); return; }
               var today = isoDateOf(todayD());
-              saveStakeholders(getStakeholders().map(function (x) {
+              if (!saveStakeholders(getStakeholders().map(function (x) {
                 return x.id === s.id ? Object.assign({}, x, { updates: ensureArray(x.updates).concat([{ date: today, note: note, by: currentActorName() }]), lastContact: today }) : x;
-              }));
+              }))) { renderStakeholders(); return; }
               renderStakeholders();
               addAudit("Stakeholder update logged for " + s.name + ": " + note);
               toast("Update logged for " + s.name + ".");
@@ -13694,6 +13735,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           var email = $("shEmail").value.trim();
           if (!name) { shFormError("Give the stakeholder a name first - nothing was added.", $("shName")); return; }
           if (email && !/^[^\s@]+@[^\s@]+$/.test(email)) { shFormError("That email address looks incomplete (expected name@example.com) - fix it, or clear the field, and try again. Nothing was added.", $("shEmail")); return; }
+          if (!guardUnlocked(currentReviewId, "Stakeholder changes")) return;
           shFormError("");
           var warn = $("shSaveWarn"); if (warn) warn.innerHTML = "";
           var rec = {
@@ -14373,18 +14415,27 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
         function getDatasets(reviewId) { return ensureArray(loadData("ra2_datasets", [])).filter(function (d) { return d.reviewId === reviewId; }); }
         function getDataset(id) { return ensureArray(loadData("ra2_datasets", [])).find(function (d) { return d.id === id; }) || null; }
         function saveDatasetRecord(rec) {
+          if (!guardUnlocked(rec.reviewId || currentReviewId, "Dataset changes")) return false;
           var all = ensureArray(loadData("ra2_datasets", []));
           saveData("ra2_datasets", all.filter(function (x) { return x.id !== rec.id; }).concat([rec]));
+          return true;
         }
-        function deleteDatasetRecord(id) {
+        function deleteDatasetRecord(id, fromPurge) {
+          /* the tenant-admin purge tools pass fromPurge: they run under their
+             own admin + typed-confirmation gate and must work even when the
+             currently open review is signed off */
+          if (!fromPurge && !guardUnlocked(currentReviewId, "Dataset changes")) return false;
           saveData("ra2_datasets", ensureArray(loadData("ra2_datasets", [])).filter(function (x) { return x.id !== id; }));
           var links = datasetPlanLinks(); delete links[id]; saveData("ra2_dataset_plans", links);
+          return true;
         }
         function datasetPlanLinks() { var l = loadData("ra2_dataset_plans", {}); return l && typeof l === "object" && !Array.isArray(l) ? l : {}; }
         function setDatasetPlanLink(dsId, planId) {
+          if (!guardUnlocked(currentReviewId, "Dataset changes")) return false;
           var links = datasetPlanLinks();
           if (planId) links[dsId] = planId; else delete links[dsId];
           saveData("ra2_dataset_plans", links);
+          return true;
         }
         function datasetsForPlan(planId) {
           var links = datasetPlanLinks();
@@ -14402,8 +14453,10 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
         }
         function getSamples(reviewId) { return ensureArray(loadData("ra2_samples", [])).filter(function (s) { return s.reviewId === reviewId; }); }
         function saveSampleRecord(rec) {
+          if (!guardUnlocked(rec.reviewId || currentReviewId, "Sample changes")) return false;
           var all = ensureArray(loadData("ra2_samples", []));
           saveData("ra2_samples", all.filter(function (x) { return x.id !== rec.id; }).concat([rec]));
+          return true;
         }
         function latestSampleForControl(controlId, planId) {
           var mine = getSamples(currentReviewId).filter(function (s) { return s.controlId === controlId || (planId && s.planId === planId); });
@@ -14566,7 +14619,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
               source: dsWb.source, createdBy: currentActorName(),
               createdAt: nowISO()
             };
-            saveDatasetRecord(rec);
+            if (!saveDatasetRecord(rec)) return;
             var planSel = $("dsPlanSel");
             if (planSel && planSel.value) setDatasetPlanLink(rec.id, planSel.value);
             appendAuditLog({ reviewId: rec.reviewId, action: "Population Dataset Uploaded", entityType: "Review", entityLabel: rec.name + " \u2192 " + rec.rowCount + " rows", changedBy: currentActorName() });
@@ -14610,7 +14663,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
             var del = document.createElement("button"); del.type = "button"; del.className = "btn ghost small"; del.textContent = "Delete";
             del.addEventListener("click", function () {
               if (del.getAttribute("data-armed")) {
-                deleteDatasetRecord(ds.id);
+                if (!deleteDatasetRecord(ds.id)) { renderDatasets(); return; }
                 appendAuditLog({ reviewId: currentReviewId, action: "Population Dataset Deleted", entityType: "Review", entityLabel: ds.name, changedBy: currentActorName() });
                 renderDatasets(); renderPlans();
                 toast("Dataset deleted: " + ds.name);
@@ -14625,7 +14678,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
             linkRow.style.cssText = "display:flex;gap:10px;align-items:center;margin-top:8px;flex-wrap:wrap";
             var planOpts = '<option value="">Not linked to a test plan</option>' + getPlans(currentReviewId).map(function (p) { return '<option value="' + esc(p.id) + '"' + (links[ds.id] === p.id ? " selected" : "") + '>' + esc((p.code || "TP") + " \u00B7 " + (p.label || "Test plan")) + '</option>'; }).join("");
             linkRow.innerHTML = '<span class="sub">Linked test plan</span><select class="insel" style="max-width:340px">' + planOpts + '</select>';
-            linkRow.querySelector("select").addEventListener("change", function (e) { setDatasetPlanLink(ds.id, e.target.value); renderPlans(); toast(e.target.value ? "Dataset linked to the test plan." : "Dataset link removed."); });
+            linkRow.querySelector("select").addEventListener("change", function (e) { if (!setDatasetPlanLink(ds.id, e.target.value)) { renderDatasets(); return; } renderPlans(); toast(e.target.value ? "Dataset linked to the test plan." : "Dataset link removed."); });
             d.appendChild(linkRow);
             ren.addEventListener("click", function () {
               var holder = document.createElement("div");
@@ -14636,7 +14689,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
               save.addEventListener("click", function () {
                 var v = holder.querySelector("input").value.trim();
                 if (!v) { toast("Give the dataset a name first."); return; }
-                saveDatasetRecord(Object.assign({}, ds, { name: v }));
+                if (!saveDatasetRecord(Object.assign({}, ds, { name: v }))) { renderDatasets(); return; }
                 renderDatasets(); renderPlans();
                 toast("Dataset renamed: " + v);
               });
@@ -14669,7 +14722,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           var plan = planId ? getPlans(currentReviewId).find(function (p) { return p.id === planId; }) : null;
           var items = dsDrawItems(ds, n, seed);
           var rec = { id: uid(), reviewId: currentReviewId, datasetId: ds.id, datasetName: ds.name, planId: planId, controlId: plan ? plan.controlId : "", n: items.length, seed: seed, items: items, createdAt: nowISO() };
-          saveSampleRecord(rec);
+          if (!saveSampleRecord(rec)) return;
           if (planId) setDatasetPlanLink(ds.id, planId);
           appendAuditLog({ reviewId: currentReviewId, action: "Sample Drawn from Dataset", entityType: "Review", entityLabel: ds.name + " \u2192 " + items.length + " items, seed " + seed + (plan ? ", for " + (plan.code || "test plan") : ""), changedBy: currentActorName() });
           $("dsDrawNote").textContent = "Seed " + seed + " \u00B7 " + items.length + " items drawn from " + (ds.rowCount || ds.rows.length) + (plan ? " \u00B7 carried into the workpaper for " + (plan.code || "the linked plan") : " \u00B7 link a test plan to carry these into its workpaper");
@@ -14694,6 +14747,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           renderActionsTable();
           renderTasks();
           renderWorkspace();
+          try { restoreSamplingCalc(); } catch (e) {}
           renderStageTemplates();
           renderDatasets();
           refreshStageChip();
@@ -14834,7 +14888,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
 
         /* ---------- team capture: attendance, leave, walkthroughs, minutes ---------- */
         function teamItems(key) { return ensureArray(loadData(key, [])).filter(function (x) { return x.reviewId === currentReviewId; }); }
-        function saveTeamItem(key, rec) { if (!guardUnlocked(rec.reviewId || currentReviewId, "Team record changes")) return; var all = ensureArray(loadData(key, [])); saveData(key, all.concat([rec])); }
+        function saveTeamItem(key, rec) { if (!guardUnlocked(rec.reviewId || currentReviewId, "Team record changes")) return false; var all = ensureArray(loadData(key, [])); saveData(key, all.concat([rec])); return true; }
         function captureAttendance() {
           var name = currentUserName(), d = todayStr();
           var all = ensureArray(loadData("ra2_attendance", []));
@@ -14916,21 +14970,21 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           if ($("attAdd") && !$("attAdd").__wired) {
             $("attAdd").__wired = true;
             $("attAdd").addEventListener("click", function () {
-              saveTeamItem("ra2_attendance", { id: uid(), reviewId: currentReviewId, person: $("attPerson").value, date: $("attDate").value || todayStr(), status: $("attStatus").value, captured: "Manual entry by " + currentInitials() + " " + stamp(), hours: parseFloat($("attHours").value) || 0, auto: false });
+              if (!saveTeamItem("ra2_attendance", { id: uid(), reviewId: currentReviewId, person: $("attPerson").value, date: $("attDate").value || todayStr(), status: $("attStatus").value, captured: "Manual entry by " + currentInitials() + " " + stamp(), hours: parseFloat($("attHours").value) || 0, auto: false })) return;
               addAudit("Attendance recorded manually: " + $("attPerson").value + " - " + $("attStatus").value + " on " + ($("attDate").value || todayStr()) + ".");
               renderTeamExtras(); toast("Attendance recorded.");
             });
             $("lvAdd").addEventListener("click", function () {
               var from = $("lvFrom").value, to = $("lvTo").value || from;
               if (!from) { $("lvStatus").textContent = "Pick a start date first."; return; }
-              saveTeamItem("ra2_leave", { id: uid(), reviewId: currentReviewId, person: $("lvPerson").value, type: $("lvType").value, from: from, to: to, cover: $("lvCover").value });
+              if (!saveTeamItem("ra2_leave", { id: uid(), reviewId: currentReviewId, person: $("lvPerson").value, type: $("lvType").value, from: from, to: to, cover: $("lvCover").value })) return;
               addAudit("Leave recorded: " + $("lvPerson").value + " - " + $("lvType").value + " " + from + " to " + to + ", cover " + $("lvCover").value + ". Resource allocation to be checked against this leave.");
               $("lvStatus").textContent = "Leave added - check the Resourcing tab for allocation impact.";
               renderTeamExtras(); toast("Leave added to the calendar.");
             });
             $("wtAdd").addEventListener("click", function () {
               var t = $("wtTitle").value.trim(); if (!t) { toast("Give the walkthrough a title first."); return; }
-              saveTeamItem("ra2_walkthroughs", { id: uid(), reviewId: currentReviewId, title: t, withWhom: $("wtWith").value.trim(), when: $("wtWhen").value.trim(), status: "Scheduled" });
+              if (!saveTeamItem("ra2_walkthroughs", { id: uid(), reviewId: currentReviewId, title: t, withWhom: $("wtWith").value.trim(), when: $("wtWhen").value.trim(), status: "Scheduled" })) return;
               addAudit("Walkthrough scheduled: " + t + " (" + $("wtWhen").value.trim() + ").");
               $("wtTitle").value = ""; $("wtWith").value = ""; $("wtWhen").value = "";
               renderTeamExtras(); toast("Walkthrough scheduled.");
@@ -14938,7 +14992,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
             $("mmAdd").addEventListener("click", function () {
               var t = $("mmTitle").value.trim(), n = $("mmNotes").value.trim();
               if (!t || !n) { toast("Add a meeting title and the decisions reached."); return; }
-              saveTeamItem("ra2_minutes", { id: uid(), reviewId: currentReviewId, title: t, date: $("mmDate").value || todayStr(), attendees: $("mmAttendees").value.trim(), notes: n });
+              if (!saveTeamItem("ra2_minutes", { id: uid(), reviewId: currentReviewId, title: t, date: $("mmDate").value || todayStr(), attendees: $("mmAttendees").value.trim(), notes: n })) return;
               addAudit("Meeting minutes saved: " + t + " (" + ($("mmDate").value || todayStr()) + ").");
               $("mmTitle").value = ""; $("mmAttendees").value = ""; $("mmNotes").value = "";
               renderTeamExtras(); toast("Minutes saved with the working papers.");
@@ -15310,7 +15364,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           var keys = ["ra2_controls", "ra2_test_plans", "ra2_test_results", "ra2_findings", "ra2_actions", "ra2_stakeholders", "ra2_allocations", "ra2_progress_logs", "ra2_samples", "ra2_attendance", "ra2_leave", "ra2_walkthroughs", "ra2_minutes"];
           keys.forEach(function (k) { saveData(k, ensureArray(loadData(k, [])).filter(function (x) { return x.reviewId !== reviewId; })); });
           saveData("ra2_evidence_files", ensureArray(loadData("ra2_evidence_files", [])).filter(function (x) { return x.reviewId !== reviewId; }));
-          ensureArray(loadData("ra2_datasets", [])).filter(function (d) { return d.reviewId === reviewId; }).forEach(function (d) { deleteDatasetRecord(d.id); });
+          ensureArray(loadData("ra2_datasets", [])).filter(function (d) { return d.reviewId === reviewId; }).forEach(function (d) { deleteDatasetRecord(d.id, true); });
           saveData("ra2_reviews", ensureArray(loadData("ra2_reviews", [])).filter(function (r) { return r.id !== reviewId; }));
         }
         function wireDataControls() {
@@ -15325,7 +15379,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
               if (!id) { st.textContent = "Choose a dataset first."; return; }
               if (!confirmOk()) { st.textContent = "Type DELETE in the confirmation box first."; return; }
               var ds = getDataset(id); var nm = ds ? ds.name : id;
-              deleteDatasetRecord(id);
+              deleteDatasetRecord(id, true);
               appendAuditLog({ reviewId: ds ? ds.reviewId : currentReviewId, action: "Population Dataset Deleted (admin purge)", entityType: "Review", entityLabel: nm, changedBy: currentUserName() });
               accessLog("Data purge - dataset deleted", "Dataset \"" + nm + "\" was permanently deleted by " + currentUserName() + " using the Settings data controls at " + new Date().toLocaleString() + ".");
               $("purgeConfirm").value = ""; st.textContent = "Dataset deleted permanently: " + nm;
@@ -15729,14 +15783,14 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
         function adoptStarterControls(key, targetReview) {
           var r = targetReview || starterReviewForPath(key);
           if (!r) { toast("Create a review first, then adopt the starter controls into it."); return null; }
+          if (!guardUnlocked(r.id, "Control changes")) return null;
           var set = STARTER_CONTROLS[key] || [];
           var existing = getControls(r.id);
           var codes = {}; existing.forEach(function (c) { codes[c.code] = 1; });
           var added = 0;
           set.forEach(function (sc) {
             if (codes[sc.code]) return;
-            saveControl({ id: uid(), reviewId: r.id, code: sc.code, controlName: sc.name, controlType: sc.type, controlNature: "Preventative", designation: sc.designation, cosoPrinciple: sc.coso, owner: sc.owner, frequency: sc.freq, objective: sc.objective, regulationReference: sc.reg, sampleSize: "", population: "", effectiveness: "Not Tested", exceptions: "", exceptionCount: "", result_comments: "", evidence: [], source: "Starter library", createdAt: nowISO() });
-            added++;
+            if (saveControl({ id: uid(), reviewId: r.id, code: sc.code, controlName: sc.name, controlType: sc.type, controlNature: "Preventative", designation: sc.designation, cosoPrinciple: sc.coso, owner: sc.owner, frequency: sc.freq, objective: sc.objective, regulationReference: sc.reg, sampleSize: "", population: "", effectiveness: "Not Tested", exceptions: "", exceptionCount: "", result_comments: "", evidence: [], source: "Starter library", createdAt: nowISO() })) added++;
           });
           var s = starterState();
           var rec = { reviewId: r.id, reviewName: r.name, at: nowISO(), count: existing.length + added };
