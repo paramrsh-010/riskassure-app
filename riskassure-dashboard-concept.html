@@ -477,7 +477,11 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
       .pills button[aria-selected="true"] { background: var(--ink); color: var(--bg); }
       @media (prefers-color-scheme: dark) { .pills button[aria-selected="true"] { background: #eef3f8; color: #0d1622; } }
       .pills button:focus-visible, .iconbtn:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-      .top-actions { display: flex; align-items: center; gap: 8px; }
+      .top-actions { display: flex; align-items: center; gap: 8px; position: relative; }
+      .toppanel { position: absolute; top: calc(100% + 10px); right: 0; width: 340px; max-width: calc(100vw - 24px); background: var(--surface); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); padding: 14px; z-index: 60; text-align: left; }
+      .toppanel .tp-item { display: block; width: 100%; text-align: left; background: none; border: 0; border-radius: 9px; padding: 8px 10px; cursor: pointer; font: inherit; color: var(--ink); }
+      .toppanel .tp-item:hover, .toppanel .tp-item:focus-visible { background: var(--surface-2); outline: none; }
+      .toppanel .tp-item .s { display: block; font-size: 12px; color: var(--ink-3); margin-top: 1px; }
       .iconbtn {
         width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--line);
         background: var(--surface); color: var(--ink-2); display: grid; place-items: center; cursor: pointer;
@@ -1330,12 +1334,23 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
           <button role="tab" aria-selected="false" data-tab="findings">Findings</button>
         </nav>
         <div class="top-actions">
-          <button class="iconbtn" aria-label="Search">
+          <button class="iconbtn" id="topSearchBtn" aria-label="Search" aria-expanded="false" aria-controls="topSearchPanel">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
           </button>
-          <button class="iconbtn" aria-label="Notifications">
+          <button class="iconbtn" id="topNotifBtn" aria-label="Notifications" aria-expanded="false" aria-controls="topNotifPanel" style="position:relative">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 10-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 20a2 2 0 01-3.4 0"/></svg>
+            <span id="topNotifBadge" hidden style="position:absolute;top:-4px;right:-4px;background:#d64545;color:#fff;border-radius:999px;font-size:10px;font-weight:700;min-width:17px;height:17px;line-height:17px;text-align:center;padding:0 4px"></span>
           </button>
+          <div class="toppanel" id="topSearchPanel" hidden role="dialog" aria-label="Search the workspace">
+            <label class="field">Search reviews, findings and actions
+              <input id="topSearchInput" type="search" placeholder="Type a name, a finding ref (F-1042) or an action..." autocomplete="off" />
+            </label>
+            <div id="topSearchResults" style="margin-top:10px;display:flex;flex-direction:column;gap:4px"><span class="sub">Start typing to search across the workspace.</span></div>
+          </div>
+          <div class="toppanel" id="topNotifPanel" hidden role="dialog" aria-label="Notifications">
+            <span class="label" style="font-size:14.5px;font-weight:600">Notifications</span>
+            <div id="topNotifList" style="margin-top:8px;display:flex;flex-direction:column;gap:4px"><span class="sub">Nothing needs attention.</span></div>
+          </div>
           <span class="modepill" id="modePill" title="Where your data is stored"><span class="dot"></span><span id="modePillText">On this device</span></span>
           <span class="ronote" id="roNote" hidden>Read-only access</span>
           <div class="userchip">
@@ -3297,7 +3312,7 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
               <div class="kv"><span>Critical finding alerts</span><button type="button" class="tgl" aria-pressed="true">On</button></div>
               <div class="kv"><span>Weekly summary email</span><button type="button" class="tgl" aria-pressed="false">Off</button></div>
               <div class="kv"><span>Digest frequency</span>
-                <span class="lseg" role="group" aria-label="Digest frequency">
+                <span class="lseg" role="group" aria-label="Digest frequency" id="digestSeg">
                   <button type="button" aria-selected="false">Daily</button>
                   <button type="button" aria-selected="true">Weekly</button>
                   <button type="button" aria-selected="false">Monthly</button>
@@ -3870,11 +3885,11 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
             <article class="card span12" style="--i:4">
               <div class="top"><span class="label cardtitle">Review summary</span></div>
               <div>
-                <div class="kv"><span>Objective</span><b>Assess design and operating effectiveness of access controls</b></div>
-                <div class="kv"><span>Methodology</span><b>Access Assurance Methodology</b></div>
+                <div class="kv"><span>Objective</span><b id="sumObjective">Assess design and operating effectiveness of access controls</b></div>
+                <div class="kv"><span>Methodology</span><b id="sumMethodology">Access Assurance Methodology</b></div>
                 <div class="kv"><span>Standards baseline</span><b>ISO 31000:2018 &middot; COSO ERM 2017 &middot; BCBS 239</b></div>
-                <div class="kv"><span>Sampling basis</span><b>Attribute sampling, 95% confidence</b></div>
-                <div class="kv"><span>Sponsor</span><b>Chief Risk Officer office</b></div>
+                <div class="kv"><span>Sampling basis</span><b id="sumSampling">Attribute sampling, 95% confidence</b></div>
+                <div class="kv"><span>Sponsor</span><b id="sumSponsor">Chief Risk Officer office</b></div>
               </div>
             </article>
           </div>
@@ -3885,12 +3900,12 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
           <div class="grid">
             <article class="card span12" style="--i:0">
               <div class="top"><span class="label cardtitle">Scope statement</span></div>
-              <p style="margin:0;color:var(--ink-2);font-size:14.5px">This review covers user access provisioning, privileged access management and access recertification for in-scope applications across the India estate for the period 01 Jul to 30 Sep 2026. It includes joiner, mover and leaver processes, service accounts and emergency access. Out of scope: physical access, customer-facing authentication and subsidiaries onboarded after 01 Sep 2026.</p>
+              <p style="margin:0;color:var(--ink-2);font-size:14.5px" id="scopeText">This review covers user access provisioning, privileged access management and access recertification for in-scope applications across the India estate for the period 01 Jul to 30 Sep 2026. It includes joiner, mover and leaver processes, service accounts and emergency access. Out of scope: physical access, customer-facing authentication and subsidiaries onboarded after 01 Sep 2026.</p>
               <div>
-                <div class="kv"><span>Period under review</span><b>01 Jul - 30 Sep 2026</b></div>
-                <div class="kv"><span>Applications in scope</span><b>14 (core banking, ERP, ITSM, HR)</b></div>
-                <div class="kv"><span>Locations</span><b>Bengaluru, Mumbai, Hyderabad</b></div>
-                <div class="kv"><span>Exclusions agreed</span><b>3, recorded with sponsor sign-off</b></div>
+                <div class="kv"><span>Period under review</span><b id="scopePeriod">01 Jul - 30 Sep 2026</b></div>
+                <div class="kv"><span id="scopeControlsLabel">Applications in scope</span><b id="scopeControls">14 (core banking, ERP, ITSM, HR)</b></div>
+                <div class="kv"><span id="scopeJursLabel">Locations</span><b id="scopeJurs">Bengaluru, Mumbai, Hyderabad</b></div>
+                <div class="kv"><span>Exclusions agreed</span><b id="scopeExcl">3, recorded with sponsor sign-off</b></div>
               </div>
               <div id="scopeRisksWrap" hidden style="margin-top:14px">
                 <div class="kv"><span>Scope risks imported from the first-line matrix</span><b id="scopeRiskCount"></b></div>
@@ -4311,7 +4326,7 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
               <div class="tablewrap">
                 <table>
                   <thead><tr><th>Document</th><th>Type</th><th>Updated</th></tr></thead>
-                  <tbody>
+                  <tbody id="wsDocBody">
                     <tr><td><span class="t">Review plan - Q3 Access Review</span></td><td><span class="tag">Plan</span></td><td class="mono">02 Oct</td></tr>
                     <tr><td><span class="t">Control narrative - access management</span></td><td><span class="tag">Working paper</span></td><td class="mono">09 Oct</td></tr>
                     <tr><td><span class="t">Sampling memo - attribute sample of 57</span></td><td><span class="tag">Working paper</span></td><td class="mono">11 Oct</td></tr>
@@ -4394,7 +4409,7 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
           <div class="grid">
             <article class="card span12" style="--i:0">
               <div class="top"><span class="label cardtitle">Timeline</span></div>
-              <ul class="trail">
+              <ul class="trail" id="wsTimelineList">
                 <li><span class="tt mono">22 Sep</span><span><b>Kickoff.</b> Scope agreed with sponsor and control owners.</span></li>
                 <li><span class="tt mono">29 Sep</span><span><b>Walkthroughs complete.</b> Control narratives confirmed for AC-01 to AC-03 and CM-01.</span></li>
                 <li><span class="tt mono">06 Oct</span><span><b>Sampling set.</b> Attribute sample of 57 items drawn from a population of 340.</span></li>
@@ -4602,7 +4617,7 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
                 </label>
                 <label class="field">Role on this review<input id="rsRole" type="text" placeholder="e.g. Reviewer, access controls" /></label>
                 <label class="field">Planned days<input id="rsPlanDays" type="number" min="0" step="0.5" value="5" /></label>
-                <label class="field">Planned hours (total)<input id="rsPlanHours" type="number" min="0" step="1" value="37.5" /></label>
+                <label class="field">Planned hours (total)<input id="rsPlanHours" type="number" min="0" step="0.5" value="37.5" /></label>
                 <label class="field">Actual days so far<input id="rsActDays" type="number" min="0" step="0.5" value="0" /></label>
               </div>
               <div class="btnrow" style="margin-top:12px"><button type="button" class="btn" id="rsAdd">Add Allocation</button></div>
@@ -4705,7 +4720,7 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
                 <li data-gate="exceptions"><span class="ck">&#8211;</span><span>Every exception logged on the audit trail with an owner.</span></li>
                 <li data-gate="taxonomy"><span class="ck">&#8211;</span><span>Findings tagged to the 17-type risk taxonomy.</span></li>
                 <li data-gate="evidence"><span class="ck">&#8211;</span><span>Evidence complete for every item in the sample.</span></li>
-                <li data-gate="responses"><span class="ck">&#8211;</span><span>Management responses received for all critical findings.</span></li>
+                <li data-gate="responses"><span class="ck">&#8211;</span><span>Management responses and agreed target dates recorded for all findings.</span></li>
                 <li id="signoffCoso" hidden><span class="ck">&#10003;</span><span>Every Material and Key control is designated, mapped to a COSO 2013 principle and tested over the full period (Material/Key review attestation).</span></li>
                 <li id="signoffResourcing" hidden><span class="ck">&#10003;</span><span>Actual effort reconciled to the resource allocation, within the contingency buffer or with overruns explained in the daily progress log.</span></li>
               </ul>
@@ -6080,7 +6095,12 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
         function controlsFromMethodologyText(docContent) {
           var lines = String(docContent || "").split(/\n+/).map(function (x) { return x.trim(); }).filter(Boolean);
           function mk(name, line) {
-            var clean = String(name || "").split(/\.\s/)[0].replace(/\.+$/, "").trim();
+            /* Strip a leading list number ("1. ", "2) ", "1.2 ") BEFORE
+               taking the first sentence: splitting "1. Segregation..."
+               on ". " first used to leave the control named just "1". */
+            var raw = String(name || "").replace(/^\s*(?:control\s*)?\d+(?:\.\d+)*\s*[.):\u2013-]\s*/i, "").replace(/^\s*\d+(?:\.\d+)*\s+/, "").trim();
+            var clean = raw.split(/\.\s/)[0].replace(/\.+$/, "").trim();
+            if (!clean || /^\d+$/.test(clean)) clean = raw.slice(0, 80) || "Methodology control";
             return { controlName: clean, controlType: /semi|hybrid/i.test(line) ? "Semi-Automated" : (/automated/i.test(line) ? "Automated" : "Manual"), controlNature: /detective/i.test(line) ? "Detective" : "Preventative", designation: "Standard", cosoPrinciple: "", objective: "", sampleSize: 25, population: "", passCriteria: "", steps: [] };
           }
           var out = [];
@@ -9329,7 +9349,11 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           });
           sel.addEventListener("change", function () {
             if (!saveFindingUpdate(f, { riskTypes: sel.value ? [sel.value] : [] }, sel.value ? "Finding tagged to the risk taxonomy: " + riskTypeLabel(sel.value) : "Finding taxonomy tag cleared")) { renderWsFindings(); return; }
-            renderWsFindings();
+            /* Do NOT re-render the findings list here: rebuilding the cards
+               collapses an open editor and discards whatever the reviewer
+               has typed into it (an unsaved severity change was lost this
+               way). The tag is saved; only the taxonomy view depends on it. */
+            try { renderTax(); } catch (e) {}
             toast(sel.value ? "Finding tagged: " + riskTypeLabel(sel.value) : "Taxonomy tag cleared.");
           });
           var head = document.createElement("div"); head.className = "ti-top";
@@ -9368,6 +9392,13 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           }
           var inTitle = mkInput(f.title);
           var inSev = mkSelect(["Critical", "High", "Major", "Medium", "Minor", "Low"], f.severity || "Medium");
+          /* The header badge follows the severity select as it is changed,
+             not only after Save, so the card never shows a stale severity
+             while the editor says otherwise. */
+          inSev.addEventListener("change", function () {
+            var badge = head.querySelector(".sev");
+            if (badge) badge.innerHTML = '<i style="background:' + (SEVC[inSev.value] || "#75839a") + '"></i>' + esc(inSev.value);
+          });
           var inCause = mkArea(f.rootCause, 3);
           var inImpact = mkArea(f.riskImpact, 3);
           var inRec = mkArea(f.recommendation, 3);
@@ -9395,8 +9426,9 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           var btnRow = document.createElement("div"); btnRow.className = "btnrow";
           var saveBtn = document.createElement("button"); saveBtn.type = "button"; saveBtn.className = "btn small"; saveBtn.textContent = "Save finding";
           saveBtn.addEventListener("click", function () {
+            if (!inTitle.value.trim()) { toast("Give the finding a title first - nothing was saved."); inTitle.focus(); return; }
             if (!saveFindingUpdate(f, {
-              title: inTitle.value.trim() || f.title, severity: inSev.value,
+              title: inTitle.value.trim(), severity: inSev.value,
               rootCause: inCause.value.trim(), riskImpact: inImpact.value.trim(), riskExposure: inExposure.value,
               recommendation: inRec.value.trim(), managementResponse: inResp.value.trim(),
               evidenceLinks: inEv.value.split("\n").map(function (s) { return s.trim(); }).filter(Boolean),
@@ -9573,7 +9605,18 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           try { var lb = $("rwLockBanner"); if (lb) lb.hidden = r.status !== "Signed off"; } catch (e) {}
           var cc = $("calcControl");
           if (cc) {
+            /* Rebuilding the options used to reset the selection to the
+               first control, so the dropdown named a different control
+               from the one the sample was applied to. Keep the current
+               selection, falling back to the control recorded as applied
+               on this review's saved calculation. */
+            var ccPrev = cc.value;
             cc.innerHTML = getControls(currentReviewId).map(function (c) { return '<option value="' + esc(c.id) + '">' + esc((c.code ? c.code + " - " : "") + c.controlName) + "</option>"; }).join("");
+            var ccIds = getControls(currentReviewId).map(function (c) { return c.id; });
+            if (ccPrev && ccIds.indexOf(ccPrev) > -1) cc.value = ccPrev;
+            else {
+              try { var __ccRec = ensureArray(loadData("ra2_sampling_calc", [])).find(function (x) { return x.reviewId === currentReviewId; }); if (__ccRec && __ccRec.appliedControlId && ccIds.indexOf(__ccRec.appliedControlId) > -1) cc.value = __ccRec.appliedControlId; } catch (e) {}
+            }
           }
           try { renderDatasets(); } catch (e) {}
         }
@@ -9739,11 +9782,19 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
             if (!Array.isArray(controls)) controls = [controls];
             var createdC = [], createdP = [];
             var planSeq = getPlans(currentReviewId).length;
-            controls.forEach(function (c) {
+            controls.forEach(function (c, ci) {
               var ctrlId = uid();
+              /* A control name that is only a list number ("1", "2", ...)
+                 is not a name: rebuild it from the objective so created
+                 controls never land in the library named "1" to "5". */
+              var rawName = String(c.controlName || "").trim().replace(/^\s*(?:control\s*)?\d+(?:\.\d+)*\s*[.):\u2013-]\s*/i, "").trim();
+              if (!rawName || /^[\d\s.):\u2013-]+$/.test(rawName)) {
+                var objTxt = String(c.objective || c.population || "").trim();
+                rawName = "Control " + (ci + 1) + (objTxt ? " - " + objTxt.split(/[.!?]/)[0].slice(0, 70).trim() : "");
+              }
               var nc = {
                 id: ctrlId, reviewId: currentReviewId, code: "",
-                controlName: c.controlName || "Unnamed Control",
+                controlName: rawName,
                 controlType: c.controlType || "Manual",
                 controlNature: c.controlNature || "Preventative",
                 designation: ["Material", "Key", "Standard"].indexOf(c.designation) > -1 ? c.designation : "Standard",
@@ -9758,7 +9809,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
               saveControl(nc); createdC.push(nc);
               planSeq += 1;
               var planId = uid();
-              var np = { id: planId, controlId: ctrlId, reviewId: currentReviewId, code: "TP-" + String(planSeq).padStart(2, "0"), label: (c.controlName || "Control") + " - test plan", passCriteria: c.passCriteria || "", population: c.population || "", sampleSize: c.sampleSize || 25, createdAt: nowISO() };
+              var np = { id: planId, controlId: ctrlId, reviewId: currentReviewId, code: "TP-" + String(planSeq).padStart(2, "0"), label: rawName + " - test plan", passCriteria: c.passCriteria || "", population: c.population || "", sampleSize: c.sampleSize || 25, createdAt: nowISO() };
               saveTestPlanRecord(np); createdP.push(np);
               ensureArray(c.steps).forEach(function (s) {
                 saveTestStepRecord({ id: uid(), testPlanId: planId, stepDescription: s.stepDescription || "", expectedOutcome: s.expectedOutcome || "", createdAt: nowISO() });
@@ -10425,6 +10476,10 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
             $("confSel").value = String(scLast.conf); $("tolDev").value = scLast.tol; $("expDev").value = scLast.exp;
             $("calcResult").textContent = scLast.n;
             $("calcExplain").textContent = "Restored from the last calculation saved for this review (n = " + scLast.n + ", " + scLast.conf + "% confidence, " + scLast.tol + "% tolerable, " + scLast.exp + "% expected). Recalculate to change it; Apply writes it to the control and its test plan.";
+            /* The Apply dropdown shows the control the saved sample was
+               applied to, so the screen agrees with the audit trail. */
+            var ccR = $("calcControl");
+            if (ccR && rec.appliedControlId && getControls(currentReviewId).some(function (c) { return c.id === rec.appliedControlId; })) ccR.value = rec.appliedControlId;
           } catch (e) {}
         }
         try { restoreSamplingCalc(); } catch (e) {}
@@ -10441,9 +10496,15 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           saveControl(Object.assign({}, control, { sampleSize: scLast.n }));
           var plan = getPlanForControl(controlId);
           if (plan) saveTestPlanRecord(Object.assign({}, plan, { sampleSize: scLast.n }));
+          /* Record WHICH control the sample was applied to, on the saved
+             calculation, so the Apply dropdown can show that control after
+             applying and after a reload (it previously reset to whichever
+             option the re-render happened to select first). */
+          try { var __scAll = ensureArray(loadData("ra2_sampling_calc", [])); var __rec = __scAll.find(function (x) { return x.reviewId === currentReviewId; }); if (__rec) { __rec.appliedControlId = controlId; saveData("ra2_sampling_calc", __scAll); } } catch (e) {}
           var params = "N=" + (scLast.N == null ? "not given" : scLast.N) + ", confidence=" + scLast.conf + "%, tolerable=" + scLast.tol + "%, expected=" + scLast.exp + "%, R=" + scLast.R.toFixed(2) + ", result n=" + scLast.n;
           appendAuditLog({ reviewId: currentReviewId, entityType: "Control", entityId: controlId, entityLabel: control.controlName, action: "Sample Size Calculated and Applied", changedBy: currentActorName(), reason: params + ". Guidance only; the practitioner set the final sample size." });
           renderPlans(); renderAudit(); renderWorkspace();
+          var ccAfter = $("calcControl"); if (ccAfter) ccAfter.value = controlId;
           toast("Sample size " + scLast.n + " applied to " + control.controlName + ".");
         });
 
@@ -10703,6 +10764,18 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           var n = $("riNote"); if (n) n.textContent = "Saved - these now flow into the downloaded report and the sign-off template.";
           toast("Report inputs saved.");
         });
+        /* The coverage period of a review is its start-to-due window.
+           Reviews created before a start date was recorded fall back to
+           their creation date, so the period never renders as the due
+           date alone (the earlier build showed "Coverage period: 30 Nov
+           2026" - just the due date - for every created review). */
+        function reviewPeriodText(r) {
+          if (!r) return "Not recorded";
+          var s = r.startDate || (r.createdAt ? isoToDayMon(r.createdAt) : "");
+          var e = r.endDate || "";
+          if (s && e) return s + " to " + e;
+          return s || e || "Not recorded";
+        }
         function frameworkReportLines(r) {
           var controls = getControls(r.id);
           var tested = controls.filter(function (c) { return c.effectiveness && c.effectiveness !== "Not Tested"; });
@@ -10718,7 +10791,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           var overdue = acts.filter(function (a) { return actionAgeing(a).overdue; });
           if (overdue.length) lines.push("Overdue actions: " + overdue.map(function (a) { return a.title + " (" + actionAgeing(a).label + ")"; }).join("; ") + ".");
           lines.push("", "2. Scope & Objective");
-          lines.push("Coverage period: " + ((r.startDate || "") + (r.startDate && r.endDate ? " to " : "") + (r.endDate || "")) || "Not recorded");
+          lines.push("Coverage period: " + reviewPeriodText(r));
           lines.push("In scope: " + (controls.length ? controls.map(function (c) { return (c.code ? c.code + " " : "") + c.controlName; }).join("; ") : "No controls recorded"));
           lines.push("Out of scope: " + (r.scopeOut || "Not recorded - record the agreed exclusions in Reports > Report inputs before this report is issued."));
           lines.push("", "3. Summary of Assurance Findings (1st line vs 2nd line)");
@@ -10806,19 +10879,24 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           var excOwnerless = failed.filter(function (c) { return !String(c.exceptions || "").trim() || !String(c.owner || "").trim(); });
           var hasLibEvidence = DB.evidenceFiles.some(function (e) { return e.reviewId === r.id && e.docType === "evidence"; });
           var evOk = tested.length > 0 && (hasLibEvidence || tested.every(function (c) { return ensureArray(c.evidence).length > 0; }));
+          /* The checklist lines and the blocker list are two views of the
+             SAME conditions: every check carries its blocker text, and the
+             blockers are exactly the failed checks. The readiness line can
+             therefore never claim all criteria are met while a checklist
+             line is still unticked (the earlier build computed blockers
+             from a narrower list than the checks, so the evidence line
+             could show a cross while the note said all criteria were met). */
+          var respParts = [];
+          if (noResp.length) respParts.push(noResp.length + " finding(s) still awaiting a management response");
+          if (noDate.length) respParts.push(noDate.length + " finding(s) without an agreed target date");
           var checks = [
-            { key: "controls", ok: controls.length > 0 && tested.length === controls.length, detail: controls.length ? tested.length + " of " + controls.length + " controls tested" : "no controls in scope yet" },
-            { key: "exceptions", ok: excOwnerless.length === 0, detail: failed.length ? failed.length + " control(s) raised exceptions" + (excOwnerless.length ? ", " + excOwnerless.length + " without an exception note or owner" : ", all with a note and an owner") : "no exceptions raised" },
-            { key: "taxonomy", ok: untagged.length === 0, detail: findings.length ? (untagged.length ? untagged.length + " of " + findings.length + " findings untagged" : "all " + findings.length + " findings tagged") : "no findings on this review" },
-            { key: "evidence", ok: evOk, detail: hasLibEvidence ? "evidence library holds items for this review" : (tested.length ? "no evidence attached to tested controls yet" : "nothing tested yet") },
-            { key: "responses", ok: critNoResp.length === 0, detail: findings.length ? (critNoResp.length ? critNoResp.length + " critical finding(s) without a response" : "critical findings all answered") : "no findings on this review" }
+            { key: "controls", ok: controls.length > 0 && tested.length === controls.length, detail: controls.length ? tested.length + " of " + controls.length + " controls tested" : "no controls in scope yet", blocker: controls.length ? (controls.length - tested.length) + " of " + controls.length + " controls not yet tested" : "no controls in scope yet" },
+            { key: "exceptions", ok: excOwnerless.length === 0, detail: failed.length ? failed.length + " control(s) raised exceptions" + (excOwnerless.length ? ", " + excOwnerless.length + " without an exception note or owner" : ", all with a note and an owner") : "no exceptions raised", blocker: excOwnerless.length + " control(s) with exceptions are missing an exception note or owner" },
+            { key: "taxonomy", ok: untagged.length === 0, detail: findings.length ? (untagged.length ? untagged.length + " of " + findings.length + " findings untagged" : "all " + findings.length + " findings tagged") : "no findings on this review", blocker: untagged.length + " finding(s) not tagged to the 17-type risk taxonomy" },
+            { key: "evidence", ok: evOk, detail: hasLibEvidence ? "evidence library holds items for this review" : (tested.length ? "no evidence attached to tested controls yet" : "nothing tested yet"), blocker: "evidence is not complete for the tested controls" },
+            { key: "responses", ok: noResp.length === 0 && noDate.length === 0, detail: findings.length ? (respParts.length ? respParts.join("; ") : "all findings answered, with target dates") : "no findings on this review", blocker: respParts.join("; ") }
           ];
-          var blockers = [];
-          if (!controls.length) blockers.push("no controls in scope yet");
-          if (controls.length && tested.length < controls.length) blockers.push((controls.length - tested.length) + " of " + controls.length + " controls not yet tested");
-          if (noResp.length) blockers.push(noResp.length + " finding(s) still awaiting a management response");
-          if (noDate.length) blockers.push(noDate.length + " finding(s) without an agreed target date");
-          if (untagged.length) blockers.push(untagged.length + " finding(s) not tagged to the 17-type risk taxonomy");
+          var blockers = checks.filter(function (c) { return !c.ok; }).map(function (c) { return c.blocker; });
           return { checks: checks, blockers: blockers };
         }
         function renderSignoffGate() {
@@ -11016,7 +11094,10 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           if (!curReg) return;
           var info = REGINFO[curReg] || [curReg, "", ""];
           $("regSumTitle").textContent = curReg;
-          $("regSumBy").textContent = info[0] + " \u00B7 " + info[1];
+          /* The active depth is named on the summary itself, not only by
+             the segmented button state, so switching depth visibly lands. */
+          var depthLbl = { overview: "Overview", detailed: "Detailed", deep: "Practitioner Deep-Dive" }[curDepth] || "Overview";
+          $("regSumBy").textContent = info[0] + " \u00B7 " + info[1] + " \u00B7 Depth: " + depthLbl;
           $("regSumText").textContent = regSummary(curReg, curDepth);
         }
         function fillGenRegs() {
@@ -11961,14 +12042,26 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
         /* ---------- document review ---------- */
         function runDocReview(name) {
           $("docName").textContent = name;
-          $("docScore").textContent = "Ready for sign-off with 1 advisory";
+          /* The checks read the review the paper belongs to (the sample
+             paper is the Q3 Access Review's), so the sample size named is
+             that review's current sample - not a fixed 57 - and the
+             taxonomy advisory appears only while a finding is untagged. */
+          var dRev = /\(sample\)/i.test(name) ? (getReview("rev_access") || reviewByName("Q3 Access Review") || getReview(currentReviewId)) : getReview(currentReviewId);
+          var dSample = null;
+          if (dRev) {
+            try { var dRec = ensureArray(loadData("ra2_sampling_calc", [])).find(function (x) { return x.reviewId === dRev.id; }); if (dRec && dRec.state) dSample = dRec.state.n; } catch (e) {}
+            if (dSample == null) { var dCtl = getControls(dRev.id).filter(function (c) { return parseInt(c.sampleSize, 10) > 0; }); if (dCtl.length) dSample = Math.max.apply(null, dCtl.map(function (c) { return parseInt(c.sampleSize, 10); })); }
+          }
+          var dUntagged = dRev ? DB.findings.filter(function (f) { return f.reviewId === dRev.id && !findingRiskTypes(f).length; }).length : 0;
           var checks = [
             ["Pass", "Methodology reference present and current"],
             ["Pass", "Sample size stated with confidence level and tolerable deviation"],
             ["Pass", "Every exception cross-referenced to the audit trail"],
-            ["Advisory", "One finding is missing its risk taxonomy tag"],
-            ["Pass", "Evidence index complete against the sample of 57"]
+            dUntagged ? ["Advisory", dUntagged + (dUntagged === 1 ? " finding is" : " findings are") + " missing a risk taxonomy tag"] : ["Pass", "Every finding carries a risk taxonomy tag"],
+            ["Pass", "Evidence index complete against " + (dSample != null ? "the sample of " + dSample : "the stated sample")]
           ];
+          var advCount = checks.filter(function (c) { return c[0] === "Advisory"; }).length;
+          $("docScore").textContent = advCount ? "Ready for sign-off with " + advCount + (advCount === 1 ? " advisory" : " advisories") : "Ready for sign-off";
           $("docChecks").innerHTML = checks.map(function (c) {
             var ok = c[0] === "Pass";
             return '<li><span class="ck" style="' + (ok ? "" : "background:#fbf0d8;color:#a86e04") + '">' + (ok ? "\u2713" : "!") + "</span><span><b>" + c[0] + ".</b> " + c[1] + "</span></li>";
@@ -12584,7 +12677,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
             id: uid(), name: name, status: "Not started", reviewType: tpl, reviewKind: legacyKindFor(c), businessArea: tpl,
             family: c.family, classType: c.type, subcategory: c.sub, needsConfirmType: false, needsConfirmSub: false,
             jurisdictions: jurs, methAdopted: false, methSource: "",
-            jurisdiction: jurs.indexOf($("crJur").value) > -1 ? $("crJur").value : jurs[0], leadReviewer: lead, startDate: "", endDate: due,
+            jurisdiction: jurs.indexOf($("crJur").value) > -1 ? $("crJur").value : jurs[0], leadReviewer: lead, startDate: isoToDayMon(nowISO()), endDate: due,
             completionPct: 0, scopeRisks: [], createdAt: nowISO()
           };
           REVIEWS = REVIEWS.concat([r]);
@@ -12644,7 +12737,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
         renderDz();
         $("dzAdd").addEventListener("click", function () {
           var v = $("dzNew").value.trim();
-          if (!v) return;
+          if (!v) { toast("Give the new step a name first - nothing was added."); $("dzNew").focus(); return; }
           DZ_STEPS.push(v); $("dzNew").value = ""; renderDz();
         });
         $("dzTpl").addEventListener("change", function () {
@@ -12665,7 +12758,14 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
 
         /* framework proposal */
         $("fpSubmit").addEventListener("click", function () {
-          $("fpStatus").textContent = "Submitted to the methodology board \u00B7 " + $("fpName").value;
+          var fname = $("fpName").value.trim();
+          if (!fname) {
+            $("fpStatus").textContent = "Not submitted - give the framework a name first.";
+            toast("Give the framework a name first - the proposal was not submitted.");
+            $("fpName").focus();
+            return;
+          }
+          $("fpStatus").textContent = "Submitted to the methodology board \u00B7 " + fname;
           toast("Framework proposal submitted for board review.");
         });
 
@@ -13591,7 +13691,14 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
             var elapsedPct = Math.max(0, Math.min(100, Math.round((today - start) / span * 100)));
             $("pgElapsed").textContent = elapsedPct + "%";
             var ebar = $("pgElapsedBar"); ebar.setAttribute("data-fill", String(elapsedPct)); fillBar(ebar);
-            $("pgElapsedNote").textContent = fmtDay(start) + " to " + fmtDay(end) + " \u00B7 " + Math.round(span / 86400000) + " days.";
+            /* Say which window the elapsed figure uses. The window comes
+               from the review's own start and due dates whenever they are
+               recorded (reviews now record a start date at creation), and
+               only falls back to the log dates when they are not - the
+               earlier build switched basis silently when the first entry
+               was logged, so the window changed with no explanation. */
+            var winBasis = (r && r.startDate && r.endDate) ? "the review window (start to due date)" : "the progress log dates (no review start and due dates recorded)";
+            $("pgElapsedNote").textContent = fmtDay(start) + " to " + fmtDay(end) + " \u00B7 " + Math.round(span / 86400000) + " days \u00B7 based on " + winBasis + ".";
             if (!testables) {
               burn.innerHTML = '<span class="sub">No testable controls yet, so there is nothing to burn down. Add controls with test plans first.</span>';
               note.textContent = "";
@@ -13654,7 +13761,12 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           if (hi && ht) return "Manage closely";
           if (hi) return "Keep satisfied";
           if (ht) return "Keep informed";
-          return "Monitor";
+          /* Monitor is the low/low quadrant ("Lower influence and
+             interest"). A Medium on either axis is not low, so Medium /
+             Medium (and any other Medium mix) sits in Keep informed
+             rather than contradicting the Monitor description. */
+          if (s.influence === "Low" && s.interest === "Low") return "Monitor";
+          return "Keep informed";
         }
         function renderStakeholders() {
           var box = $("shList"); if (!box) return;
@@ -14111,7 +14223,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           var rid = review.id;
           var facts = {
             review_name: review.name || "", jurisdiction: review.jurisdiction || "",
-            period: (review.startDate || "") + (review.startDate && review.endDate ? " to " : "") + (review.endDate || ""),
+            period: reviewPeriodText(review),
             start_date: review.startDate || "", end_date: review.endDate || "",
             review_type: classificationLabel(review), lead_name: review.leadReviewer || "",
             date: fmtDay(todayD()), prepared_by: currentActorName(), raised_by: currentActorName()
@@ -14269,6 +14381,11 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
             card.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openStageTemplate(t.id); } });
             host.appendChild(g);
           });
+          /* A re-render rebuilds every card visible, so re-apply any
+             active template search afterwards - otherwise the header
+             count (from the last search) and the list on screen disagree. */
+          var tsEl = $("tplSearch");
+          if (tsEl && tsEl.value.trim()) { try { tsEl.dispatchEvent(new Event("input", { bubbles: true })); } catch (e) {} }
         }
         var stCurrentId = null;
         function openStageTemplate(id) {
@@ -14756,6 +14873,447 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           applyReadOnly();
         }
         /* ================================================================
+           BATCH C - live-data views and remaining polish.
+           The Executive Pack tables, the severity cards and the home
+           Overview cards used to be fixed markup with dash placeholders:
+           they now render from the workspace data (REVIEWS, DB.findings,
+           DB.actions, controls) every time the underlying data renders,
+           so a finding raised five minutes ago is in the pack, and the
+           Overview trend counts real sign-offs. The workspace Scope,
+           Documents and Timeline panels render per review instead of
+           showing the Q3 Access Review's seeded content inside every
+           review. Digest frequency persists, and the top-bar Search and
+           Notifications buttons open working panels.
+           ================================================================ */
+        function bcOpenFinding(f) { return f && f.status !== "Closed" && f.status !== "Complete"; }
+        function bcFindingOverdue(f) {
+          if (!bcOpenFinding(f)) return false;
+          if (f.status === "Overdue") return true;
+          var d = f.targetDate ? parseDayMon(f.targetDate) : null;
+          return !!(d && d < todayD());
+        }
+        function bcSevStats(bucket) {
+          var open = DB.findings.filter(function (f) { return bcOpenFinding(f) && sevBucket(f.severity) === bucket; });
+          var oldest = "—";
+          var best = null;
+          open.forEach(function (f) { var t = f.createdAt ? new Date(f.createdAt).getTime() : NaN; if (!isNaN(t) && (best === null || t < best)) best = t; });
+          if (best !== null) oldest = Math.max(0, Math.round((todayD().getTime() - best) / 86400000)) + "d";
+          return { open: open.length, overdue: open.filter(bcFindingOverdue).length, oldest: oldest };
+        }
+        function bcFillSevCards(root) {
+          if (!root) return;
+          root.querySelectorAll(".sev-card").forEach(function (card) {
+            var bucket = card.classList.contains("sev-crit") ? "critical" : (card.classList.contains("sev-major") ? "major" : "minor");
+            var st = bcSevStats(bucket);
+            card.querySelectorAll(".nums > div").forEach(function (cell) {
+              var lbl = (cell.querySelector("span") || {}).textContent || "";
+              var b = cell.querySelector("b"); if (!b) return;
+              if (/open/i.test(lbl)) b.textContent = st.open;
+              else if (/oldest/i.test(lbl)) b.textContent = st.oldest;
+              else if (/overdue/i.test(lbl)) b.textContent = st.overdue;
+            });
+          });
+        }
+        function bcAllControls() {
+          var out = [];
+          REVIEWS.forEach(function (r) { getControls(r.id).forEach(function (c) { out.push(c); }); });
+          return out;
+        }
+        function bcTested(c) { return c.effectiveness && c.effectiveness !== "Not Tested"; }
+
+        /* ---------- Executive Pack: live tables + severity cards ---------- */
+        function renderExecPack() {
+          var jurBody = $("pkJurBody");
+          if (jurBody) {
+            var jurs = ["India", "United Kingdom", "United States", "Europe (EU)"];
+            jurBody.innerHTML = jurs.map(function (jur) {
+              var rs = REVIEWS.filter(function (r) { return jurisdictionsOf(r).indexOf(jur) > -1 || r.jurisdiction === jur; });
+              var ids = {}; rs.forEach(function (r) { ids[r.id] = 1; });
+              var crit = DB.findings.filter(function (f) { return ids[f.reviewId] && bcOpenFinding(f) && sevBucket(f.severity) === "critical"; }).length;
+              var odActs = DB.actions.filter(function (a) { return (ids[a.reviewId] || rs.some(function (r) { return r.name === a.reviewName; })) && actionAgeing(a).overdue; }).length;
+              var ctls = []; rs.forEach(function (r) { ctls = ctls.concat(getControls(r.id)); });
+              var tested = ctls.filter(bcTested).length;
+              var health = rs.length ? (ctls.length ? Math.round(tested / ctls.length * 100) + "% controls tested" : "No controls yet") : "Not scored";
+              return '<tr data-jur="' + esc(jur) + '"><td><span class="t">' + esc(jur) + '</span></td><td class="mono">' + rs.length + '</td><td><span class="sub">' + esc(health) + '</span></td><td class="mono">' + crit + '</td><td class="mono">' + odActs + "</td></tr>";
+            }).join("");
+            var jf = $("pkJurFilter");
+            if (jf && jf.value !== "all") jurBody.querySelectorAll("tr").forEach(function (tr) { tr.style.display = tr.getAttribute("data-jur") === jf.value ? "" : "none"; });
+          }
+          var findBody = $("pkFindBody");
+          if (findBody) {
+            var sevRank = { Critical: 0, High: 1, Major: 2, Medium: 3, Minor: 4, Low: 5 };
+            var rows = DB.findings.slice().sort(function (a, b) {
+              var d = (sevRank[a.severity] != null ? sevRank[a.severity] : 6) - (sevRank[b.severity] != null ? sevRank[b.severity] : 6);
+              if (d) return d;
+              return String(b.createdAt || "").localeCompare(String(a.createdAt || ""));
+            });
+            findBody.innerHTML = "";
+            if (!rows.length) findBody.innerHTML = '<tr><td colspan="5"><span class="sub">No findings in the workspace yet. Findings raised in a review appear here for the committee.</span></td></tr>';
+            rows.forEach(function (f) {
+              var bucket = sevBucket(f.severity);
+              var bucketLabel = bucket === "critical" ? "Critical" : (bucket === "major" ? "Major" : "Minor");
+              var drillId = "pkd-" + f.id;
+              var tr = document.createElement("tr");
+              tr.className = "rowlink"; tr.setAttribute("tabindex", "0");
+              tr.setAttribute("data-sev", bucketLabel); tr.setAttribute("data-drill", drillId);
+              tr.innerHTML = '<td><span class="t">' + esc(f.title) + '</span><div class="s">' + esc(f.ref || "") + '</div></td><td>' + esc(f.reviewName || (getReview(f.reviewId) || {}).name || "") + '</td><td><span class="sev"><i style="background:' + (SEVC[f.severity] || "#75839a") + '"></i>' + esc(f.severity || "") + '</span></td><td><span class="tag">' + esc(riskTypeLabel(findingRiskTypes(f)[0]) || "Untagged") + '</span></td><td><span class="status ' + statusClass(f.status) + '">' + esc(f.status || "Open") + "</span></td>";
+              var linked = DB.actions.filter(function (a) { return a.findingRef && a.findingRef === f.ref; });
+              var dr = document.createElement("tr");
+              dr.className = "drillrow"; dr.id = drillId; dr.hidden = true;
+              dr.innerHTML = '<td colspan="5"><b>Root cause:</b> ' + esc(f.rootCause || "not yet recorded") + ". <b>Agreed action:</b> " + (linked.length ? linked.map(function (a) { return esc(a.title) + " (owner " + esc(a.owner || "not set") + ", due " + esc(a.due || "not agreed") + ")"; }).join("; ") : "none recorded yet") + ". <b>Owner:</b> " + esc(f.owner || "not set") + (f.targetDate ? ", target " + esc(f.targetDate) : "") + ".</td>";
+              function toggle() { dr.hidden = !dr.hidden; }
+              tr.addEventListener("click", toggle);
+              tr.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); } });
+              findBody.appendChild(tr); findBody.appendChild(dr);
+            });
+            var sf = $("pkSevFilter");
+            if (sf && sf.value !== "all") findBody.querySelectorAll("tr.rowlink").forEach(function (tr) {
+              var show = tr.getAttribute("data-sev") === sf.value;
+              tr.style.display = show ? "" : "none";
+              var dr2 = $(tr.getAttribute("data-drill")); if (dr2 && !show) dr2.hidden = true;
+            });
+          }
+          bcFillSevCards($("view-execpack"));
+          var pkScore = document.querySelector("#view-execpack .card.hero .score");
+          var pkVerdict = document.querySelector("#view-execpack .card.hero .verdict");
+          if (pkScore && REVIEWS.length) {
+            var so = REVIEWS.filter(function (r) { return r.status === "Signed off" || r.status === "Complete"; }).length;
+            var pct = Math.round(so / REVIEWS.length * 100);
+            pkScore.textContent = pct + "%";
+            if (pkVerdict) pkVerdict.textContent = pct === 100 ? "Ready" : "In preparation";
+          }
+        }
+
+        /* ---------- Home Overview: live cards, SLA, trend ---------- */
+        function renderHomeOverview() {
+          var panel = $("panel-overview"); if (!panel) return;
+          function cardByLabel(lbl) {
+            var found = null;
+            panel.querySelectorAll("article.card").forEach(function (c) { var l = c.querySelector(".label"); if (l && l.textContent.trim() === lbl) found = c; });
+            return found;
+          }
+          function setBig(card, val) { if (!card) return; var b = card.querySelector(".big"); if (b) b.textContent = val; }
+          var allC = bcAllControls();
+          var tested = allC.filter(bcTested);
+          setBig(cardByLabel("Controls Tested"), tested.length + " of " + allC.length);
+          var excTotal = allC.reduce(function (s, c) { return s + (parseInt(c.exceptionCount, 10) || 0); }, 0);
+          if (!excTotal) excTotal = allC.filter(function (c) { return String(c.exceptions || "").trim(); }).length;
+          setBig(cardByLabel("Exceptions Found"), String(excTotal));
+          var sevCard = cardByLabel("Findings by Severity");
+          if (sevCard) {
+            setBig(sevCard, String(DB.findings.length));
+            var sb = sevCard.querySelector(".stackbar");
+            if (sb && DB.findings.length) {
+              var counts = { critical: 0, major: 0, minor: 0 };
+              DB.findings.forEach(function (f) { counts[sevBucket(f.severity)]++; });
+              var cols = { critical: "#d64545", major: "#d9930d", minor: "#1d9e75" };
+              sb.innerHTML = ["critical", "major", "minor"].filter(function (k) { return counts[k] > 0; }).map(function (k) { return '<i style="width:' + Math.round(counts[k] / DB.findings.length * 100) + '%;background:' + cols[k] + '"></i>'; }).join("");
+              sb.setAttribute("aria-label", "Severity mix: " + counts.critical + " critical, " + counts.major + " major, " + counts.minor + " minor");
+            }
+          }
+          var covCard = cardByLabel("Coverage by Jurisdiction");
+          if (covCard) covCard.querySelectorAll(".regionrows .r").forEach(function (row) {
+            var jur = (row.querySelector("b") || {}).textContent || "";
+            var rs = REVIEWS.filter(function (r) { return jurisdictionsOf(r).indexOf(jur) > -1 || r.jurisdiction === jur; });
+            var ctls = []; rs.forEach(function (r) { ctls = ctls.concat(getControls(r.id)); });
+            var pctEl = row.querySelector(".pct");
+            var bar = row.querySelector(".progress i");
+            if (!ctls.length) { if (pctEl) pctEl.textContent = "—"; return; }
+            var pct = Math.round(ctls.filter(bcTested).length / ctls.length * 100);
+            if (pctEl) pctEl.textContent = pct + "%";
+            if (bar) { bar.setAttribute("data-fill", String(pct)); try { fillBar(bar); } catch (e) {} }
+          });
+          setBig(cardByLabel("Open Actions"), String(DB.actions.filter(function (a) { return a.status !== "Complete" && a.status !== "Closed"; }).length));
+          var scCard = cardByLabel("Sample Coverage");
+          if (scCard) {
+            var withSample = allC.filter(function (c) { return parseInt(c.sampleSize, 10) > 0; });
+            var totSample = withSample.reduce(function (s, c) { return s + parseInt(c.sampleSize, 10); }, 0);
+            setBig(scCard, allC.length ? String(totSample) : "—");
+            var sp = scCard.querySelector(".progress i");
+            if (sp && allC.length) { var spct = Math.round(withSample.length / allC.length * 100); sp.setAttribute("data-fill", String(spct)); try { fillBar(sp); } catch (e) {} sp.parentElement.setAttribute("aria-label", "Sample set on " + withSample.length + " of " + allC.length + " controls"); }
+          }
+          var ctCard = cardByLabel("Control Testing Overview");
+          if (ctCard && tested.length) {
+            var pass = tested.filter(function (c) { return c.effectiveness === "Pass"; }).length;
+            var eff = Math.round(pass / tested.length * 100);
+            setBig(ctCard, eff + "%");
+            var cp = ctCard.querySelector(".progress i");
+            if (cp) { cp.setAttribute("data-fill", String(eff)); try { fillBar(cp); } catch (e) {} }
+          }
+          /* SLA status: computed over open actions and open findings */
+          var slaCard = null;
+          panel.querySelectorAll("article.card").forEach(function (c) { var l = c.querySelector(".label"); if (l && l.textContent.trim() === "SLA Status") slaCard = c; });
+          if (slaCard) {
+            var items = [];
+            DB.actions.forEach(function (a) {
+              var ag = actionAgeing(a);
+              if (a.status === "Complete" || a.status === "Closed") return;
+              items.push({ title: a.title, review: a.reviewName || "", overdue: ag.overdue, days: ag.days, label: ag.label });
+            });
+            DB.findings.forEach(function (f) {
+              if (!bcOpenFinding(f)) return;
+              var d = f.targetDate ? parseDayMon(f.targetDate) : null;
+              var days = d ? Math.round((todayD().getTime() - d.getTime()) / 86400000) : null;
+              items.push({ title: (f.ref ? f.ref + " - " : "") + f.title, review: f.reviewName || "", overdue: bcFindingOverdue(f), days: days, label: days === null ? (f.status || "Open") : (days > 0 ? days + "d overdue" : (days === 0 ? "Due today" : "Due in " + (-days) + "d")) });
+            });
+            var breached = items.filter(function (i) { return i.overdue; });
+            var atRisk = items.filter(function (i) { return !i.overdue && i.days !== null && i.days >= -7 && i.days <= 0; });
+            var within = items.filter(function (i) { return !i.overdue && !(i.days !== null && i.days >= -7 && i.days <= 0); });
+            var nums = slaCard.querySelectorAll(".sla-num");
+            if (nums.length >= 3) { nums[0].textContent = atRisk.length; nums[1].textContent = breached.length; nums[2].textContent = within.length; }
+            var list = slaCard.querySelector(".sla-list");
+            if (list) {
+              var urgent = breached.concat(atRisk).sort(function (a, b) { return (b.days || 0) - (a.days || 0); }).slice(0, 3);
+              list.innerHTML = urgent.length ? urgent.map(function (i) { return "<span><b>" + esc(i.title) + "</b> &middot; " + esc(i.label.toLowerCase()) + (i.review ? " &middot; " + esc(i.review) : "") + "</span>"; }).join("") + '<span class="sub">Most urgent shown first</span>' : '<span class="sub">No open item is overdue or due within 7 days.</span>';
+            }
+          }
+          /* Review health: the composite the card itself describes -
+             evidence completeness, on-time fieldwork, finding closure. */
+          var hero = panel.querySelector(".card.hero");
+          if (hero && REVIEWS.length) {
+            var evCovered = tested.filter(function (c) { return ensureArray(c.evidence).length > 0 || DB.evidenceFiles.some(function (e) { return e.reviewId === c.reviewId && e.docType === "evidence"; }); }).length;
+            var evRate = tested.length ? evCovered / tested.length : null;
+            var onTime = REVIEWS.filter(function (r) {
+              var end = parseDayMon(r.endDate);
+              if (!end) return true;
+              if (r.status === "Signed off") { var sd = r.signedOffAt ? new Date(r.signedOffAt) : null; return !sd || isNaN(sd) || sd <= new Date(end.getTime() + 86399999); }
+              if (r.status === "Complete") return true;
+              return todayD() <= end;
+            }).length / REVIEWS.length;
+            var closure = DB.findings.length ? DB.findings.filter(function (f) { return !bcOpenFinding(f); }).length / DB.findings.length : null;
+            var parts = [evRate, onTime, closure].filter(function (x) { return x !== null; });
+            if (parts.length) {
+              var health = Math.round(parts.reduce(function (s, x) { return s + x; }, 0) / parts.length * 100);
+              var scoreEl = hero.querySelector(".score");
+              if (scoreEl) scoreEl.textContent = health + "%";
+              var noteEl = hero.querySelector(".note");
+              if (noteEl) noteEl.textContent = "Calculated live from workspace data: evidence completeness " + (evRate === null ? "n/a" : Math.round(evRate * 100) + "%") + ", on-time fieldwork " + Math.round(onTime * 100) + "%, finding closure " + (closure === null ? "n/a (no findings yet)" : Math.round(closure * 100) + "%") + ".";
+            }
+          }
+          /* Completion trend: real sign-offs, grouped by month */
+          var trendBox = document.querySelector("#view-overview .emptyviz");
+          if (trendBox) {
+            var signed = REVIEWS.filter(function (r) { return r.status === "Signed off" || r.status === "Complete"; });
+            if (signed.length) {
+              var byMonth = {};
+              signed.forEach(function (r) {
+                var d = r.signedOffAt ? new Date(r.signedOffAt) : parseDayMon(r.endDate);
+                var key = d && !isNaN(d) ? MONTH3[d.getMonth()] + " " + d.getFullYear() : "This cycle";
+                byMonth[key] = byMonth[key] || { reviews: 0, controls: 0 };
+                byMonth[key].reviews++;
+                byMonth[key].controls += getControls(r.id).length;
+              });
+              var maxC = Math.max.apply(null, Object.keys(byMonth).map(function (k) { return byMonth[k].controls; }).concat([1]));
+              trendBox.classList.remove("emptyviz");
+              trendBox.innerHTML = Object.keys(byMonth).map(function (k) {
+                var m = byMonth[k];
+                return '<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;gap:10px"><span>' + esc(k) + '</span><b>' + m.controls + " controls \u00B7 " + m.reviews + " review" + (m.reviews === 1 ? "" : "s") + ' signed off</b></div><div class="progress" style="margin-top:5px"><i data-fill="' + Math.round(m.controls / maxC * 100) + '"></i></div></div>';
+              }).join("");
+              try { fillMeters(trendBox); } catch (e) {}
+            }
+          }
+          bcFillSevCards($("view-overview"));
+        }
+
+        /* ---------- Workspace panels per review (Scope, Documents, Timeline, summary) ---------- */
+        function bcSamplingRec(reviewId) {
+          try { return ensureArray(loadData("ra2_sampling_calc", [])).find(function (x) { return x.reviewId === reviewId; }) || null; } catch (e) { return null; }
+        }
+        function renderReviewPanels() {
+          var r = getReview(currentReviewId); if (!r) return;
+          var controls = getControls(r.id);
+          var jurs = jurisdictionsOf(r);
+          /* Review summary card */
+          var so = $("sumObjective"), sm = $("sumMethodology"), ss = $("sumSponsor"), sb2 = $("sumSampling");
+          if (r.id !== "rev_access") {
+            if (so) so.textContent = "Independent assurance over " + (r.businessArea || "the controls in scope") + " (" + classificationOf(r).label + ")";
+            if (sm) sm.textContent = methInForceText(r);
+            try { var prof = METHODOLOGY_PROFILES[classificationOf(r).key]; if (sb2 && prof) sb2.textContent = "Attribute sampling, " + prof.samplingDefaults.conf + "% confidence"; } catch (e) {}
+          }
+          if (ss) {
+            var sponsor = ensureArray(loadData("ra2_stakeholders", [])).find(function (s) { return s.reviewId === r.id && /sponsor/i.test(s.type || ""); });
+            ss.textContent = sponsor ? sponsor.name : (r.id === "rev_access" ? "Chief Risk Officer office" : "Not recorded yet - add the sponsor on the Stakeholders tab");
+          }
+          /* Scope panel */
+          if (r.id !== "rev_access") {
+            var st = $("scopeText");
+            if (st) st.textContent = "This review covers " + (r.businessArea || "the controls in scope") + " across " + (jurs.join(", ") || r.jurisdiction || "the agreed jurisdictions") + " for the period " + reviewPeriodText(r) + ". " + controls.length + " control(s) are in scope." + (r.scopeOut ? " Out of scope: " + r.scopeOut : "");
+            var sp = $("scopePeriod"); if (sp) sp.textContent = reviewPeriodText(r);
+            var scl = $("scopeControlsLabel"); if (scl) scl.textContent = "Controls in scope";
+            var sc = $("scopeControls"); if (sc) sc.textContent = controls.length + " in the control library";
+            var sjl = $("scopeJursLabel"); if (sjl) sjl.textContent = "Jurisdictions";
+            var sj = $("scopeJurs"); if (sj) sj.textContent = jurs.join(", ") || r.jurisdiction || "-";
+            var se = $("scopeExcl"); if (se) se.textContent = r.scopeOut || "None recorded - record exclusions in Reports > Report inputs";
+          } else {
+            /* The seeded Q3 values are applications and locations, so this
+               review keeps its own labels; other reviews use the generic
+               "Controls in scope" / "Jurisdictions" set in the branch above. */
+            var scl2 = $("scopeControlsLabel"); if (scl2) scl2.textContent = "Applications in scope";
+            var sjl2 = $("scopeJursLabel"); if (sjl2) sjl2.textContent = "Locations";
+            var se2 = $("scopeExcl"); if (se2 && r.scopeOut) se2.textContent = r.scopeOut;
+          }
+          /* Documents panel */
+          var docBody = $("wsDocBody");
+          if (docBody) {
+            var rec = bcSamplingRec(r.id);
+            var sampName = rec && rec.state ? "Sampling memo - attribute sample of " + rec.state.n + (rec.state.N ? " from a population of " + rec.state.N : "") : null;
+            var evs = DB.evidenceFiles.filter(function (e) { return e.reviewId === r.id; });
+            var rows = [];
+            function drow(name, type, when) { rows.push('<tr><td><span class="t">' + esc(name) + '</span></td><td><span class="tag">' + esc(type) + '</span></td><td class="mono">' + esc(when || "-") + "</td></tr>"); }
+            if (r.id === "rev_access") {
+              drow("Review plan - Q3 Access Review", "Plan", "02 Oct");
+              drow("Control narrative - access management", "Working paper", "09 Oct");
+              drow(sampName || "Sampling memo - attribute sample of 57", "Working paper", rec ? fmtISODate(rec.updatedAt) : "11 Oct");
+              drow("Draft report for management comments", "Report", "16 Oct");
+            } else {
+              drow("Review plan - " + r.name, "Plan", r.createdAt ? fmtISODate(r.createdAt) : (r.startDate || "-"));
+              evs.filter(function (e) { return e.docType === "test_plan" || e.docType === "methodology_path"; }).forEach(function (e) { drow(e.name, "Methodology", e.uploadedAt ? fmtISODate(e.uploadedAt) : "-"); });
+              if (sampName) drow(sampName, "Working paper", rec.updatedAt ? fmtISODate(rec.updatedAt) : "-");
+              var evCount = evs.filter(function (e) { return e.docType === "evidence"; }).length;
+              if (evCount) drow("Evidence index - " + evCount + " item(s) on the Evidence tab", "Evidence", "-");
+              if (r.status === "Signed off" || DB.findings.some(function (f) { return f.reviewId === r.id; })) drow("Draft report for management comments", "Report", r.signedOffAt ? fmtISODate(r.signedOffAt) : "-");
+            }
+            docBody.innerHTML = rows.length ? rows.join("") : '<tr><td colspan="3"><span class="sub">No documents recorded for this review yet. The plan, methodology, sampling memo and evidence index appear here as they are added.</span></td></tr>';
+          }
+          /* Timeline panel */
+          var tl = $("wsTimelineList");
+          if (tl) {
+            var items = [];
+            function titem(dateObj, html) { items.push({ d: dateObj, html: html }); }
+            function dayLbl(d) { return d ? d.getDate() + " " + MONTH3[d.getMonth()] : "-"; }
+            var created = r.createdAt ? new Date(r.createdAt) : parseDayMon(r.startDate);
+            if (created && !isNaN(created)) titem(created, "<b>Kickoff.</b> Review created" + (r.leadReviewer ? " - lead " + esc(r.leadReviewer) : "") + ".");
+            if (r.id === "rev_access") {
+              titem(parseDayMon("29 Sep"), "<b>Walkthroughs complete.</b> Control narratives confirmed for AC-01 to AC-03 and CM-01.");
+              titem(parseDayMon("13 Oct"), "<b>Fieldwork under way.</b> First critical exception logged on AC-02.");
+            }
+            var rec2 = bcSamplingRec(r.id);
+            if (rec2 && rec2.state) titem(rec2.updatedAt ? new Date(rec2.updatedAt) : null, "<b>Sampling set.</b> Attribute sample of " + rec2.state.n + " items drawn from a population of " + (rec2.state.N || rec2.pop || "not recorded") + ".");
+            else if (r.id === "rev_access") titem(parseDayMon("06 Oct"), "<b>Sampling set.</b> Attribute sample of 57 items drawn from a population of 340.");
+            var testedCs = controls.filter(bcTested);
+            if (testedCs.length) {
+              var lastT = testedCs.map(function (c) { return c.testedAt ? new Date(c.testedAt) : null; }).filter(function (d) { return d && !isNaN(d); }).sort(function (a, b) { return b - a; })[0] || null;
+              titem(lastT, "<b>Fieldwork.</b> " + testedCs.length + " of " + controls.length + " controls executed.");
+            }
+            if (r.status === "Signed off") titem(r.signedOffAt ? new Date(r.signedOffAt) : null, "<b>Signed off.</b>" + (r.signedOffWithOverride ? " Signed off with an override; the reason is on the audit trail." : " The workspace is locked and feeds the Executive Pack."));
+            var due = parseDayMon(r.endDate);
+            if (due) titem(due, "<b>Fieldwork due.</b> Draft report to management for comments.");
+            items.sort(function (a, b) { return (a.d ? a.d.getTime() : Infinity) - (b.d ? b.d.getTime() : Infinity); });
+            tl.innerHTML = items.length ? items.map(function (i) { return '<li><span class="tt mono">' + esc(dayLbl(i.d)) + "</span><span>" + i.html + "</span></li>"; }).join("") : '<li><span class="sub">No milestones recorded yet for this review.</span></li>';
+          }
+        }
+        var __bcRenderWorkspace = renderWorkspace;
+        renderWorkspace = function () { __bcRenderWorkspace(); try { renderReviewPanels(); } catch (e) {} };
+
+        /* ---------- Digest frequency: persisted preference ---------- */
+        (function () {
+          var seg = $("digestSeg"); if (!seg) return;
+          var saved = null;
+          try { saved = getLocalItem("ra_digest_freq"); } catch (e) {}
+          if (saved) seg.querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-selected", String(b.textContent.trim() === saved)); });
+          seg.querySelectorAll("button").forEach(function (b) {
+            b.addEventListener("click", function () {
+              var v = b.textContent.trim();
+              try { setLocalItem("ra_digest_freq", v); } catch (e) {}
+              toast("Digest frequency set to " + v + " - saved.");
+            });
+          });
+        })();
+
+        /* ---------- Top-bar Search and Notifications panels ---------- */
+        function bcNotifItems() {
+          var items = [];
+          DB.actions.forEach(function (a) {
+            var ag = actionAgeing(a);
+            if (ag.overdue) items.push({ kind: "Action overdue", title: a.title, sub: (a.reviewName || "") + " \u00B7 " + ag.label, go: "actions" });
+          });
+          DB.findings.forEach(function (f) {
+            if (bcFindingOverdue(f)) items.push({ kind: "Finding overdue", title: (f.ref ? f.ref + " - " : "") + f.title, sub: (f.reviewName || "") + " \u00B7 target " + (f.targetDate || "not agreed"), go: "findings" });
+            else if (bcOpenFinding(f) && sevBucket(f.severity) === "critical") items.push({ kind: "Critical finding open", title: (f.ref ? f.ref + " - " : "") + f.title, sub: (f.reviewName || "") + " \u00B7 " + (f.status || "Open"), go: "findings" });
+          });
+          REVIEWS.forEach(function (r) {
+            var end = parseDayMon(r.endDate);
+            if (end && end < todayD() && r.status !== "Signed off" && r.status !== "Complete") items.push({ kind: "Review past due", title: r.name, sub: "Due " + (r.endDate || "") + " \u00B7 " + (r.status || ""), go: "reviews" });
+          });
+          return items;
+        }
+        function bcUpdateNotifBadge() {
+          var badge = $("topNotifBadge"); if (!badge) return;
+          var n = 0; try { n = bcNotifItems().length; } catch (e) {}
+          badge.hidden = !n;
+          badge.textContent = n > 9 ? "9+" : String(n);
+        }
+        (function () {
+          var sBtn = $("topSearchBtn"), nBtn = $("topNotifBtn"), sPan = $("topSearchPanel"), nPan = $("topNotifPanel");
+          if (!sBtn || !nBtn || !sPan || !nPan) return;
+          function closeAll() {
+            sPan.hidden = true; nPan.hidden = true;
+            sBtn.setAttribute("aria-expanded", "false"); nBtn.setAttribute("aria-expanded", "false");
+          }
+          function toggle(which) {
+            var showSearch = which === "search";
+            var willShow = showSearch ? sPan.hidden : nPan.hidden;
+            closeAll();
+            if (willShow) {
+              (showSearch ? sPan : nPan).hidden = false;
+              (showSearch ? sBtn : nBtn).setAttribute("aria-expanded", "true");
+              if (showSearch) { var inp = $("topSearchInput"); if (inp) setTimeout(function () { inp.focus(); }, 30); }
+              else bcRenderNotifs();
+            }
+          }
+          function bcRenderNotifs() {
+            var list = $("topNotifList"); if (!list) return;
+            var items = bcNotifItems();
+            list.innerHTML = items.length ? "" : '<span class="sub">Nothing needs attention right now.</span>';
+            items.slice(0, 12).forEach(function (it) {
+              var b = document.createElement("button");
+              b.type = "button"; b.className = "tp-item";
+              b.innerHTML = "<b>" + esc(it.kind) + ":</b> " + esc(it.title) + '<span class="s">' + esc(it.sub) + "</span>";
+              b.addEventListener("click", function () { closeAll(); goView(it.go); });
+              list.appendChild(b);
+            });
+            bcUpdateNotifBadge();
+          }
+          sBtn.addEventListener("click", function () { toggle("search"); });
+          nBtn.addEventListener("click", function () { toggle("notif"); });
+          document.addEventListener("click", function (e) {
+            if (!e.target.closest || !e.target.closest(".top-actions")) closeAll();
+          });
+          document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeAll(); });
+          var inp = $("topSearchInput"), res = $("topSearchResults");
+          if (inp && res) inp.addEventListener("input", function () {
+            var q = inp.value.trim().toLowerCase();
+            if (q.length < 2) { res.innerHTML = '<span class="sub">Start typing to search across the workspace.</span>'; return; }
+            var hits = [];
+            REVIEWS.forEach(function (r) { if ((r.name + " " + (r.businessArea || "")).toLowerCase().indexOf(q) > -1) hits.push({ label: r.name, sub: "Review \u00B7 " + (r.status || ""), act: function () { openReview(r.id); } }); });
+            DB.findings.forEach(function (f) { if ((f.ref + " " + f.title).toLowerCase().indexOf(q) > -1) hits.push({ label: (f.ref ? f.ref + " - " : "") + f.title, sub: "Finding \u00B7 " + (f.severity || "") + " \u00B7 " + (f.reviewName || ""), act: function () { goView("findings"); } }); });
+            DB.actions.forEach(function (a) { if ((a.title + " " + (a.findingRef || "")).toLowerCase().indexOf(q) > -1) hits.push({ label: a.title, sub: "Action \u00B7 " + (a.status || "") + " \u00B7 " + (a.reviewName || ""), act: function () { goView("actions"); } }); });
+            res.innerHTML = "";
+            if (!hits.length) { res.innerHTML = '<span class="sub">No matches for "' + esc(inp.value.trim()) + '".</span>'; return; }
+            hits.slice(0, 8).forEach(function (h) {
+              var b = document.createElement("button");
+              b.type = "button"; b.className = "tp-item";
+              b.innerHTML = esc(h.label) + '<span class="s">' + esc(h.sub) + "</span>";
+              b.addEventListener("click", function () { closeAll(); h.act(); });
+              res.appendChild(b);
+            });
+          });
+          bcUpdateNotifBadge();
+        })();
+
+        /* Refresh the live views whenever the underlying lists re-render,
+           and when their views are opened. */
+        var __bcRenderReviews = renderReviews;
+        renderReviews = function () { __bcRenderReviews(); try { renderHomeOverview(); } catch (e) {} try { renderExecPack(); } catch (e) {} try { bcUpdateNotifBadge(); } catch (e) {} };
+        var __bcGoView = goView;
+        goView = function (name) {
+          __bcGoView(name);
+          if (name === "execpack") { try { renderExecPack(); } catch (e) {} }
+          if (name === "overview") { try { renderHomeOverview(); } catch (e) {} }
+        };
+        setTimeout(function () { try { renderHomeOverview(); } catch (e) {} try { renderExecPack(); } catch (e) {} try { bcUpdateNotifBadge(); } catch (e) {} }, 1200);
+
+        /* ================================================================
            UPGRADE MODULE - sign-in audit, stage footers (AI check, Save &
            Continue, disclaimer), team capture (attendance, leave,
            walkthroughs, minutes), service desk, regulatory mapping,
@@ -14804,6 +15362,17 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
               if (noResp) gaps.push(noResp + " finding(s) still awaiting a management response");
               var noDate = findings.filter(function (f) { return !f.targetDate; }).length;
               if (noDate) gaps.push(noDate + " finding(s) without an agreed target date");
+            }
+            var __revNow = null; try { __revNow = getReview(currentReviewId); } catch (e) {}
+            if (__revNow && __revNow.status === "Signed off") {
+              /* A signed-off review is never "not ready for sign-off yet":
+                 report the signed-off state (and the override, where one
+                 was used) and list anything still outstanding on the
+                 current data as recorded items, not as a pending gate. */
+              var soNote = "<b>AI pre-review check - this review is signed off" + (__revNow.signedOffWithOverride ? " (with an override)" : "") + ".</b> " +
+                tested.length + " of " + controls.length + " controls tested, " + findings.length + " finding(s) on the review." +
+                (gaps.length ? " Items outstanding on the current data: " + gaps.join("; ") + ". These were on the record at sign-off" + (__revNow.signedOffWithOverride ? " and the override reason is on the audit trail" : "") + "; reopen the review from the Sign-off tab to change anything." : " No items are outstanding on the current data.");
+              return key === "signoff" ? soNote : "<b>AI stage check:</b> " + soNote;
             }
             if (key === "signoff") {
               return gaps.length
@@ -15525,7 +16094,13 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           var btn = $("rmMapBtn"); if (!btn || btn.__wired) return; btn.__wired = true;
           btn.addEventListener("click", function () {
             var org = $("rmOrg").value.trim(), ind = $("rmInd").value, jur = $("rmJur").value;
-            var orgName = org || ("a typical " + ind.toLowerCase() + " organisation");
+            if (!org) {
+              $("rmStatus").textContent = "Not mapped - give the organisation a name first. The mapping is prepared for a named organisation, so the impact analysis names the right firm.";
+              toast("Give the organisation a name first - nothing was mapped.");
+              $("rmOrg").focus();
+              return;
+            }
+            var orgName = org;
             var rows = rmRowsFor(jur, ind);
             rmLast = { org: orgName, ind: ind, jur: (JURISDICTIONS[jur] || {}).label || jur, rows: rows, ts: nowISO() };
             $("rmBody").innerHTML = rows.map(function (x) {
@@ -15829,8 +16404,17 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
               "<span>Policy and template pack: <b>Starter defaults in place</b> (9 stage templates, 6 document templates, 6 policies in the Policy Library)</span></div>";
           }
           if (!mount) return;
+          /* The escalation wording reads the saved thresholds, so tailoring
+             Critical to 6 days / Major to 31 days updates the descriptive
+             text as well as the numbers (the earlier build left the prose
+             at the starter 5 / 30 after a tailored save). */
+          var escRows = STARTER_THRESHOLDS.escalation.map(function (x) {
+            if (x[0] === "Critical finding") return [x[0], "Sponsor notified the same day; management response within " + (s.critRespDays || 5) + " business days; action tracked weekly until closure."];
+            if (x[0] === "Major finding") return [x[0], "Management response within 10 business days; agreed action closed within " + (s.majorCloseDays || 30) + " days."];
+            return x;
+          });
           var threshHtml = STARTER_THRESHOLDS.severity.map(function (x) { return '<div class="kv"><span><b>' + esc(x[0]) + "</b></span><b style=\"font-weight:500;color:var(--ink-2);text-align:right;max-width:64%\">" + esc(x[1]) + "</b></div>"; }).join("") +
-            STARTER_THRESHOLDS.escalation.map(function (x) { return '<div class="kv"><span><b>' + esc(x[0]) + "</b></span><b style=\"font-weight:500;color:var(--ink-2);text-align:right;max-width:64%\">" + esc(x[1]) + "</b></div>"; }).join("") +
+            escRows.map(function (x) { return '<div class="kv"><span><b>' + esc(x[0]) + "</b></span><b style=\"font-weight:500;color:var(--ink-2);text-align:right;max-width:64%\">" + esc(x[1]) + "</b></div>"; }).join("") +
             '<div class="kv"><span><b>Sign-off criteria (defaults)</b></span><b style="font-weight:500;color:var(--ink-2);text-align:right;max-width:64%">' + STARTER_THRESHOLDS.signoff.map(esc).join("; ") + "</b></div>";
           var pathHtml = pathRows.map(function (x) {
             return '<div class="kv"><span><b>' + esc(x.label) + "</b> - " + x.count + " starter controls" + (x.rec ? " &middot; adopted into " + esc(x.rec.reviewName) + " on " + esc(fmtDate(x.rec.at)) : "") + '</span><span style="display:flex;gap:8px;align-items:center">' + configStatusChip(x.status) + (x.status === "Missing" ? '<button type="button" class="btn small" data-adopt-path="' + x.key + '">Adopt into a review</button>' : '<button type="button" class="btn ghost small" data-adopt-path="' + x.key + '">Adopt again</button>') + "</span></div>";
