@@ -9,8 +9,15 @@
          integrity and frame-ancestors need a hosted deployment with response
          headers (noted in Compliance & Legal). connect-src covers the workspace
          service, the built-in AI service and the named AI providers; a custom
-         AI endpoint on any other origin is blocked by this policy. -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://npahbwlyieqjstwoarau.supabase.co wss://npahbwlyieqjstwoarau.supabase.co https://text.pollinations.ai https://api.anthropic.com https://generativelanguage.googleapis.com https://api.openai.com https://www.rbi.org.in https://rbi.org.in https://www.sebi.gov.in https://www.irdai.gov.in https://irdai.gov.in https://www.fca.org.uk https://www.bankofengland.co.uk https://www.iaisweb.org https://www.iais.org https://www.frc.org.uk https://ico.org.uk https://www.meity.gov.in https://fiuindia.gov.in https://www.occ.gov https://www.sec.gov https://www.dfs.ny.gov https://www.fincen.gov https://www.eba.europa.eu https://www.esma.europa.eu https://www.bis.org https://www.fatf-gafi.org; worker-src 'self' blob:; frame-src 'self' data: blob:; object-src 'none'; base-uri 'self'; form-action 'self'" />
+         AI endpoint on any other origin is blocked by this policy.
+         'wasm-unsafe-eval' is in script-src for exactly one reason: the
+         on-device OCR engine is WebAssembly, and browsers refuse to
+         compile WASM under a CSP whose script-src lacks that token -
+         the OCR worker then never starts (verified Oct 2026: identical
+         page and engine files hang without it, recognise with it). The
+         token permits WASM compilation only; it does not allow
+         JavaScript eval. -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://npahbwlyieqjstwoarau.supabase.co wss://npahbwlyieqjstwoarau.supabase.co https://text.pollinations.ai https://api.anthropic.com https://generativelanguage.googleapis.com https://api.openai.com https://www.rbi.org.in https://rbi.org.in https://www.sebi.gov.in https://www.irdai.gov.in https://irdai.gov.in https://www.fca.org.uk https://www.bankofengland.co.uk https://www.iaisweb.org https://www.iais.org https://www.frc.org.uk https://ico.org.uk https://www.meity.gov.in https://fiuindia.gov.in https://www.occ.gov https://www.sec.gov https://www.dfs.ny.gov https://www.fincen.gov https://www.eba.europa.eu https://www.esma.europa.eu https://www.bis.org https://www.fatf-gafi.org; worker-src 'self' blob:; frame-src 'self' data: blob:; object-src 'none'; base-uri 'self'; form-action 'self'" />
     <link rel="icon" href="data:," />
     <title>RiskAssure</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -3762,7 +3769,7 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
             <span class="sub" style="display:block;margin-top:8px">The dashboard pass applies three files together: the sign-up migration (amended before application, so its consent_records table now holds one record per purpose, with read-to-end evidence, granted and withdrawn timestamps and the capture source), the RLS hardening migration, and the evidence-integrity migration. Until the pass is applied in the live project, per-purpose consent records are held on the device, in the access record and on the audit trail; the server-side consent table takes them once the amended migration runs.</span>
             <span class="sub" style="display:block;margin-top:8px">The evidence-integrity migration adds the storage column for evidence file hashes. Until it is applied in the live project, hashes are recorded and shown for on-device work, and cloud evidence records carrying a hash cannot sync.</span>
             <span class="sub" style="display:block;margin-top:8px">Consent document matching: the account-aware gate expects one column on the live consent table that is not there yet - <span class="mono">doc_hash</span> (type <span class="mono">text</span>) on <span class="mono">public.consent_records</span>. Add it in the live project's SQL editor with this idempotent statement: <span class="mono">alter table public.consent_records add column if not exists doc_hash text;</span> Until it is applied, the gate reads and writes using the existing columns alone and no consent record is lost; once applied, new records carry the document hash and are matched against it on read.</span>
-            <span class="sub" style="display:block;margin-top:8px"><b>Single-file deployment &amp; asset audit (24 Oct 2026).</b> The live deployment serves only this one HTML file, so every library a core flow needs travels inside it: the sign-in library (authentication, recovery), the DOMPurify sanitiser and the jsPDF reporting library are inlined byte-for-byte from their pinned builds. The lazy document engines cannot travel in one file because each needs worker, engine or language files beside it, so each degrades with its own diagnostic instead of a generic failure: Word reader <span class="mono">RA-DOCX</span>, PDF reader and worker <span class="mono">RA-PDF</span>, on-device OCR <span class="mono">RA-OCR</span>, spreadsheet reader <span class="mono">RA-XLSX</span> - and the structured CSV import, which needs no reader, always works as the fallback. The three migration downloads above are generated from copies embedded in this file, so they work in both deployments. <b>Penetration test (same date, against this build):</b> scope - sign-in, recovery links, consent handling and credential material in the shipped file. Results - a scan of the file found exactly one key, the public anon key, and no account password, test password or service-role key; fabricated reset links of every shape held at the gate with distinct diagnostic codes; a valid recovery session with every other cloud call failing still reached the set-password form; wrong credentials, library failure, network failure, rate limiting and an unknown reset email each produced their own coded outcome (16 of 16 harness probes passed). Not covered: live tenant-isolation probes, which need real second accounts and would alter live data.</span>
+            <span class="sub" style="display:block;margin-top:8px"><b>Single-file deployment &amp; asset audit (24 Oct 2026).</b> The live deployment serves only this one HTML file, so every library a core flow needs travels inside it: the sign-in library (authentication, recovery), the DOMPurify sanitiser and the jsPDF reporting library are inlined byte-for-byte from their pinned builds. The document engines (the Word, PDF and spreadsheet readers and the on-device OCR engine) are not inlined - they load on demand from the assets folder at the deployment root, whose serving is confirmed; if one ever cannot load, it degrades with its own diagnostic instead of a generic failure: Word reader <span class="mono">RA-DOCX</span>, PDF reader and worker <span class="mono">RA-PDF</span>, on-device OCR <span class="mono">RA-OCR</span>, spreadsheet reader <span class="mono">RA-XLSX</span> - and the structured CSV import, which needs no reader, always works as the fallback. The three migration downloads above are generated from copies embedded in this file, so they work in both deployments. <b>Penetration test (same date, against this build):</b> scope - sign-in, recovery links, consent handling and credential material in the shipped file. Results - a scan of the file found exactly one key, the public anon key, and no account password, test password or service-role key; fabricated reset links of every shape held at the gate with distinct diagnostic codes; a valid recovery session with every other cloud call failing still reached the set-password form; wrong credentials, library failure, network failure, rate limiting and an unknown reset email each produced their own coded outcome (16 of 16 harness probes passed). Not covered: live tenant-isolation probes, which need real second accounts and would alter live data.</span>
             <span class="sub" style="display:block;margin-top:8px">Known position, stated plainly: a public sign-up now creates the person's own new workspace in the application. The matching database change ships as the migration above and takes effect in the live project once it is applied there; until then, new-account placement in the live project still follows the previous database rule and is monitored by the owner.</span>
           </article>
           <article class="card span6" style="--i:2">
@@ -10316,17 +10323,42 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
                 the engine's global actually exists afterwards.
            The base that served an engine is remembered in
            intakeAssetBase, and the worker / core / language files that
-           belong to an engine are resolved from that same base. */
+           belong to an engine are resolved from that same base.
+           Round 3 (Oct 2026): a same-browser diagnostic confirmed all
+           six engine files serve real content at the deployment's
+           repo-root assets/ URLs, while the loader's candidates were
+           all derived from the page's own path - so a page served below
+           the root never requested the URLs that actually serve. The
+           candidate list now includes the repo-root bases as absolute
+           paths (see intakeBaseCandidates). An earlier round-3 attempt
+           that inlined the engines into this file was reverted: the
+           bundled libraries construct functions from strings, which the
+           rendering pipeline refuses in an inline script. */
         var intakeAssetBase = "";
         var INTAKE_GLOBALS = { "tesseract.min.js": "Tesseract", "mammoth.browser.min.js": "mammoth", "pdf.min.js": "pdfjsLib", "xlsx.full.min.js": "XLSX" };
         function intakeBaseCandidates() {
           var list = ["assets/"];
+          function push(b) { if (b && list.indexOf(b) === -1) list.push(b); }
           try {
             var p = window.location.pathname || "/";
-            var asDir = (p.charAt(p.length - 1) === "/" ? p : p + "/") + "assets/";
-            if (list.indexOf(asDir) === -1) list.push(asDir);
-            var inDir = p.replace(/[^\/]*$/, "") + "assets/";
-            if (list.indexOf(inDir) === -1) list.push(inDir);
+            /* The engine files are confirmed serving at the deployment's
+               repo-root assets/ folder (same-browser diagnostic, Oct
+               2026). When the page is served below that root - a preview
+               path or a nested route - every page-relative candidate
+               resolves underneath the page's own path and misses the
+               repo-root folder, which is how the earlier rounds failed
+               while the files themselves served fine. The repo-root
+               bases are therefore tried as absolute paths too: the
+               origin root, and the origin plus the first path segment
+               (a project-site root). A candidate still counts only when
+               the engine's global exists after the load. */
+            push("/assets/");
+            var seg = "";
+            var parts = p.split("/");
+            for (var k = 0; k < parts.length; k++) { if (parts[k] !== "") { seg = parts[k]; break; } }
+            if (seg) push("/" + seg + "/assets/");
+            push((p.charAt(p.length - 1) === "/" ? p : p + "/") + "assets/");
+            push(p.replace(/[^\/]*$/, "") + "assets/");
           } catch (e) {}
           return list;
         }
@@ -10638,10 +10670,14 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
                 progress.set(85, extracted.ocrPages ? "Text extracted (" + extracted.ocrPages + " scanned page" + (extracted.ocrPages === 1 ? "" : "s") + " read by OCR) - structuring with " + aiProviderLabel() + "..." : "Text extracted - structuring with " + aiProviderLabel() + "...");
               } else {
                 progress.set(15, "Loading on-device OCR...");
-                var url = URL.createObjectURL(f);
-                try {
-                  var imgOcr = await ocrIntakeImage(url, function (frac) { progress.set(15 + 55 * frac, "Reading image with OCR - " + Math.round(frac * 100) + "%"); });
-                } finally { URL.revokeObjectURL(url); }
+                /* The File itself goes to the OCR reader, not a blob URL:
+                   this reader build fetches string addresses inside its
+                   worker, and the worker cannot fetch a blob URL minted
+                   by the page ("Failed to fetch" - verified Oct 2026,
+                   same engine files, same CSP). A File is read on the
+                   main thread and its bytes are posted to the worker,
+                   which works in every browser tested. */
+                var imgOcr = await ocrIntakeImage(f, function (frac) { progress.set(15 + 55 * frac, "Reading image with OCR - " + Math.round(frac * 100) + "%"); });
                 checkOcrResult(imgOcr, "this image");
                 extracted = { text: imgOcr.text, ocrPages: 1, confidences: [imgOcr.confidence] };
                 progress.set(85, "Text read (OCR confidence " + Math.round(imgOcr.confidence) + "%) - structuring with " + aiProviderLabel() + "...");
