@@ -15246,7 +15246,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           });
           DB.findings.forEach(function (f) {
             if (bcFindingOverdue(f)) items.push({ kind: "Finding overdue", title: (f.ref ? f.ref + " - " : "") + f.title, sub: (f.reviewName || "") + " \u00B7 target " + (f.targetDate || "not agreed"), go: "findings" });
-            else if (bcOpenFinding(f) && sevBucket(f.severity) === "critical") items.push({ kind: "Critical finding open", title: (f.ref ? f.ref + " - " : "") + f.title, sub: (f.reviewName || "") + " \u00B7 " + (f.status || "Open"), go: "findings" });
+            else if (bcOpenFinding(f) && sevBucket(f.severity) === "critical") items.push({ kind: (f.severity || "Critical") + " finding open", title: (f.ref ? f.ref + " - " : "") + f.title, sub: (f.reviewName || "") + " \u00B7 " + (f.status || "Open"), go: "findings" });
           });
           REVIEWS.forEach(function (r) {
             var end = parseDayMon(r.endDate);
