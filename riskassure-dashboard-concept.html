@@ -1277,6 +1277,10 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4.5H6.5A1.5 1.5 0 0 0 5 6v13a1.5 1.5 0 0 0 1.5 1.5h11A1.5 1.5 0 0 0 19 19V6a1.5 1.5 0 0 0-1.5-1.5H15"/><rect x="9" y="3" width="6" height="4" rx="1.2"/><path d="M12 10.5v6M9 13.5h6"/></svg>
           <span>Adhoc Tasks</span>
         </button>
+        <button type="button" class="side-item" data-view-target="finalreports">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 3.5H14l4.5 4.5v12.5h-12z"/><path d="M14 3.5V8h4.5"/><path d="M9.2 15.4l2 2 3.6-3.9"/></svg>
+          <span>Final Report</span>
+        </button>
         <button type="button" class="side-item" data-view-target="execpack">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4v16h16"/><path d="M8.5 20v-4.5M12.5 20V9M16.5 20v-6.5"/></svg>
           <span>Executive Pack</span>
@@ -2062,6 +2066,226 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
               </table>
             </div>
           </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ VIEW: FINAL REPORTS ============ -->
+    <section class="view" id="view-finalreports">
+      <div class="wrap">
+        <div class="headline">
+          <h1>Final Reports</h1>
+          <p>One final report for every review, with the full review outcome mapped into the Final Assurance Report template. A report is shared with the internal audit team at the review stage, before submission to stakeholders and the executive committee at final issue, and it can only become Final once the full review lifecycle is complete and the review itself is signed off.</p>
+        </div>
+        <div class="grid">
+          <article class="card span12" style="--i:0">
+            <div class="top"><span class="label cardtitle">All final reports</span><span class="sub">One report per review</span></div>
+            <span class="sub">Select a report to open it in full: draft editing, review, approval and final sign-off all happen on the report itself.</span>
+            <div class="tablewrap" style="margin-top:10px"><table>
+              <thead><tr><th>Review reference</th><th>Business area or entity</th><th>Reporting period</th><th>Report status</th><th>Version</th><th>Date of issue</th><th></th></tr></thead>
+              <tbody id="frHubBody"></tbody>
+            </table></div>
+          </article>
+        </div>
+        <div id="frDetailWrap" hidden>
+          <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:26px 0 14px">
+            <h2 id="frSelTitle" style="margin:0;font-size:22px">Final Report</h2>
+            <button type="button" class="btn ghost small" id="frOpenReview">Open review workspace</button>
+          </div>
+          <div id="frDetailPanel">
+          <div class="grid">
+            <article class="card span12" style="--i:0">
+              <div class="top"><span class="label cardtitle">Final Assurance Report</span><span class="status todo" id="frState">Draft</span></div>
+              <span class="sub">The final report for this review, built on the Final Assurance Report template as the standard, with the full review outcome mapped into the template sections. It is the report shared after the full review lifecycle is complete: with the internal audit team at the review stage, before submission to stakeholders and the executive committee at final issue. Its status stays Draft until the review itself is signed off and the report has completed review, approval and final sign-off. Computed figures are read live from the review data and cannot be edited here; narrative fields are editable while the report is a draft, and any template field the review data does not hold is left as a draft field to complete, never filled in by the application. The reviewer and sign-off records carry name, role and email address for the audit trail; no email is sent by the application.</span>
+              <div id="frHdrMeta" style="margin-top:12px"></div>
+              <div class="tablewrap" style="margin-top:10px"><table>
+                <thead><tr><th style="width:200px">Report control</th><th>Detail</th></tr></thead>
+                <tbody id="frControlTable"></tbody>
+              </table></div>
+              <div id="frSteps" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:14px"></div>
+              <div id="frStageArea" style="margin-top:14px"></div>
+            </article>
+
+            <article class="card span12" style="--i:1">
+              <div class="top"><span class="label cardtitle">Document control</span><span class="sub">Version history, review and approval, independence</span></div>
+              <span class="label" style="font-size:14.5px;font-weight:600">Version history</span>
+              <div class="tablewrap" style="margin-top:6px"><table>
+                <thead><tr><th>Version</th><th>Date</th><th>Author</th><th>Summary of change</th></tr></thead>
+                <tbody id="frVersionHistory"></tbody>
+              </table></div>
+              <span class="label" style="font-size:14.5px;font-weight:600;display:block;margin-top:14px">Review and approval</span>
+              <div class="tablewrap" style="margin-top:6px"><table>
+                <thead><tr><th>Stage</th><th>Name</th><th>Role</th><th>Email address</th><th>Signature</th><th>Date</th></tr></thead>
+                <tbody id="frApprovalTable"></tbody>
+              </table></div>
+              <label class="field" style="margin-top:14px">Independence and objectivity statement
+                <textarea data-frn="independence" rows="3" placeholder="State that the preparer and reviewer had no responsibility for the area reviewed, or disclose any impairment and how it was managed."></textarea>
+              </label>
+              <div class="btnrow" style="margin-top:10px"><button type="button" class="btn small frSaveBtn">Save draft</button></div>
+            </article>
+
+            <article class="card span12" style="--i:2">
+              <div class="top"><span class="label cardtitle">1. Executive summary</span><span class="sub">Conclusion, results at a glance, key messages, decisions required</span></div>
+              <span class="label" style="font-size:14.5px;font-weight:600">1.1 Overall conclusion</span>
+              <div id="frRatingLine" style="margin-top:6px"></div>
+              <label class="field" style="margin-top:10px">Conclusion in one sentence
+                <textarea data-frn="conclusion" rows="3" placeholder="State the conclusion plainly, and what it is based on."></textarea>
+              </label>
+              <span class="label" style="font-size:14.5px;font-weight:600;display:block;margin-top:14px">1.2 Results at a glance</span>
+              <div class="tablewrap" style="margin-top:6px"><table>
+                <thead><tr><th>Rating</th><th>Number</th><th>Open</th><th>Closed</th><th>Overdue</th></tr></thead>
+                <tbody id="frGlance"></tbody>
+              </table></div>
+              <p class="sub" style="margin-top:6px">Severity is reported on the template scale: findings recorded as Major on the review are reported as High here, and findings recorded as Minor are reported as Low. The total equals the number of findings in Sections 5 and 6.</p>
+              <label class="field" style="margin-top:12px">1.3 Key messages
+                <textarea data-frn="keyMessages" rows="4" placeholder="The most significant findings or themes and why they matter, and what is working well."></textarea>
+              </label>
+              <label class="field" style="margin-top:10px">1.4 Decisions or support required from management
+                <textarea data-frn="decisions" rows="3" placeholder="Decision or action needed, owner, by when."></textarea>
+              </label>
+              <div class="btnrow" style="margin-top:10px"><button type="button" class="btn small frSaveBtn">Save draft</button></div>
+            </article>
+
+            <article class="card span12" style="--i:3">
+              <div class="top"><span class="label cardtitle">2. Background, objectives and scope</span><span class="sub">Why the review took place, what it set out to do, and what it covered</span></div>
+              <label class="field">2.1 Background
+                <textarea data-frn="background" rows="3" placeholder="Why this review took place: plan reference, trigger, regulatory driver, or management request."></textarea>
+              </label>
+              <label class="field" style="margin-top:10px">2.2 Objectives
+                <textarea data-frn="objectives" rows="3" placeholder="The objectives the review set out to achieve, one per line."></textarea>
+              </label>
+              <label class="field" style="margin-top:10px">2.3 Scope: in scope
+                <textarea data-frn="scopeIn" rows="3" placeholder="Processes, controls, systems, entities and period covered."></textarea>
+              </label>
+              <label class="field" style="margin-top:10px">2.3 Scope: out of scope
+                <textarea data-frn="scopeOut" rows="3" placeholder="Explicitly excluded areas and the reason for each exclusion."></textarea>
+              </label>
+              <label class="field" style="margin-top:10px">2.4 Criteria and standards applied
+                <textarea data-frn="criteria" rows="3" placeholder="The policies, regulations, frameworks and standards used to judge the area, for example internal policy references, regulator requirements, COSO 2013 principles, ISO 27001:2022 controls, or the IIA Global Internal Audit Standards."></textarea>
+              </label>
+              <div class="btnrow" style="margin-top:10px"><button type="button" class="btn small frSaveBtn">Save draft</button></div>
+            </article>
+
+            <article class="card span12" style="--i:4">
+              <div class="top"><span class="label cardtitle">3. Approach and methodology</span><span class="sub">Work performed, sampling, test environment and reliance</span></div>
+              <span class="label" style="font-size:14.5px;font-weight:600">3.1 Work performed</span>
+              <div id="frWorkSummary" style="margin-top:6px"></div>
+              <label class="field" style="margin-top:10px">Work performed (narrative)
+                <textarea data-frn="workPerformed" rows="3" placeholder="Walkthroughs, design testing, operating effectiveness testing, interviews, data analysis, document review."></textarea>
+              </label>
+              <span class="label" style="font-size:14.5px;font-weight:600;display:block;margin-top:14px">3.2 Sampling</span>
+              <div id="frSampling" style="margin-top:6px"></div>
+              <label class="field" style="margin-top:12px">3.3 Test environment and data
+                <textarea data-frn="testEnv" rows="3" placeholder="Systems and versions used, date and time of testing, and the data used. State whether live or test data was used."></textarea>
+              </label>
+              <label class="field" style="margin-top:10px">3.4 Reliance on the work of others
+                <textarea data-frn="relianceOthers" rows="3" placeholder="Any reliance on first line testing, Internal Audit, external reports or other work, and how reliability was assessed. Write None if not applicable."></textarea>
+              </label>
+              <div class="btnrow" style="margin-top:10px"><button type="button" class="btn small frSaveBtn">Save draft</button></div>
+            </article>
+
+            <article class="card span12" style="--i:5">
+              <div class="top"><span class="label cardtitle">4. Rating scales</span><span class="sub">The scales applied in Sections 1, 5 and 6, as set in the template</span></div>
+              <span class="label" style="font-size:14.5px;font-weight:600">4.1 Finding severity</span>
+              <div class="tablewrap" style="margin-top:6px"><table>
+                <thead><tr><th>Rating</th><th>Definition</th><th>Expected remediation</th></tr></thead>
+                <tbody>
+                  <tr><td><span class="t">Critical</span></td><td>Control failure or gap that could cause severe harm to customers, material misstatement, or serious regulatory breach. Immediate escalation.</td><td>Within 30 days</td></tr>
+                  <tr><td><span class="t">High</span></td><td>Significant weakness that could cause material impact if not addressed.</td><td>Within 90 days</td></tr>
+                  <tr><td><span class="t">Medium</span></td><td>Weakness that reduces control effectiveness, with moderate impact.</td><td>Within 180 days</td></tr>
+                  <tr><td><span class="t">Low</span></td><td>Minor weakness or improvement opportunity with limited impact.</td><td>Next planned cycle</td></tr>
+                </tbody>
+              </table></div>
+              <span class="label" style="font-size:14.5px;font-weight:600;display:block;margin-top:14px">4.2 Overall rating</span>
+              <div class="tablewrap" style="margin-top:6px"><table>
+                <thead><tr><th>Rating</th><th>Definition</th></tr></thead>
+                <tbody>
+                  <tr><td><span class="t">Satisfactory</span></td><td>Controls are well designed and operating effectively. No critical or high findings.</td></tr>
+                  <tr><td><span class="t">Needs improvement</span></td><td>Some weaknesses require attention. No critical findings, and limited high findings.</td></tr>
+                  <tr><td><span class="t">Unsatisfactory</span></td><td>Significant weaknesses. One or more critical findings, or several high findings.</td></tr>
+                </tbody>
+              </table></div>
+              <label class="field" style="margin-top:12px">4.3 Impact and likelihood
+                <textarea data-frn="impactLikelihood" rows="3" placeholder="How impact and likelihood were combined to reach each severity rating, including the factors considered, such as customer harm, financial loss, regulatory exposure, data integrity and reputation."></textarea>
+              </label>
+              <div class="btnrow" style="margin-top:10px"><button type="button" class="btn small frSaveBtn">Save draft</button></div>
+            </article>
+
+            <article class="card span12" style="--i:6">
+              <div class="top"><span class="label cardtitle">5. Summary of findings</span><span class="sub">Live from the review's findings</span></div>
+              <div class="tablewrap"><table>
+                <thead><tr><th>Ref</th><th>Finding title</th><th>Rating</th><th>Owner</th><th>Due date</th><th>Status</th></tr></thead>
+                <tbody id="frSummaryFindings"></tbody>
+              </table></div>
+            </article>
+
+            <article class="card span12" style="--i:7">
+              <div class="top"><span class="label cardtitle">6. Detailed findings</span><span class="sub">One block per finding; fields the review data does not hold are draft fields</span></div>
+              <div id="frDetailedFindings"></div>
+              <div class="btnrow" style="margin-top:10px"><button type="button" class="btn small frSaveBtn">Save draft</button></div>
+            </article>
+
+            <article class="card span12" style="--i:8">
+              <div class="top"><span class="label cardtitle">7. Good practice and positive observations</span><span class="sub">What worked well, with the evidence</span></div>
+              <label class="field">Good practice and positive observations
+                <textarea data-frn="goodPractice" rows="4" placeholder="Control or practice that worked well and the evidence for it, and any improvement already made by management during the review."></textarea>
+              </label>
+              <span class="label" style="font-size:14.5px;font-weight:600;display:block;margin-top:16px">8. Limitations and reliance</span>
+              <span class="label" style="font-size:13.5px;font-weight:600;display:block;margin-top:10px">8.1 What was not tested (controls in scope that were not tested)</span>
+              <div id="frNotTested" style="margin-top:6px"></div>
+              <label class="field" style="margin-top:10px">8.1 What was not tested (notes)
+                <textarea data-frn="notTested" rows="3" placeholder="Area, activity or data not tested, and why."></textarea>
+              </label>
+              <label class="field" style="margin-top:10px">8.2 Limitations
+                <textarea data-frn="limitations" rows="3" placeholder="For example: sample based, point in time, test environment only, no security testing."></textarea>
+              </label>
+              <label class="field" style="margin-top:10px">8.3 Reliance
+                <textarea data-frn="relianceStmt" rows="3"></textarea>
+              </label>
+              <div class="btnrow" style="margin-top:10px"><button type="button" class="btn small frSaveBtn">Save draft</button></div>
+            </article>
+
+            <article class="card span12" style="--i:9">
+              <div class="top"><span class="label cardtitle">Appendices</span><span class="sub">Evidence index, test results, test data, action tracker, glossary</span></div>
+              <span class="label" style="font-size:14.5px;font-weight:600">Appendix A: Evidence index</span>
+              <div class="tablewrap" style="margin-top:6px"><table>
+                <thead><tr><th>Item</th><th>Description</th><th>Source</th><th>Date</th><th>Finding ref</th></tr></thead>
+                <tbody id="frAppA"></tbody>
+              </table></div>
+              <span class="label" style="font-size:14.5px;font-weight:600;display:block;margin-top:14px">Appendix B: Test results</span>
+              <div class="tablewrap" style="margin-top:6px"><table>
+                <thead><tr><th>Test ID</th><th>Control or test description</th><th>Sample</th><th>Result</th><th>Exception notes</th></tr></thead>
+                <tbody id="frAppB"></tbody>
+              </table></div>
+              <span class="label" style="font-size:14.5px;font-weight:600;display:block;margin-top:14px">Appendix C: Test data inventory</span>
+              <div id="frAppC" style="margin-top:6px"></div>
+              <label class="field" style="margin-top:10px">Test data note
+                <textarea data-frn="testDataNote" rows="3" placeholder="List any test or example data created for the review, and confirm whether client or personal data was used and how it was protected."></textarea>
+              </label>
+              <span class="label" style="font-size:14.5px;font-weight:600;display:block;margin-top:14px">Appendix D: Management action tracker</span>
+              <div class="tablewrap" style="margin-top:6px"><table>
+                <thead><tr><th>Ref</th><th>Agreed action</th><th>Owner</th><th>Target date</th><th>Status</th><th>Closure evidence</th></tr></thead>
+                <tbody id="frAppD"></tbody>
+              </table></div>
+              <span class="label" style="font-size:14.5px;font-weight:600;display:block;margin-top:14px">Appendix E: Glossary</span>
+              <div class="tablewrap" style="margin-top:6px"><table>
+                <thead><tr><th>Term</th><th>Meaning</th></tr></thead>
+                <tbody>
+                  <tr><td><span class="t">RCSA</span></td><td>Risk and Control Self-Assessment</td></tr>
+                  <tr><td><span class="t">ToD / ToE</span></td><td>Test of Design / Test of Operating Effectiveness</td></tr>
+                  <tr><td><span class="t">KRI / KCI</span></td><td>Key Risk Indicator / Key Control Indicator</td></tr>
+                </tbody>
+              </table></div>
+              <div class="btnrow" style="margin-top:10px"><button type="button" class="btn small frSaveBtn">Save draft</button></div>
+            </article>
+
+            <article class="card span12" style="--i:10">
+              <div class="top"><span class="label cardtitle">Report audit trail</span><span class="sub">Who prepared, reviewed, approved and signed off this report</span></div>
+              <ul class="trail" id="frTrail"></ul>
+              <div class="btnrow" style="margin-top:10px"><button type="button" class="btn small frSaveBtn" id="frSaveDraft">Save draft</button><span class="sub" id="frDraftNote" role="status"></span><button type="button" class="btn small ghost" id="frDownload">Download final report</button></div>
+            </article>
+          </div>
+          </div>
         </div>
       </div>
     </section>
@@ -4447,202 +4671,6 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
                 <input id="riFirstLineSigner" type="text" placeholder="Name and role of the 1st-line owner" />
               </label>
               <div class="btnrow" style="margin-top:10px"><button type="button" class="btn small" id="riSave">Save report inputs</button><span class="sub" id="riNote" role="status"></span></div>
-            </article>
-          </div>
-        </div>
-
-        <!-- Final Report -->
-        <div class="wpanel" data-wpanel="finalreport">
-          <div class="grid">
-            <article class="card span12" style="--i:0">
-              <div class="top"><span class="label cardtitle">Final Assurance Report</span><span class="status todo" id="frState">Draft</span></div>
-              <span class="sub">The final report for this review, built on the Final Assurance Report template as the standard, with the full review outcome mapped into the template sections. It is the report shared after the full review lifecycle is complete: with the internal audit team at the review stage, before submission to stakeholders and the executive committee at final issue. Its status stays Draft until the review itself is signed off and the report has completed review, approval and final sign-off. Computed figures are read live from the review data and cannot be edited here; narrative fields are editable while the report is a draft, and any template field the review data does not hold is left as a draft field to complete, never filled in by the application. The reviewer and sign-off records carry name, role and email address for the audit trail; no email is sent by the application.</span>
-              <div id="frHdrMeta" style="margin-top:12px"></div>
-              <div class="tablewrap" style="margin-top:10px"><table>
-                <thead><tr><th style="width:200px">Report control</th><th>Detail</th></tr></thead>
-                <tbody id="frControlTable"></tbody>
-              </table></div>
-              <div id="frSteps" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:14px"></div>
-              <div id="frStageArea" style="margin-top:14px"></div>
-            </article>
-
-            <article class="card span12" style="--i:1">
-              <div class="top"><span class="label cardtitle">Document control</span><span class="sub">Version history, review and approval, independence</span></div>
-              <span class="label" style="font-size:14.5px;font-weight:600">Version history</span>
-              <div class="tablewrap" style="margin-top:6px"><table>
-                <thead><tr><th>Version</th><th>Date</th><th>Author</th><th>Summary of change</th></tr></thead>
-                <tbody id="frVersionHistory"></tbody>
-              </table></div>
-              <span class="label" style="font-size:14.5px;font-weight:600;display:block;margin-top:14px">Review and approval</span>
-              <div class="tablewrap" style="margin-top:6px"><table>
-                <thead><tr><th>Stage</th><th>Name</th><th>Role</th><th>Email address</th><th>Signature</th><th>Date</th></tr></thead>
-                <tbody id="frApprovalTable"></tbody>
-              </table></div>
-              <label class="field" style="margin-top:14px">Independence and objectivity statement
-                <textarea data-frn="independence" rows="3" placeholder="State that the preparer and reviewer had no responsibility for the area reviewed, or disclose any impairment and how it was managed."></textarea>
-              </label>
-              <div class="btnrow" style="margin-top:10px"><button type="button" class="btn small frSaveBtn">Save draft</button></div>
-            </article>
-
-            <article class="card span12" style="--i:2">
-              <div class="top"><span class="label cardtitle">1. Executive summary</span><span class="sub">Conclusion, results at a glance, key messages, decisions required</span></div>
-              <span class="label" style="font-size:14.5px;font-weight:600">1.1 Overall conclusion</span>
-              <div id="frRatingLine" style="margin-top:6px"></div>
-              <label class="field" style="margin-top:10px">Conclusion in one sentence
-                <textarea data-frn="conclusion" rows="3" placeholder="State the conclusion plainly, and what it is based on."></textarea>
-              </label>
-              <span class="label" style="font-size:14.5px;font-weight:600;display:block;margin-top:14px">1.2 Results at a glance</span>
-              <div class="tablewrap" style="margin-top:6px"><table>
-                <thead><tr><th>Rating</th><th>Number</th><th>Open</th><th>Closed</th><th>Overdue</th></tr></thead>
-                <tbody id="frGlance"></tbody>
-              </table></div>
-              <p class="sub" style="margin-top:6px">Severity is reported on the template scale: findings recorded as Major on the review are reported as High here, and findings recorded as Minor are reported as Low. The total equals the number of findings in Sections 5 and 6.</p>
-              <label class="field" style="margin-top:12px">1.3 Key messages
-                <textarea data-frn="keyMessages" rows="4" placeholder="The most significant findings or themes and why they matter, and what is working well."></textarea>
-              </label>
-              <label class="field" style="margin-top:10px">1.4 Decisions or support required from management
-                <textarea data-frn="decisions" rows="3" placeholder="Decision or action needed, owner, by when."></textarea>
-              </label>
-              <div class="btnrow" style="margin-top:10px"><button type="button" class="btn small frSaveBtn">Save draft</button></div>
-            </article>
-
-            <article class="card span12" style="--i:3">
-              <div class="top"><span class="label cardtitle">2. Background, objectives and scope</span><span class="sub">Why the review took place, what it set out to do, and what it covered</span></div>
-              <label class="field">2.1 Background
-                <textarea data-frn="background" rows="3" placeholder="Why this review took place: plan reference, trigger, regulatory driver, or management request."></textarea>
-              </label>
-              <label class="field" style="margin-top:10px">2.2 Objectives
-                <textarea data-frn="objectives" rows="3" placeholder="The objectives the review set out to achieve, one per line."></textarea>
-              </label>
-              <label class="field" style="margin-top:10px">2.3 Scope: in scope
-                <textarea data-frn="scopeIn" rows="3" placeholder="Processes, controls, systems, entities and period covered."></textarea>
-              </label>
-              <label class="field" style="margin-top:10px">2.3 Scope: out of scope
-                <textarea data-frn="scopeOut" rows="3" placeholder="Explicitly excluded areas and the reason for each exclusion."></textarea>
-              </label>
-              <label class="field" style="margin-top:10px">2.4 Criteria and standards applied
-                <textarea data-frn="criteria" rows="3" placeholder="The policies, regulations, frameworks and standards used to judge the area, for example internal policy references, regulator requirements, COSO 2013 principles, ISO 27001:2022 controls, or the IIA Global Internal Audit Standards."></textarea>
-              </label>
-              <div class="btnrow" style="margin-top:10px"><button type="button" class="btn small frSaveBtn">Save draft</button></div>
-            </article>
-
-            <article class="card span12" style="--i:4">
-              <div class="top"><span class="label cardtitle">3. Approach and methodology</span><span class="sub">Work performed, sampling, test environment and reliance</span></div>
-              <span class="label" style="font-size:14.5px;font-weight:600">3.1 Work performed</span>
-              <div id="frWorkSummary" style="margin-top:6px"></div>
-              <label class="field" style="margin-top:10px">Work performed (narrative)
-                <textarea data-frn="workPerformed" rows="3" placeholder="Walkthroughs, design testing, operating effectiveness testing, interviews, data analysis, document review."></textarea>
-              </label>
-              <span class="label" style="font-size:14.5px;font-weight:600;display:block;margin-top:14px">3.2 Sampling</span>
-              <div id="frSampling" style="margin-top:6px"></div>
-              <label class="field" style="margin-top:12px">3.3 Test environment and data
-                <textarea data-frn="testEnv" rows="3" placeholder="Systems and versions used, date and time of testing, and the data used. State whether live or test data was used."></textarea>
-              </label>
-              <label class="field" style="margin-top:10px">3.4 Reliance on the work of others
-                <textarea data-frn="relianceOthers" rows="3" placeholder="Any reliance on first line testing, Internal Audit, external reports or other work, and how reliability was assessed. Write None if not applicable."></textarea>
-              </label>
-              <div class="btnrow" style="margin-top:10px"><button type="button" class="btn small frSaveBtn">Save draft</button></div>
-            </article>
-
-            <article class="card span12" style="--i:5">
-              <div class="top"><span class="label cardtitle">4. Rating scales</span><span class="sub">The scales applied in Sections 1, 5 and 6, as set in the template</span></div>
-              <span class="label" style="font-size:14.5px;font-weight:600">4.1 Finding severity</span>
-              <div class="tablewrap" style="margin-top:6px"><table>
-                <thead><tr><th>Rating</th><th>Definition</th><th>Expected remediation</th></tr></thead>
-                <tbody>
-                  <tr><td><span class="t">Critical</span></td><td>Control failure or gap that could cause severe harm to customers, material misstatement, or serious regulatory breach. Immediate escalation.</td><td>Within 30 days</td></tr>
-                  <tr><td><span class="t">High</span></td><td>Significant weakness that could cause material impact if not addressed.</td><td>Within 90 days</td></tr>
-                  <tr><td><span class="t">Medium</span></td><td>Weakness that reduces control effectiveness, with moderate impact.</td><td>Within 180 days</td></tr>
-                  <tr><td><span class="t">Low</span></td><td>Minor weakness or improvement opportunity with limited impact.</td><td>Next planned cycle</td></tr>
-                </tbody>
-              </table></div>
-              <span class="label" style="font-size:14.5px;font-weight:600;display:block;margin-top:14px">4.2 Overall rating</span>
-              <div class="tablewrap" style="margin-top:6px"><table>
-                <thead><tr><th>Rating</th><th>Definition</th></tr></thead>
-                <tbody>
-                  <tr><td><span class="t">Satisfactory</span></td><td>Controls are well designed and operating effectively. No critical or high findings.</td></tr>
-                  <tr><td><span class="t">Needs improvement</span></td><td>Some weaknesses require attention. No critical findings, and limited high findings.</td></tr>
-                  <tr><td><span class="t">Unsatisfactory</span></td><td>Significant weaknesses. One or more critical findings, or several high findings.</td></tr>
-                </tbody>
-              </table></div>
-              <label class="field" style="margin-top:12px">4.3 Impact and likelihood
-                <textarea data-frn="impactLikelihood" rows="3" placeholder="How impact and likelihood were combined to reach each severity rating, including the factors considered, such as customer harm, financial loss, regulatory exposure, data integrity and reputation."></textarea>
-              </label>
-              <div class="btnrow" style="margin-top:10px"><button type="button" class="btn small frSaveBtn">Save draft</button></div>
-            </article>
-
-            <article class="card span12" style="--i:6">
-              <div class="top"><span class="label cardtitle">5. Summary of findings</span><span class="sub">Live from the review's findings</span></div>
-              <div class="tablewrap"><table>
-                <thead><tr><th>Ref</th><th>Finding title</th><th>Rating</th><th>Owner</th><th>Due date</th><th>Status</th></tr></thead>
-                <tbody id="frSummaryFindings"></tbody>
-              </table></div>
-            </article>
-
-            <article class="card span12" style="--i:7">
-              <div class="top"><span class="label cardtitle">6. Detailed findings</span><span class="sub">One block per finding; fields the review data does not hold are draft fields</span></div>
-              <div id="frDetailedFindings"></div>
-              <div class="btnrow" style="margin-top:10px"><button type="button" class="btn small frSaveBtn">Save draft</button></div>
-            </article>
-
-            <article class="card span12" style="--i:8">
-              <div class="top"><span class="label cardtitle">7. Good practice and positive observations</span><span class="sub">What worked well, with the evidence</span></div>
-              <label class="field">Good practice and positive observations
-                <textarea data-frn="goodPractice" rows="4" placeholder="Control or practice that worked well and the evidence for it, and any improvement already made by management during the review."></textarea>
-              </label>
-              <span class="label" style="font-size:14.5px;font-weight:600;display:block;margin-top:16px">8. Limitations and reliance</span>
-              <span class="label" style="font-size:13.5px;font-weight:600;display:block;margin-top:10px">8.1 What was not tested (controls in scope that were not tested)</span>
-              <div id="frNotTested" style="margin-top:6px"></div>
-              <label class="field" style="margin-top:10px">8.1 What was not tested (notes)
-                <textarea data-frn="notTested" rows="3" placeholder="Area, activity or data not tested, and why."></textarea>
-              </label>
-              <label class="field" style="margin-top:10px">8.2 Limitations
-                <textarea data-frn="limitations" rows="3" placeholder="For example: sample based, point in time, test environment only, no security testing."></textarea>
-              </label>
-              <label class="field" style="margin-top:10px">8.3 Reliance
-                <textarea data-frn="relianceStmt" rows="3"></textarea>
-              </label>
-              <div class="btnrow" style="margin-top:10px"><button type="button" class="btn small frSaveBtn">Save draft</button></div>
-            </article>
-
-            <article class="card span12" style="--i:9">
-              <div class="top"><span class="label cardtitle">Appendices</span><span class="sub">Evidence index, test results, test data, action tracker, glossary</span></div>
-              <span class="label" style="font-size:14.5px;font-weight:600">Appendix A: Evidence index</span>
-              <div class="tablewrap" style="margin-top:6px"><table>
-                <thead><tr><th>Item</th><th>Description</th><th>Source</th><th>Date</th><th>Finding ref</th></tr></thead>
-                <tbody id="frAppA"></tbody>
-              </table></div>
-              <span class="label" style="font-size:14.5px;font-weight:600;display:block;margin-top:14px">Appendix B: Test results</span>
-              <div class="tablewrap" style="margin-top:6px"><table>
-                <thead><tr><th>Test ID</th><th>Control or test description</th><th>Sample</th><th>Result</th><th>Exception notes</th></tr></thead>
-                <tbody id="frAppB"></tbody>
-              </table></div>
-              <span class="label" style="font-size:14.5px;font-weight:600;display:block;margin-top:14px">Appendix C: Test data inventory</span>
-              <div id="frAppC" style="margin-top:6px"></div>
-              <label class="field" style="margin-top:10px">Test data note
-                <textarea data-frn="testDataNote" rows="3" placeholder="List any test or example data created for the review, and confirm whether client or personal data was used and how it was protected."></textarea>
-              </label>
-              <span class="label" style="font-size:14.5px;font-weight:600;display:block;margin-top:14px">Appendix D: Management action tracker</span>
-              <div class="tablewrap" style="margin-top:6px"><table>
-                <thead><tr><th>Ref</th><th>Agreed action</th><th>Owner</th><th>Target date</th><th>Status</th><th>Closure evidence</th></tr></thead>
-                <tbody id="frAppD"></tbody>
-              </table></div>
-              <span class="label" style="font-size:14.5px;font-weight:600;display:block;margin-top:14px">Appendix E: Glossary</span>
-              <div class="tablewrap" style="margin-top:6px"><table>
-                <thead><tr><th>Term</th><th>Meaning</th></tr></thead>
-                <tbody>
-                  <tr><td><span class="t">RCSA</span></td><td>Risk and Control Self-Assessment</td></tr>
-                  <tr><td><span class="t">ToD / ToE</span></td><td>Test of Design / Test of Operating Effectiveness</td></tr>
-                  <tr><td><span class="t">KRI / KCI</span></td><td>Key Risk Indicator / Key Control Indicator</td></tr>
-                </tbody>
-              </table></div>
-              <div class="btnrow" style="margin-top:10px"><button type="button" class="btn small frSaveBtn">Save draft</button></div>
-            </article>
-
-            <article class="card span12" style="--i:10">
-              <div class="top"><span class="label cardtitle">Report audit trail</span><span class="sub">Who prepared, reviewed, approved and signed off this report</span></div>
-              <ul class="trail" id="frTrail"></ul>
-              <div class="btnrow" style="margin-top:10px"><button type="button" class="btn small frSaveBtn" id="frSaveDraft">Save draft</button><span class="sub" id="frDraftNote" role="status"></span><button type="button" class="btn small ghost" id="frDownload">Download final report</button></div>
             </article>
           </div>
         </div>
@@ -10126,7 +10154,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           ["stakeholders", "Stakeholders"], ["evidence", "Evidence"], ["findings", "Findings"],
           ["actions", "Actions"], ["taxonomy", "Risk Taxonomy"], ["sltpl", "Template Plug-in"],
           ["documents", "Documents"], ["reports", "Reports"], ["timeline", "Timeline"], ["audittrail", "Audit Trail"],
-          ["team", "Team"], ["signoff", "Sign-off"], ["finalreport", "Final Report"], ["execpack", "Executive Pack"]
+          ["team", "Team"], ["signoff", "Sign-off"], ["execpack", "Executive Pack"]
         ];
         var wTabsEl = $("wTabs");
         WTABS.forEach(function (t, i) {
@@ -10137,11 +10165,12 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           b.addEventListener("click", function () { selectWTab(t[0]); });
           wTabsEl.appendChild(b);
         });
-        var GATE_TABS = ["controls", "testplans", "sampling", "testing", "progress", "evidence", "findings", "actions", "taxonomy", "sltpl", "documents", "reports", "finalreport", "signoff"];
+        var GATE_TABS = ["controls", "testplans", "sampling", "testing", "progress", "evidence", "findings", "actions", "taxonomy", "sltpl", "documents", "reports", "signoff"];
         function selectWTab(key) {
           /* The Executive Pack entry at the end of the tab order opens the
-             Executive Pack view itself; the Final Report tab sits
-             immediately above it. */
+             Executive Pack view itself. The Final Report is not a workspace
+             tab: it has its own dedicated view in the main navigation,
+             immediately above Executive Pack in the sidebar. */
           if (key === "execpack") { goView("execpack"); return; }
           if (GATE_TABS.indexOf(key) > -1) {
             var gr = getReview(currentReviewId);
@@ -10157,7 +10186,6 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           try { updateStageChip(key); } catch (e) {}
           if (key === "signoff") { try { renderSignoffGate(); } catch (e) {} }
           if (key === "reports") { try { renderFramework(); renderKris(); renderReportInputs(false); } catch (e) {} }
-          if (key === "finalreport") { try { renderFinalReport(); } catch (e) {} }
           if (key === "actions") { try { renderWsActions(); } catch (e) {} }
           if (key === "sampling") { try { restoreSamplingCalc(); } catch (e) {} }
         }
@@ -11732,7 +11760,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
         });
 
         /* ---------- final report (persisted on the review record) ----------
-           The Final Report tab owns the report workflow for a review and
+           The Final Report view owns the report workflow for a review and
            follows the Final Assurance Report template as the standard: the
            full review outcome is mapped into the template sections, with
            computed figures read live from the review's own data (findings,
@@ -11740,9 +11768,11 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
            and narrative fields editable only while the report is a draft.
            A template field the review's data does not hold is left as an
            editable draft field and is never invented by the application.
-           Placement: this tab sits after Sign-off, immediately above the
-           Executive Pack in the workspace tab order. It is not one of the
-           review stage tabs.
+           Placement: the Final Report has one location only, a dedicated
+           view in the main navigation, immediately above Executive Pack in
+           the sidebar. That view is a hub listing one report per review;
+           selecting a report opens the full report below the list. There
+           is no Final Report tab inside the review workspace.
            Definition: this is the post-lifecycle report. It is shared with
            the internal audit team at the review stage, before submission
            to stakeholders and the executive committee at final issue, and
@@ -11942,7 +11972,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           try { return ensureArray(loadData("ra2_sampling_calc", [])).find(function (x) { return x.reviewId === r.id; }) || null; } catch (e) { return null; }
         }
         function frSaveNarrativeFromForm(fr, r) {
-          var panel = document.querySelector('.wpanel[data-wpanel="finalreport"]');
+          var panel = document.querySelector('#frDetailPanel');
           if (!panel) return;
           panel.querySelectorAll("[data-frn]").forEach(function (el) { fr.narrative[el.getAttribute("data-frn")] = el.value; });
           var items = frEvidenceItems(r);
@@ -11971,7 +12001,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
         function renderFinalReport() {
           var r = getReview(currentReviewId); if (!r) return;
           var fr = getFinalReport(r);
-          var panel = document.querySelector('.wpanel[data-wpanel="finalreport"]'); if (!panel) return;
+          var panel = document.querySelector('#frDetailPanel'); if (!panel) return;
           var editable = fr.state === "draft";
           var reviewSignedOff = r.status === "Signed off";
           var isFinal = fr.state === "signedoff";
@@ -12193,6 +12223,50 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
             }).join("") : '<li><span class="tt mono">-</span><span>No workflow steps recorded yet. The trail starts when the draft is saved or submitted for review.</span></li>';
           }
         }
+        /* ---------- final reports hub (dedicated sidebar view) ----------
+           The hub lists one final report per review: review reference,
+           business area or entity, reporting period, report status,
+           version and date of issue. Selecting a report sets it as the
+           current review and renders the full template-mapped report into
+           the detail panel below the list, using the same render and
+           workflow code as always; the report record itself still lives
+           on the review. */
+        var frSelectedId = null;
+        function frHubStatusLabel(fr) { return fr.state === "signedoff" ? "Final" : frStateLabel(fr.state); }
+        function renderFinalReportsHub() {
+          var body = $("frHubBody"); if (!body) return;
+          body.innerHTML = REVIEWS.length ? REVIEWS.map(function (r) {
+            var fr = getFinalReport(r);
+            var isFinal = fr.state === "signedoff";
+            var sel = r.id === frSelectedId;
+            return '<tr' + (sel ? ' style="background:var(--surface-2)"' : "") + ">"
+              + '<td><span class="t">' + esc(r.name || "") + "</span></td>"
+              + "<td>" + esc(r.businessArea || r.reviewType || "") + "</td>"
+              + "<td>" + esc(reviewPeriodText(r)) + "</td>"
+              + '<td><span class="status ' + frStateClass(fr.state) + '">' + esc(frHubStatusLabel(fr)) + "</span></td>"
+              + "<td>" + esc(frVersionOf(fr)) + "</td>"
+              + "<td>" + esc(isFinal ? frDay(fr.signedAt) : "Not issued") + "</td>"
+              + '<td><button type="button" class="btn small ghost" data-fr-open="' + esc(r.id) + '">Open report</button></td></tr>';
+          }).join("") : '<tr><td colspan="7">No reviews in the workspace yet, so there are no final reports to show.</td></tr>';
+          body.querySelectorAll("[data-fr-open]").forEach(function (b) {
+            b.addEventListener("click", function () { frOpenReport(b.getAttribute("data-fr-open"), false); });
+          });
+          if (!frSelectedId && REVIEWS.length) frOpenReport(REVIEWS[0].id, true);
+        }
+        function frOpenReport(id, quiet) {
+          var r = getReview(id); if (!r) return;
+          frSelectedId = id;
+          currentReviewId = id;
+          var wrap = $("frDetailWrap"); if (wrap) wrap.hidden = false;
+          var t = $("frSelTitle"); if (t) t.textContent = "Final Report: " + (r.name || "");
+          renderFinalReport();
+          var body = $("frHubBody");
+          if (body) body.querySelectorAll("tr").forEach(function (tr) {
+            var b = tr.querySelector("[data-fr-open]");
+            tr.style.background = (b && b.getAttribute("data-fr-open") === frSelectedId) ? "var(--surface-2)" : "";
+          });
+          if (!quiet) { var det = $("frDetailWrap"); if (det && det.scrollIntoView) det.scrollIntoView({ behavior: "smooth", block: "start" }); }
+        }
         function frValidEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(v || "").trim()); }
         function frTransition(kind) {
           var r = getReview(currentReviewId); if (!r) return;
@@ -12246,6 +12320,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           appendAuditLog({ reviewId: r.id, action: msg, entityType: "Final Report", entityLabel: r.name, changedBy: currentActorName() });
           renderAudit();
           renderFinalReport();
+          try { renderFinalReportsHub(); } catch (e) {}
           toast(toastMsg);
         }
         function finalReportLines(r) {
@@ -12377,6 +12452,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           download("riskassure-final-report-" + (r.name || "review").toLowerCase().replace(/[^a-z0-9]+/g, "-") + ".txt", finalReportLines(r));
           toast("Final report downloaded.");
         });
+        if ($("frOpenReview")) $("frOpenReview").addEventListener("click", function () { if (frSelectedId) openReview(frSelectedId); });
 
         /* ---------- training centre data ---------- */
         var REGINFO = {
@@ -17673,6 +17749,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           /* same pattern for the live lists: a status or record changed inside
              the workspace must be what the list shows when the user returns */
           document.querySelectorAll('[data-view-target="reviews"]').forEach(function (b) { b.addEventListener("click", function () { setTimeout(function () { try { renderReviews(); } catch (e) {} }, 40); }); });
+          document.querySelectorAll('[data-view-target="finalreports"]').forEach(function (b) { b.addEventListener("click", function () { setTimeout(function () { try { renderFinalReportsHub(); } catch (e) {} }, 40); }); });
           document.querySelectorAll('[data-view-target="findings"]').forEach(function (b) { b.addEventListener("click", function () { setTimeout(function () { try { renderGlobalFindings(); } catch (e) {} }, 40); }); });
           document.querySelectorAll('[data-view-target="actions"]').forEach(function (b) { b.addEventListener("click", function () { setTimeout(function () { try { renderActionsTable(); } catch (e) {} }, 40); }); });
           document.querySelectorAll('[data-goto]').forEach(function (el) { el.addEventListener("click", function () { var t = el.getAttribute("data-goto"); setTimeout(function () { try { if (t === "reviews") renderReviews(); if (t === "findings") renderGlobalFindings(); if (t === "actions") renderActionsTable(); } catch (e) {} }, 60); }); });
