@@ -4451,6 +4451,202 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
           </div>
         </div>
 
+        <!-- Final Report -->
+        <div class="wpanel" data-wpanel="finalreport">
+          <div class="grid">
+            <article class="card span12" style="--i:0">
+              <div class="top"><span class="label cardtitle">Final Assurance Report</span><span class="status todo" id="frState">Draft</span></div>
+              <span class="sub">The final report for this review, built on the Final Assurance Report template as the standard, with the full review outcome mapped into the template sections. It is the report shared after the full review lifecycle is complete: with the internal audit team at the review stage, before submission to stakeholders and the executive committee at final issue. Its status stays Draft until the review itself is signed off and the report has completed review, approval and final sign-off. Computed figures are read live from the review data and cannot be edited here; narrative fields are editable while the report is a draft, and any template field the review data does not hold is left as a draft field to complete, never filled in by the application. The reviewer and sign-off records carry name, role and email address for the audit trail; no email is sent by the application.</span>
+              <div id="frHdrMeta" style="margin-top:12px"></div>
+              <div class="tablewrap" style="margin-top:10px"><table>
+                <thead><tr><th style="width:200px">Report control</th><th>Detail</th></tr></thead>
+                <tbody id="frControlTable"></tbody>
+              </table></div>
+              <div id="frSteps" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:14px"></div>
+              <div id="frStageArea" style="margin-top:14px"></div>
+            </article>
+
+            <article class="card span12" style="--i:1">
+              <div class="top"><span class="label cardtitle">Document control</span><span class="sub">Version history, review and approval, independence</span></div>
+              <span class="label" style="font-size:14.5px;font-weight:600">Version history</span>
+              <div class="tablewrap" style="margin-top:6px"><table>
+                <thead><tr><th>Version</th><th>Date</th><th>Author</th><th>Summary of change</th></tr></thead>
+                <tbody id="frVersionHistory"></tbody>
+              </table></div>
+              <span class="label" style="font-size:14.5px;font-weight:600;display:block;margin-top:14px">Review and approval</span>
+              <div class="tablewrap" style="margin-top:6px"><table>
+                <thead><tr><th>Stage</th><th>Name</th><th>Role</th><th>Email address</th><th>Signature</th><th>Date</th></tr></thead>
+                <tbody id="frApprovalTable"></tbody>
+              </table></div>
+              <label class="field" style="margin-top:14px">Independence and objectivity statement
+                <textarea data-frn="independence" rows="3" placeholder="State that the preparer and reviewer had no responsibility for the area reviewed, or disclose any impairment and how it was managed."></textarea>
+              </label>
+              <div class="btnrow" style="margin-top:10px"><button type="button" class="btn small frSaveBtn">Save draft</button></div>
+            </article>
+
+            <article class="card span12" style="--i:2">
+              <div class="top"><span class="label cardtitle">1. Executive summary</span><span class="sub">Conclusion, results at a glance, key messages, decisions required</span></div>
+              <span class="label" style="font-size:14.5px;font-weight:600">1.1 Overall conclusion</span>
+              <div id="frRatingLine" style="margin-top:6px"></div>
+              <label class="field" style="margin-top:10px">Conclusion in one sentence
+                <textarea data-frn="conclusion" rows="3" placeholder="State the conclusion plainly, and what it is based on."></textarea>
+              </label>
+              <span class="label" style="font-size:14.5px;font-weight:600;display:block;margin-top:14px">1.2 Results at a glance</span>
+              <div class="tablewrap" style="margin-top:6px"><table>
+                <thead><tr><th>Rating</th><th>Number</th><th>Open</th><th>Closed</th><th>Overdue</th></tr></thead>
+                <tbody id="frGlance"></tbody>
+              </table></div>
+              <p class="sub" style="margin-top:6px">Severity is reported on the template scale: findings recorded as Major on the review are reported as High here, and findings recorded as Minor are reported as Low. The total equals the number of findings in Sections 5 and 6.</p>
+              <label class="field" style="margin-top:12px">1.3 Key messages
+                <textarea data-frn="keyMessages" rows="4" placeholder="The most significant findings or themes and why they matter, and what is working well."></textarea>
+              </label>
+              <label class="field" style="margin-top:10px">1.4 Decisions or support required from management
+                <textarea data-frn="decisions" rows="3" placeholder="Decision or action needed, owner, by when."></textarea>
+              </label>
+              <div class="btnrow" style="margin-top:10px"><button type="button" class="btn small frSaveBtn">Save draft</button></div>
+            </article>
+
+            <article class="card span12" style="--i:3">
+              <div class="top"><span class="label cardtitle">2. Background, objectives and scope</span><span class="sub">Why the review took place, what it set out to do, and what it covered</span></div>
+              <label class="field">2.1 Background
+                <textarea data-frn="background" rows="3" placeholder="Why this review took place: plan reference, trigger, regulatory driver, or management request."></textarea>
+              </label>
+              <label class="field" style="margin-top:10px">2.2 Objectives
+                <textarea data-frn="objectives" rows="3" placeholder="The objectives the review set out to achieve, one per line."></textarea>
+              </label>
+              <label class="field" style="margin-top:10px">2.3 Scope: in scope
+                <textarea data-frn="scopeIn" rows="3" placeholder="Processes, controls, systems, entities and period covered."></textarea>
+              </label>
+              <label class="field" style="margin-top:10px">2.3 Scope: out of scope
+                <textarea data-frn="scopeOut" rows="3" placeholder="Explicitly excluded areas and the reason for each exclusion."></textarea>
+              </label>
+              <label class="field" style="margin-top:10px">2.4 Criteria and standards applied
+                <textarea data-frn="criteria" rows="3" placeholder="The policies, regulations, frameworks and standards used to judge the area, for example internal policy references, regulator requirements, COSO 2013 principles, ISO 27001:2022 controls, or the IIA Global Internal Audit Standards."></textarea>
+              </label>
+              <div class="btnrow" style="margin-top:10px"><button type="button" class="btn small frSaveBtn">Save draft</button></div>
+            </article>
+
+            <article class="card span12" style="--i:4">
+              <div class="top"><span class="label cardtitle">3. Approach and methodology</span><span class="sub">Work performed, sampling, test environment and reliance</span></div>
+              <span class="label" style="font-size:14.5px;font-weight:600">3.1 Work performed</span>
+              <div id="frWorkSummary" style="margin-top:6px"></div>
+              <label class="field" style="margin-top:10px">Work performed (narrative)
+                <textarea data-frn="workPerformed" rows="3" placeholder="Walkthroughs, design testing, operating effectiveness testing, interviews, data analysis, document review."></textarea>
+              </label>
+              <span class="label" style="font-size:14.5px;font-weight:600;display:block;margin-top:14px">3.2 Sampling</span>
+              <div id="frSampling" style="margin-top:6px"></div>
+              <label class="field" style="margin-top:12px">3.3 Test environment and data
+                <textarea data-frn="testEnv" rows="3" placeholder="Systems and versions used, date and time of testing, and the data used. State whether live or test data was used."></textarea>
+              </label>
+              <label class="field" style="margin-top:10px">3.4 Reliance on the work of others
+                <textarea data-frn="relianceOthers" rows="3" placeholder="Any reliance on first line testing, Internal Audit, external reports or other work, and how reliability was assessed. Write None if not applicable."></textarea>
+              </label>
+              <div class="btnrow" style="margin-top:10px"><button type="button" class="btn small frSaveBtn">Save draft</button></div>
+            </article>
+
+            <article class="card span12" style="--i:5">
+              <div class="top"><span class="label cardtitle">4. Rating scales</span><span class="sub">The scales applied in Sections 1, 5 and 6, as set in the template</span></div>
+              <span class="label" style="font-size:14.5px;font-weight:600">4.1 Finding severity</span>
+              <div class="tablewrap" style="margin-top:6px"><table>
+                <thead><tr><th>Rating</th><th>Definition</th><th>Expected remediation</th></tr></thead>
+                <tbody>
+                  <tr><td><span class="t">Critical</span></td><td>Control failure or gap that could cause severe harm to customers, material misstatement, or serious regulatory breach. Immediate escalation.</td><td>Within 30 days</td></tr>
+                  <tr><td><span class="t">High</span></td><td>Significant weakness that could cause material impact if not addressed.</td><td>Within 90 days</td></tr>
+                  <tr><td><span class="t">Medium</span></td><td>Weakness that reduces control effectiveness, with moderate impact.</td><td>Within 180 days</td></tr>
+                  <tr><td><span class="t">Low</span></td><td>Minor weakness or improvement opportunity with limited impact.</td><td>Next planned cycle</td></tr>
+                </tbody>
+              </table></div>
+              <span class="label" style="font-size:14.5px;font-weight:600;display:block;margin-top:14px">4.2 Overall rating</span>
+              <div class="tablewrap" style="margin-top:6px"><table>
+                <thead><tr><th>Rating</th><th>Definition</th></tr></thead>
+                <tbody>
+                  <tr><td><span class="t">Satisfactory</span></td><td>Controls are well designed and operating effectively. No critical or high findings.</td></tr>
+                  <tr><td><span class="t">Needs improvement</span></td><td>Some weaknesses require attention. No critical findings, and limited high findings.</td></tr>
+                  <tr><td><span class="t">Unsatisfactory</span></td><td>Significant weaknesses. One or more critical findings, or several high findings.</td></tr>
+                </tbody>
+              </table></div>
+              <label class="field" style="margin-top:12px">4.3 Impact and likelihood
+                <textarea data-frn="impactLikelihood" rows="3" placeholder="How impact and likelihood were combined to reach each severity rating, including the factors considered, such as customer harm, financial loss, regulatory exposure, data integrity and reputation."></textarea>
+              </label>
+              <div class="btnrow" style="margin-top:10px"><button type="button" class="btn small frSaveBtn">Save draft</button></div>
+            </article>
+
+            <article class="card span12" style="--i:6">
+              <div class="top"><span class="label cardtitle">5. Summary of findings</span><span class="sub">Live from the review's findings</span></div>
+              <div class="tablewrap"><table>
+                <thead><tr><th>Ref</th><th>Finding title</th><th>Rating</th><th>Owner</th><th>Due date</th><th>Status</th></tr></thead>
+                <tbody id="frSummaryFindings"></tbody>
+              </table></div>
+            </article>
+
+            <article class="card span12" style="--i:7">
+              <div class="top"><span class="label cardtitle">6. Detailed findings</span><span class="sub">One block per finding; fields the review data does not hold are draft fields</span></div>
+              <div id="frDetailedFindings"></div>
+              <div class="btnrow" style="margin-top:10px"><button type="button" class="btn small frSaveBtn">Save draft</button></div>
+            </article>
+
+            <article class="card span12" style="--i:8">
+              <div class="top"><span class="label cardtitle">7. Good practice and positive observations</span><span class="sub">What worked well, with the evidence</span></div>
+              <label class="field">Good practice and positive observations
+                <textarea data-frn="goodPractice" rows="4" placeholder="Control or practice that worked well and the evidence for it, and any improvement already made by management during the review."></textarea>
+              </label>
+              <span class="label" style="font-size:14.5px;font-weight:600;display:block;margin-top:16px">8. Limitations and reliance</span>
+              <span class="label" style="font-size:13.5px;font-weight:600;display:block;margin-top:10px">8.1 What was not tested (controls in scope that were not tested)</span>
+              <div id="frNotTested" style="margin-top:6px"></div>
+              <label class="field" style="margin-top:10px">8.1 What was not tested (notes)
+                <textarea data-frn="notTested" rows="3" placeholder="Area, activity or data not tested, and why."></textarea>
+              </label>
+              <label class="field" style="margin-top:10px">8.2 Limitations
+                <textarea data-frn="limitations" rows="3" placeholder="For example: sample based, point in time, test environment only, no security testing."></textarea>
+              </label>
+              <label class="field" style="margin-top:10px">8.3 Reliance
+                <textarea data-frn="relianceStmt" rows="3"></textarea>
+              </label>
+              <div class="btnrow" style="margin-top:10px"><button type="button" class="btn small frSaveBtn">Save draft</button></div>
+            </article>
+
+            <article class="card span12" style="--i:9">
+              <div class="top"><span class="label cardtitle">Appendices</span><span class="sub">Evidence index, test results, test data, action tracker, glossary</span></div>
+              <span class="label" style="font-size:14.5px;font-weight:600">Appendix A: Evidence index</span>
+              <div class="tablewrap" style="margin-top:6px"><table>
+                <thead><tr><th>Item</th><th>Description</th><th>Source</th><th>Date</th><th>Finding ref</th></tr></thead>
+                <tbody id="frAppA"></tbody>
+              </table></div>
+              <span class="label" style="font-size:14.5px;font-weight:600;display:block;margin-top:14px">Appendix B: Test results</span>
+              <div class="tablewrap" style="margin-top:6px"><table>
+                <thead><tr><th>Test ID</th><th>Control or test description</th><th>Sample</th><th>Result</th><th>Exception notes</th></tr></thead>
+                <tbody id="frAppB"></tbody>
+              </table></div>
+              <span class="label" style="font-size:14.5px;font-weight:600;display:block;margin-top:14px">Appendix C: Test data inventory</span>
+              <div id="frAppC" style="margin-top:6px"></div>
+              <label class="field" style="margin-top:10px">Test data note
+                <textarea data-frn="testDataNote" rows="3" placeholder="List any test or example data created for the review, and confirm whether client or personal data was used and how it was protected."></textarea>
+              </label>
+              <span class="label" style="font-size:14.5px;font-weight:600;display:block;margin-top:14px">Appendix D: Management action tracker</span>
+              <div class="tablewrap" style="margin-top:6px"><table>
+                <thead><tr><th>Ref</th><th>Agreed action</th><th>Owner</th><th>Target date</th><th>Status</th><th>Closure evidence</th></tr></thead>
+                <tbody id="frAppD"></tbody>
+              </table></div>
+              <span class="label" style="font-size:14.5px;font-weight:600;display:block;margin-top:14px">Appendix E: Glossary</span>
+              <div class="tablewrap" style="margin-top:6px"><table>
+                <thead><tr><th>Term</th><th>Meaning</th></tr></thead>
+                <tbody>
+                  <tr><td><span class="t">RCSA</span></td><td>Risk and Control Self-Assessment</td></tr>
+                  <tr><td><span class="t">ToD / ToE</span></td><td>Test of Design / Test of Operating Effectiveness</td></tr>
+                  <tr><td><span class="t">KRI / KCI</span></td><td>Key Risk Indicator / Key Control Indicator</td></tr>
+                </tbody>
+              </table></div>
+              <div class="btnrow" style="margin-top:10px"><button type="button" class="btn small frSaveBtn">Save draft</button></div>
+            </article>
+
+            <article class="card span12" style="--i:10">
+              <div class="top"><span class="label cardtitle">Report audit trail</span><span class="sub">Who prepared, reviewed, approved and signed off this report</span></div>
+              <ul class="trail" id="frTrail"></ul>
+              <div class="btnrow" style="margin-top:10px"><button type="button" class="btn small frSaveBtn" id="frSaveDraft">Save draft</button><span class="sub" id="frDraftNote" role="status"></span><button type="button" class="btn small ghost" id="frDownload">Download final report</button></div>
+            </article>
+          </div>
+        </div>
+
         <!-- Timeline -->
         <div class="wpanel" data-wpanel="timeline">
           <div class="grid">
@@ -9872,6 +10068,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           renderMethSteps(); renderProgress(); renderResourcing(); renderStakeholders(); renderSlTemplates(); renderKindCard();
           try { renderMethPath(); } catch (e) {}
           try { renderSignoffGate(); } catch (e) {}
+          try { renderFinalReport(); } catch (e) {}
           try { renderFramework(); renderKris(); renderReportInputs(false); } catch (e) {}
           try { var lb = $("rwLockBanner"); if (lb) lb.hidden = r.status !== "Signed off"; } catch (e) {}
           var cc = $("calcControl");
@@ -9929,7 +10126,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           ["stakeholders", "Stakeholders"], ["evidence", "Evidence"], ["findings", "Findings"],
           ["actions", "Actions"], ["taxonomy", "Risk Taxonomy"], ["sltpl", "Template Plug-in"],
           ["documents", "Documents"], ["reports", "Reports"], ["timeline", "Timeline"], ["audittrail", "Audit Trail"],
-          ["team", "Team"], ["signoff", "Sign-off"]
+          ["team", "Team"], ["signoff", "Sign-off"], ["finalreport", "Final Report"], ["execpack", "Executive Pack"]
         ];
         var wTabsEl = $("wTabs");
         WTABS.forEach(function (t, i) {
@@ -9940,8 +10137,12 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           b.addEventListener("click", function () { selectWTab(t[0]); });
           wTabsEl.appendChild(b);
         });
-        var GATE_TABS = ["controls", "testplans", "sampling", "testing", "progress", "evidence", "findings", "actions", "taxonomy", "sltpl", "documents", "reports", "signoff"];
+        var GATE_TABS = ["controls", "testplans", "sampling", "testing", "progress", "evidence", "findings", "actions", "taxonomy", "sltpl", "documents", "reports", "finalreport", "signoff"];
         function selectWTab(key) {
+          /* The Executive Pack entry at the end of the tab order opens the
+             Executive Pack view itself; the Final Report tab sits
+             immediately above it. */
+          if (key === "execpack") { goView("execpack"); return; }
           if (GATE_TABS.indexOf(key) > -1) {
             var gr = getReview(currentReviewId);
             if (gr && !methGateOk(gr)) {
@@ -9956,6 +10157,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           try { updateStageChip(key); } catch (e) {}
           if (key === "signoff") { try { renderSignoffGate(); } catch (e) {} }
           if (key === "reports") { try { renderFramework(); renderKris(); renderReportInputs(false); } catch (e) {} }
+          if (key === "finalreport") { try { renderFinalReport(); } catch (e) {} }
           if (key === "actions") { try { renderWsActions(); } catch (e) {} }
           if (key === "sampling") { try { restoreSamplingCalc(); } catch (e) {} }
         }
@@ -11527,6 +11729,653 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           if (!reason) { toast("Record the override reason first - it goes on the audit trail with the outstanding items."); return; }
           var rd = signoffReadiness(r);
           doSignOff(r, reason, rd.blockers);
+        });
+
+        /* ---------- final report (persisted on the review record) ----------
+           The Final Report tab owns the report workflow for a review and
+           follows the Final Assurance Report template as the standard: the
+           full review outcome is mapped into the template sections, with
+           computed figures read live from the review's own data (findings,
+           control testing, the sampling calculation, actions and evidence)
+           and narrative fields editable only while the report is a draft.
+           A template field the review's data does not hold is left as an
+           editable draft field and is never invented by the application.
+           Placement: this tab sits after Sign-off, immediately above the
+           Executive Pack in the workspace tab order. It is not one of the
+           review stage tabs.
+           Definition: this is the post-lifecycle report. It is shared with
+           the internal audit team at the review stage, before submission
+           to stakeholders and the executive committee at final issue, and
+           its status can only become Final once the review lifecycle is
+           complete, that is, once the review itself is signed off.
+           Workflow: Draft (editable) -> In review -> Approved -> Signed
+           off (locked). Prepared by, the independent reviewer and the
+           approver each record name, role and email address, and the
+           final sign-off records the signer; the signature column of the
+           template is satisfied by that recorded name, email and date.
+           Every transition is written to the review's audit trail and
+           shown on the report. Email addresses are recorded for the audit
+           trail only - no email is sent by the application. */
+        var FR_STATES = [["draft", "Draft"], ["inreview", "In review"], ["approved", "Approved"], ["signedoff", "Signed off"]];
+        var FR_NARR_KEYS = ["conclusion", "keyMessages", "decisions", "background", "objectives", "scopeIn", "scopeOut", "criteria", "workPerformed", "testEnv", "relianceOthers", "independence", "impactLikelihood", "goodPractice", "notTested", "limitations", "relianceStmt", "testDataNote", "distribution", "classification", "restrictions"];
+        var FR_DETAIL_FIELDS = [["criteria", "Criteria"], ["condition", "Condition"], ["cause", "Cause"], ["effect", "Effect or risk"], ["recommendation", "Recommendation"], ["mgmt", "Management response"], ["evidenceRef", "Evidence reference"]];
+        function frStateLabel(s) { var f = FR_STATES.find(function (x) { return x[0] === s; }); return f ? f[1] : "Draft"; }
+        function frStateClass(s) { return s === "signedoff" || s === "approved" ? "done" : (s === "inreview" ? "review" : "todo"); }
+        function frStamp(iso) {
+          if (!iso) return "";
+          var d = new Date(iso);
+          return isNaN(d.getTime()) ? "" : d.toLocaleString("en-GB", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
+        }
+        function frDay(iso) {
+          if (!iso) return "";
+          var d = new Date(iso);
+          return isNaN(d.getTime()) ? String(iso).slice(0, 10) : d.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+        }
+        /* The template reports severity on a Critical / High / Medium /
+           Low scale. The review records Major and Minor findings, which
+           are reported as High and Low so the results at a glance, the
+           summary of findings and the detailed findings all reconcile. */
+        function frSevBucket(sev) {
+          var m = { Critical: "Critical", High: "High", Major: "High", Medium: "Medium", Minor: "Low", Low: "Low" };
+          return m[sev] || "Medium";
+        }
+        function frReviewFindings(r) { return DB.findings.filter(function (f) { return f.reviewId === r.id; }); }
+        function frSortedFindings(r) {
+          return frReviewFindings(r).slice().sort(function (a, b) {
+            var ra = SEV_RANK[a.severity] != null ? SEV_RANK[a.severity] : 9, rb = SEV_RANK[b.severity] != null ? SEV_RANK[b.severity] : 9;
+            if (ra !== rb) return ra - rb;
+            return String(a.ref || "") < String(b.ref || "") ? -1 : 1;
+          });
+        }
+        /* Overall rating on the template scale (Section 4.2 definitions):
+           Unsatisfactory where there is a critical finding, several high
+           findings, or the computed rating is Ineffective; Satisfactory
+           only where the computed rating is Effective with no critical or
+           high findings; Needs improvement otherwise. */
+        function frTemplateRating(r) {
+          var findings = frReviewFindings(r);
+          var crit = findings.filter(function (f) { return frSevBucket(f.severity) === "Critical"; }).length;
+          var high = findings.filter(function (f) { return frSevBucket(f.severity) === "High"; }).length;
+          var base = overallRatingFor(r);
+          if (base === "Not rated yet" && !findings.length) return "Not rated yet";
+          if (crit > 0 || high >= 3 || base === "Ineffective") return "Unsatisfactory";
+          if (base === "Effective" && crit === 0 && high === 0) return "Satisfactory";
+          return "Needs improvement";
+        }
+        function frFindingState(f) {
+          var closed = f.status === "Complete" || f.status === "Closed";
+          var overdue = false;
+          if (!closed) {
+            if (f.status === "Overdue") overdue = true;
+            else { var d = parseDueDate(f.targetDate); if (d) { var t = new Date(); t.setHours(0, 0, 0, 0); overdue = d.getTime() < t.getTime(); } }
+          }
+          return { closed: closed, overdue: overdue, label: closed ? "Closed" : (overdue ? "Overdue" : (f.status || "Open")) };
+        }
+        function frGlanceData(r) {
+          var findings = frReviewFindings(r);
+          var rows = ["Critical", "High", "Medium", "Low"].map(function (b) {
+            var fs = findings.filter(function (f) { return frSevBucket(f.severity) === b; });
+            var closed = fs.filter(function (f) { return frFindingState(f).closed; }).length;
+            var overdue = fs.filter(function (f) { return frFindingState(f).overdue; }).length;
+            return { rating: b, number: fs.length, open: fs.length - closed, closed: closed, overdue: overdue };
+          });
+          var tot = { rating: "Total", number: findings.length, open: 0, closed: 0, overdue: 0 };
+          rows.forEach(function (x) { tot.open += x.open; tot.closed += x.closed; tot.overdue += x.overdue; });
+          rows.push(tot);
+          return rows;
+        }
+        function frControlForFinding(r, f) {
+          var controls = getControls(r.id);
+          if (f.fromTestId) { var c = controls.find(function (x) { return x.id === f.fromTestId; }); if (c) return c; }
+          if (f.controlName) {
+            var needle = String(f.controlName).toLowerCase().split(/\s+/).slice(0, 2).join(" ");
+            var c2 = controls.find(function (x) { return x.controlName && x.controlName.toLowerCase().indexOf(needle) > -1; });
+            if (c2) return c2;
+          }
+          return null;
+        }
+        function frEvidenceItems(r) {
+          var items = [], seen = {};
+          var controls = getControls(r.id);
+          var byCode = {}; controls.forEach(function (c) { if (c.code) byCode[c.code] = c; });
+          var findings = frReviewFindings(r);
+          var refFor = function (controlId) { var f = findings.find(function (x) { return x.fromTestId === controlId; }); return f ? (f.ref || "") : ""; };
+          DB.evidenceFiles.filter(function (e) { return e.reviewId === r.id; }).forEach(function (e) {
+            var c = byCode[e.ref];
+            items.push({ desc: e.name || "Evidence file", source: e.ref || "Evidence tab", date: e.uploadedAt ? frDay(e.uploadedAt) : "", findingRef: c ? refFor(c.id) : "" });
+            if (e.name) seen[e.name] = true;
+          });
+          controls.forEach(function (c) {
+            (c.evidence || []).forEach(function (name) {
+              if (!name || seen[name]) return; seen[name] = true;
+              items.push({ desc: name, source: c.code || c.controlName || "", date: "", findingRef: refFor(c.id) });
+            });
+          });
+          items.forEach(function (it, i) { it.n = "A-" + (i + 1 < 10 ? "0" : "") + (i + 1); });
+          return items;
+        }
+        function frDetailComputed(r, f, field, items) {
+          var c = frControlForFinding(r, f);
+          if (field === "criteria") return c ? ((c.regulationReference || "") + (c.objective ? ((c.regulationReference ? " " : "") + "Control objective: " + c.objective) : "")) : "";
+          if (field === "condition") return c ? (c.exceptions || c.result_comments || "") : "";
+          if (field === "cause") return f.rootCause || "";
+          if (field === "effect") return f.riskImpact || "";
+          if (field === "recommendation") return f.recommendation || "";
+          if (field === "mgmt") return f.managementResponse || "";
+          if (field === "evidenceRef") {
+            if (!f.ref) return "";
+            return (items || frEvidenceItems(r)).filter(function (it) { return it.findingRef === f.ref; }).map(function (it) { return it.n; }).join(", ");
+          }
+          return "";
+        }
+        function frDetailValue(fr, r, f, field, items) {
+          var ov = fr.findingDetail && fr.findingDetail[f.id] ? fr.findingDetail[f.id][field] : "";
+          return ov || frDetailComputed(r, f, field, items);
+        }
+        function frDefaults(r) {
+          var controls = getControls(r.id);
+          var tested = controls.filter(function (c) { return c.effectiveness && c.effectiveness !== "Not Tested"; });
+          var findings = frReviewFindings(r);
+          var acts = reviewActions(r.id);
+          var open = acts.filter(function (a) { return a.status !== "Complete" && a.status !== "Closed"; });
+          var rating = frTemplateRating(r);
+          var top = frSortedFindings(r).slice(0, 3);
+          return {
+            conclusion: rating === "Not rated yet" ? "" : "The overall rating for this review is " + rating + ": " + tested.length + " of " + controls.length + " controls in scope were tested and " + findings.length + " finding(s) were raised.",
+            keyMessages: top.length ? top.map(function (f) { return (f.ref ? f.ref + " - " : "") + (f.title || "Finding") + " (" + frSevBucket(f.severity) + ")"; }).join("\n") : "No findings were raised on this review.",
+            decisions: open.length ? open.map(function (a) { return a.title + " - owner " + (a.owner || "Not set") + ", target " + (a.due || "Not agreed"); }).join("\n") : "No open actions are tracked from this review.",
+            distribution: "Internal audit team at the review stage; stakeholders and the executive committee at final issue.",
+            classification: "Confidential",
+            restrictions: "This report was prepared for the stated distribution only. It is not a certification or attestation unless stated. Readers should apply their own risk appetite when scheduling remediation.",
+            relianceStmt: "This report was prepared for the stated distribution only. It is not a certification or attestation unless stated. Readers should apply their own risk appetite when scheduling remediation."
+          };
+        }
+        function getFinalReport(r) {
+          var fr = (r && r.finalReport) || null;
+          if (!fr) fr = { state: "draft", narrative: {}, history: [], createdAt: nowISO() };
+          if (!fr.createdAt) fr.createdAt = nowISO();
+          if (!fr.narrative) fr.narrative = {};
+          /* narrative carried over from the earlier report layout keeps
+             its wording under the template headings */
+          var legacy = { opinion: "conclusion", themes: "keyMessages", actions: "decisions" };
+          Object.keys(legacy).forEach(function (oldKey) {
+            if (fr.narrative[oldKey] && !fr.narrative[legacy[oldKey]]) fr.narrative[legacy[oldKey]] = fr.narrative[oldKey];
+          });
+          var dfl = frDefaults(r);
+          FR_NARR_KEYS.forEach(function (k) { if (fr.narrative[k] == null) fr.narrative[k] = dfl[k] || ""; });
+          if (!fr.findingDetail) fr.findingDetail = {};
+          if (!fr.actionClosure) fr.actionClosure = {};
+          if (!fr.history) fr.history = [];
+          if (!fr.state) fr.state = "draft";
+          return fr;
+        }
+        function saveFinalReport(r, fr) {
+          REVIEWS = REVIEWS.map(function (x) { return x.id === r.id ? Object.assign({}, x, { finalReport: fr }) : x; });
+          persistReviews();
+        }
+        function frNarrValue(fr, r, key) {
+          var v = fr.narrative[key];
+          if (v == null || v === "") {
+            if (key === "scopeOut") v = r.scopeOut || "";
+            else if (key === "independence") v = r.independenceNote || "";
+            else if (key === "relianceOthers") v = r.thirdLineNote || "";
+          }
+          return v || "";
+        }
+        function frVersionOf(fr) {
+          if (fr.state === "signedoff") return "1.0";
+          if (fr.state === "approved") return "0.3";
+          if (fr.state === "inreview") return "0.2";
+          return "0.1";
+        }
+        function frVersionRows(fr) {
+          var rows = [{ v: "0.1", date: frDay(fr.createdAt), author: fr.preparedBy || "", change: "First draft" }];
+          (fr.history || []).forEach(function (e) {
+            if (e.action === "Submitted for review") rows.push({ v: "0.2", date: frDay(e.at), author: e.by || "", change: "Issued for review" });
+            else if (e.action === "Reviewed") rows.push({ v: "0.2", date: frDay(e.at), author: e.by || "", change: "Reviewer comments incorporated" });
+            else if (e.action === "Approved") rows.push({ v: "0.3", date: frDay(e.at), author: e.by || "", change: "Approved" });
+            else if (e.action === "Signed off") rows.push({ v: "1.0", date: frDay(e.at), author: e.by || "", change: "Final issue" });
+          });
+          return rows;
+        }
+        function frSamplingRec(r) {
+          try { return ensureArray(loadData("ra2_sampling_calc", [])).find(function (x) { return x.reviewId === r.id; }) || null; } catch (e) { return null; }
+        }
+        function frSaveNarrativeFromForm(fr, r) {
+          var panel = document.querySelector('.wpanel[data-wpanel="finalreport"]');
+          if (!panel) return;
+          panel.querySelectorAll("[data-frn]").forEach(function (el) { fr.narrative[el.getAttribute("data-frn")] = el.value; });
+          var items = frEvidenceItems(r);
+          panel.querySelectorAll("[data-frf]").forEach(function (el) {
+            var parts = el.getAttribute("data-frf").split(":");
+            var fid = parts[0], field = parts[1];
+            var f = frReviewFindings(r).find(function (x) { return x.id === fid; });
+            if (!f) return;
+            if (!fr.findingDetail[fid]) fr.findingDetail[fid] = {};
+            var computed = frDetailComputed(r, f, field, items);
+            var val = el.value;
+            /* store only what the preparer actually wrote: text that still
+               matches the live review data stays a live mapping, so the
+               report cannot drift away from the findings */
+            if (val && val !== computed) fr.findingDetail[fid][field] = val; else delete fr.findingDetail[fid][field];
+          });
+          panel.querySelectorAll("[data-fra]").forEach(function (el) {
+            var aid = el.getAttribute("data-fra");
+            if (el.value) fr.actionClosure[aid] = el.value; else delete fr.actionClosure[aid];
+          });
+          var pn = $("frPrepName"), pr = $("frPrepRole"), pe = $("frPrepEmail");
+          if (pn) fr.prepName = pn.value;
+          if (pr) fr.prepRole = pr.value;
+          if (pe) fr.prepEmail = pe.value;
+        }
+        function renderFinalReport() {
+          var r = getReview(currentReviewId); if (!r) return;
+          var fr = getFinalReport(r);
+          var panel = document.querySelector('.wpanel[data-wpanel="finalreport"]'); if (!panel) return;
+          var editable = fr.state === "draft";
+          var reviewSignedOff = r.status === "Signed off";
+          var isFinal = fr.state === "signedoff";
+          var findings = frSortedFindings(r);
+          var controls = getControls(r.id);
+          var items = frEvidenceItems(r);
+          var kv = function (k, v) { return '<div class="kv"><span>' + esc(k) + "</span><b>" + esc(v == null ? "" : v) + "</b></div>"; };
+          var stateEl = $("frState");
+          if (stateEl) { stateEl.textContent = isFinal ? "Final" : frStateLabel(fr.state); stateEl.className = "status " + frStateClass(fr.state); }
+          var hm = $("frHdrMeta");
+          if (hm) hm.innerHTML =
+            kv("Report title", "Final Assurance Report")
+            + kv("Review reference", r.name || "")
+            + kv("Business area or entity", r.businessArea || r.reviewType || "")
+            + kv("Reporting period", reviewPeriodText(r))
+            + kv("Review classification", classificationOf(r).label)
+            + kv("Jurisdictions", jurisdictionsOf(r).join(", "))
+            + kv("Methodology in force", methInForceText(r))
+            + kv("Lead reviewer", r.leadReviewer || "")
+            + kv("Review lifecycle status", r.status || "")
+            + kv("Overall assurance rating (review scale)", overallRatingFor(r))
+            + kv("Overall rating (template scale)", frTemplateRating(r));
+          var ct = $("frControlTable");
+          if (ct) {
+            var personLine = function (name, role) { return name ? name + (role ? ", " + role : "") : ""; };
+            var ctField = function (key) {
+              var v = frNarrValue(fr, r, key);
+              return editable ? '<input type="text" data-frn="' + key + '" value="' + esc(v) + '" style="width:100%" aria-label="' + key + '" />' : esc(v);
+            };
+            var rows = [
+              ["Report status", isFinal ? "Final" : "Draft"],
+              ["Version", frVersionOf(fr)],
+              ["Date of issue", isFinal ? frDay(fr.signedAt) : "Not issued"],
+              ["Prepared by", fr.preparedBy ? personLine(fr.preparedBy, fr.preparedRole) : "In preparation (lead reviewer: " + (r.leadReviewer || "not recorded") + ")"],
+              ["Reviewed by", fr.reviewedBy ? personLine(fr.reviewedBy, fr.reviewedRole) : "Not yet reviewed"],
+              ["Approved by", fr.approvedBy ? personLine(fr.approvedBy, fr.approvedRole) : "Not yet approved"]
+            ].map(function (row) { return "<tr><td><span class=\"t\">" + esc(row[0]) + "</span></td><td>" + esc(row[1]) + "</td></tr>"; }).join("");
+            rows += "<tr><td><span class=\"t\">Distribution</span></td><td>" + ctField("distribution") + "</td></tr>"
+              + "<tr><td><span class=\"t\">Classification</span></td><td>" + ctField("classification") + "</td></tr>"
+              + "<tr><td><span class=\"t\">Restrictions on use</span></td><td>" + ctField("restrictions") + "</td></tr>";
+            ct.innerHTML = rows;
+          }
+          var steps = $("frSteps");
+          if (steps) {
+            var idx = FR_STATES.findIndex(function (x) { return x[0] === fr.state; });
+            steps.innerHTML = FR_STATES.map(function (s, i) {
+              var style = "padding:7px 12px;border:1px solid var(--line);border-radius:10px;font-size:13px;"
+                + (i === idx ? "background:var(--surface-2);font-weight:700" : (i < idx ? "font-weight:600" : "color:var(--ink-2)"));
+              return '<span style="' + style + '">' + (i < idx ? "&#10003; " : "") + esc(s[1]) + "</span>"
+                + (i < FR_STATES.length - 1 ? '<span aria-hidden="true" style="color:var(--ink-2)">&#8594;</span>' : "");
+            }).join("");
+          }
+          var vh = $("frVersionHistory");
+          if (vh) vh.innerHTML = frVersionRows(fr).map(function (row) {
+            return "<tr><td>" + esc(row.v) + "</td><td>" + esc(row.date) + "</td><td>" + esc(row.author) + "</td><td>" + esc(row.change) + "</td></tr>";
+          }).join("");
+          var at2 = $("frApprovalTable");
+          if (at2) {
+            var aRow = function (stage, name, role, email, at) {
+              return "<tr><td><span class=\"t\">" + esc(stage) + "</span></td><td>" + esc(name || "Not recorded") + "</td><td>" + esc(role || "") + "</td><td>" + esc(email || "") + "</td><td>" + (name ? "Recorded in the application" : "") + "</td><td>" + esc(at ? frDay(at) : "") + "</td></tr>";
+            };
+            at2.innerHTML =
+              aRow("Prepared by", fr.preparedBy, fr.preparedRole, fr.preparedEmail, fr.preparedAt)
+              + aRow("Independent reviewer", fr.reviewedBy, fr.reviewedRole, fr.reviewedEmail, fr.reviewedAt)
+              + aRow("Approver", fr.approvedBy, fr.approvedRole, fr.approvedEmail, fr.approvedAt)
+              + aRow("Final sign-off", fr.signedBy, fr.signedRole, fr.signedEmail, fr.signedAt);
+          }
+          var rl = $("frRatingLine");
+          if (rl) rl.innerHTML = kv("Overall rating", frTemplateRating(r)) + kv("Basis (review scale)", overallRatingFor(r)) + kv("Controls tested", controls.filter(function (c) { return c.effectiveness && c.effectiveness !== "Not Tested"; }).length + " of " + controls.length);
+          var gl = $("frGlance");
+          if (gl) gl.innerHTML = frGlanceData(r).map(function (row) {
+            var tag = row.rating === "Total" ? ' style="font-weight:700"' : "";
+            return "<tr" + tag + "><td>" + esc(row.rating) + "</td><td>" + row.number + "</td><td>" + row.open + "</td><td>" + row.closed + "</td><td>" + row.overdue + "</td></tr>";
+          }).join("");
+          var ws = $("frWorkSummary");
+          if (ws) {
+            var results = [];
+            try { results = ensureArray(loadData("ra2_test_results", [])).filter(function (x) { return x.reviewId === r.id; }); } catch (e) {}
+            var rc = function (res) { return results.filter(function (x) { return x.result === res; }).length; };
+            ws.innerHTML = kv("Controls in scope", String(controls.length))
+              + kv("Controls tested", controls.filter(function (c) { return c.effectiveness && c.effectiveness !== "Not Tested"; }).length + " of " + controls.length)
+              + kv("Test results recorded", results.length + " (Pass " + rc("Pass") + ", Fail " + rc("Fail") + ", Partial " + rc("Partial") + ")")
+              + kv("Findings raised", String(findings.length));
+          }
+          var smp = $("frSampling");
+          if (smp) {
+            var rec = frSamplingRec(r);
+            if (rec && rec.state) {
+              var st = rec.state;
+              smp.innerHTML = kv("Population", st.N != null ? String(st.N) + " items" : (rec.pop ? String(rec.pop) : "Not recorded"))
+                + kv("Sampling method", "Attribute sampling, " + st.conf + "% confidence, " + st.tol + "% tolerable deviation rate, " + st.exp + "% expected deviation rate")
+                + kv("Sample size", String(st.n))
+                + kv("Sampling period", reviewPeriodText(r));
+            } else {
+              var plans = getPlans(r.id);
+              smp.innerHTML = plans.length
+                ? plans.map(function (p) { return kv((p.code ? p.code + " " : "") + (p.label || "Test plan"), "Population: " + (p.population || "Not recorded") + " | Sample size: " + (p.sampleSize != null && p.sampleSize !== "" ? p.sampleSize : "Not recorded")); }).join("")
+                : '<p class="sub" style="margin:0">No sampling calculation or test plan sample is saved for this review yet. Sampling is set on the Sampling tab.</p>';
+            }
+          }
+          var sf = $("frSummaryFindings");
+          if (sf) sf.innerHTML = findings.length ? findings.map(function (f) {
+            var stt = frFindingState(f);
+            return "<tr><td>" + esc(f.ref || "") + "</td><td><span class=\"t\">" + esc(f.title || "Finding") + "</span></td><td>" + esc(frSevBucket(f.severity)) + "</td><td>" + esc(f.owner || "") + "</td><td>" + esc(f.targetDate || "") + "</td><td>" + esc(stt.label) + "</td></tr>";
+          }).join("") : '<tr><td colspan="6">No findings raised on this review.</td></tr>';
+          var df = $("frDetailedFindings");
+          if (df) {
+            df.innerHTML = findings.length ? findings.map(function (f, i) {
+              var c = frControlForFinding(r, f);
+              var stt = frFindingState(f);
+              var head = '<span class="label" style="font-size:14.5px;font-weight:600;display:block;margin-top:' + (i ? "18" : "2") + 'px">Finding ' + (i + 1) + ": " + esc(f.title || "Finding") + "</span>";
+              var fixed = '<div style="margin-top:6px">'
+                + kv("Reference and rating", (f.ref || "") + " | " + frSevBucket(f.severity))
+                + kv("Action owner", f.owner || "Not recorded")
+                + kv("Target date", f.targetDate || "Not agreed")
+                + kv("Status", stt.label)
+                + (c ? kv("Control", (c.code ? c.code + " - " : "") + c.controlName) : "")
+                + "</div>";
+              var fieldsHtml = FR_DETAIL_FIELDS.map(function (pair) {
+                var val = frDetailValue(fr, r, f, pair[0], items);
+                if (editable) return '<label class="field" style="margin-top:8px">' + pair[1] + '<textarea data-frf="' + f.id + ":" + pair[0] + '" rows="2">' + esc(val) + "</textarea></label>";
+                return '<div class="kv" style="margin-top:4px"><span>' + esc(pair[1]) + "</span><b style=\"font-weight:500;text-align:left;flex:1\">" + esc(val || "Not recorded") + "</b></div>";
+              }).join("");
+              return head + fixed + fieldsHtml;
+            }).join("") : '<p class="sub" style="margin:0">No findings raised on this review.</p>';
+          }
+          var nt = $("frNotTested");
+          if (nt) {
+            var untested = controls.filter(function (c) { return !c.effectiveness || c.effectiveness === "Not Tested"; });
+            nt.innerHTML = untested.length ? untested.map(function (c) { return kv((c.code ? c.code + " - " : "") + c.controlName, "Not tested in this review"); }).join("") : '<p class="sub" style="margin:0">All controls in scope were tested.</p>';
+          }
+          var aa = $("frAppA");
+          if (aa) aa.innerHTML = items.length ? items.map(function (it) {
+            return "<tr><td>" + esc(it.n) + "</td><td>" + esc(it.desc) + "</td><td>" + esc(it.source) + "</td><td>" + esc(it.date) + "</td><td>" + esc(it.findingRef) + "</td></tr>";
+          }).join("") : '<tr><td colspan="5">No evidence recorded on this review.</td></tr>';
+          var ab = $("frAppB");
+          if (ab) {
+            var effLabel = function (e) { return e === "Pass" ? "Pass" : e === "Fail" ? "Fail" : e === "Partial" ? "Partial" : e === "Not Tested" ? "Not tested" : "Not recorded"; };
+            var plans2 = getPlans(r.id);
+            var rowsB = [];
+            if (plans2.length) plans2.forEach(function (p) {
+              var c = controls.find(function (x) { return x.id === p.controlId; });
+              rowsB.push({ id: p.code || "Test", desc: p.label || (c ? c.controlName : ""), sample: p.sampleSize != null && p.sampleSize !== "" ? p.sampleSize : (c && c.sampleSize != null ? c.sampleSize : ""), result: c ? effLabel(c.effectiveness) : "Not recorded", notes: c ? (c.exceptions || "") : "" });
+            });
+            else controls.forEach(function (c) { rowsB.push({ id: c.code || "Test", desc: c.controlName, sample: c.sampleSize != null ? c.sampleSize : "", result: effLabel(c.effectiveness), notes: c.exceptions || "" }); });
+            ab.innerHTML = rowsB.length ? rowsB.map(function (row) {
+              return "<tr><td>" + esc(row.id) + "</td><td>" + esc(row.desc) + "</td><td>" + esc(row.sample) + "</td><td>" + esc(row.result) + "</td><td>" + esc(row.notes) + "</td></tr>";
+            }).join("") : '<tr><td colspan="5">No tests recorded on this review.</td></tr>';
+          }
+          var ac = $("frAppC");
+          if (ac) ac.innerHTML = controls.length ? controls.map(function (c) { return kv((c.code ? c.code + " - " : "") + c.controlName, c.population || "Population not recorded"); }).join("") : '<p class="sub" style="margin:0">No populations recorded on this review.</p>';
+          var ad = $("frAppD");
+          if (ad) {
+            var acts = reviewActions(r.id);
+            ad.innerHTML = acts.length ? acts.map(function (a) {
+              var closure = fr.actionClosure[a.id] || "";
+              var cell = editable ? '<input type="text" data-fra="' + a.id + '" value="' + esc(closure) + '" style="width:100%" aria-label="Closure evidence" />' : esc(closure);
+              return "<tr><td>" + esc(a.findingRef || "") + "</td><td><span class=\"t\">" + esc(a.title || "Action") + "</span></td><td>" + esc(a.owner || "") + "</td><td>" + esc(a.due || "") + "</td><td>" + esc(a.status || "") + "</td><td>" + cell + "</td></tr>";
+            }).join("") : '<tr><td colspan="6">No actions tracked from this review.</td></tr>';
+          }
+          panel.querySelectorAll("[data-frn]").forEach(function (el) {
+            if (document.activeElement !== el) el.value = frNarrValue(fr, r, el.getAttribute("data-frn"));
+            el.disabled = !editable;
+          });
+          panel.querySelectorAll(".frSaveBtn").forEach(function (b) { b.disabled = !editable; });
+          var dn = $("frDraftNote");
+          if (dn && !editable) dn.textContent = "Narrative locked at this stage.";
+          var area = $("frStageArea");
+          if (area) {
+            var person = function (idp, label, roleDefault, nameDefault, roleVal) {
+              return '<div class="formrow"><label class="field">' + label + ' name<input id="fr' + idp + 'Name" type="text" placeholder="Full name" value="' + esc(nameDefault || "") + '" /></label>'
+                + '<label class="field">' + label + ' role<input id="fr' + idp + 'Role" type="text" placeholder="Role" value="' + esc(roleVal != null ? roleVal : (roleDefault || "")) + '" /></label>'
+                + '<label class="field">' + label + ' email address<input id="fr' + idp + 'Email" type="email" placeholder="name@example.com" /></label></div>';
+            };
+            var lifecycleNote = reviewSignedOff ? "" : '<p class="sub" style="margin:0 0 10px">The review lifecycle is not complete yet: this review is not signed off. The report can be prepared, reviewed and approved now, but final sign-off and Final status unlock once the review itself is signed off.</p>';
+            var h = "";
+            if (fr.state === "draft") {
+              h = lifecycleNote
+                + '<span class="label" style="font-size:14.5px;font-weight:600">Prepared by</span>'
+                + '<p class="sub" style="margin:6px 0 10px">The preparer records their name, role and email address here. All three go on the report and the audit trail; no email is sent. When the narrative is ready, submit the report for review. Submitting locks the narrative.</p>'
+                + person("Prep", "Preparer", null, fr.prepName || r.leadReviewer || currentActorName(), fr.prepRole != null && fr.prepRole !== "" ? fr.prepRole : "Lead reviewer")
+                + '<div class="btnrow" style="margin-top:10px"><button type="button" class="btn" id="frSubmitReview">Submit for review</button></div>';
+            } else if (fr.state === "inreview" && !fr.reviewedBy) {
+              h = lifecycleNote
+                + '<span class="label" style="font-size:14.5px;font-weight:600">Review stage: independent reviewer</span>'
+                + '<p class="sub" style="margin:6px 0 10px">The report is shared with the internal audit team at this stage. The independent reviewer records their name, role and email address here. All three go on the report and the audit trail; no email is sent.</p>'
+                + person("Rev", "Reviewer", "Independent reviewer", "", null)
+                + '<div class="btnrow" style="margin-top:10px"><button type="button" class="btn" id="frRecordReview">Record review</button></div>';
+            } else if (fr.state === "inreview") {
+              h = lifecycleNote
+                + '<p class="sub" style="margin:0 0 12px">Reviewed by ' + esc(fr.reviewedBy) + (fr.reviewedRole ? ", " + esc(fr.reviewedRole) : "") + " (" + esc(fr.reviewedEmail) + ") on " + esc(frStamp(fr.reviewedAt)) + ".</p>"
+                + '<span class="label" style="font-size:14.5px;font-weight:600">Approval stage</span>'
+                + '<p class="sub" style="margin:6px 0 10px">The approver records their name, role and email address here. All three go on the report and the audit trail; no email is sent.</p>'
+                + person("App", "Approver", "", "", null)
+                + '<div class="btnrow" style="margin-top:10px"><button type="button" class="btn" id="frApprove">Approve report</button></div>';
+            } else if (fr.state === "approved") {
+              if (!reviewSignedOff) {
+                h = '<span class="label" style="font-size:14.5px;font-weight:600">Final sign-off</span>'
+                  + '<p class="sub" style="margin:6px 0 0">Approved by ' + esc(fr.approvedBy) + " (" + esc(fr.approvedEmail) + ") on " + esc(frStamp(fr.approvedAt)) + '. Final sign-off is not available yet: the Final Report follows the completed review lifecycle, so the report can only become Final once this review itself is signed off on the Sign-off tab.</p>';
+              } else {
+                h = '<span class="label" style="font-size:14.5px;font-weight:600">Final sign-off</span>'
+                  + '<p class="sub" style="margin:6px 0 10px">The review lifecycle is complete. The signer records their name, role and email address and signs the report off. Sign-off sets the report status to Final and locks the report; the signed report is then submitted to stakeholders and the executive committee.</p>'
+                  + person("Sign", "Signer", "", "", null)
+                  + '<div class="btnrow" style="margin-top:10px"><button type="button" class="btn" id="frSignOff">Final sign-off</button></div>';
+              }
+            } else {
+              h = '<p class="sub" style="margin:0"><b>Signed off and Final.</b> This report is locked. It was signed off by ' + esc(fr.signedBy || "") + (fr.signedEmail ? " (" + esc(fr.signedEmail) + ")" : "") + (fr.signedAt ? " on " + esc(frStamp(fr.signedAt)) : "") + '. The record of who prepared, reviewed, approved and signed it is in Document control and the report audit trail below.</p>';
+            }
+            area.innerHTML = h;
+            var b1 = $("frSubmitReview"); if (b1) b1.addEventListener("click", function () { frTransition("submit"); });
+            var b2 = $("frRecordReview"); if (b2) b2.addEventListener("click", function () { frTransition("review"); });
+            var b3 = $("frApprove"); if (b3) b3.addEventListener("click", function () { frTransition("approve"); });
+            var b4 = $("frSignOff"); if (b4) b4.addEventListener("click", function () { frTransition("signoff"); });
+          }
+          var trail = $("frTrail");
+          if (trail) {
+            trail.innerHTML = fr.history.length ? fr.history.map(function (e) {
+              return '<li><span class="tt mono">' + esc(frStamp(e.at)) + '</span><span><b>' + esc(e.action) + ".</b> " + esc(e.by || "") + (e.email ? " (" + esc(e.email) + ")" : "") + "</span></li>";
+            }).join("") : '<li><span class="tt mono">-</span><span>No workflow steps recorded yet. The trail starts when the draft is saved or submitted for review.</span></li>';
+          }
+        }
+        function frValidEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(v || "").trim()); }
+        function frTransition(kind) {
+          var r = getReview(currentReviewId); if (!r) return;
+          var fr = getFinalReport(r);
+          if (kind === "signoff" && r.status !== "Signed off") {
+            toast("The Final Report can only become Final once the full review lifecycle is complete. Sign this review off on the Sign-off tab first; the report then completes its final sign-off here.");
+            return;
+          }
+          var who = { name: "", role: "", email: "" };
+          var read = function (idp) {
+            who.name = (($("fr" + idp + "Name") || {}).value || "").trim();
+            who.role = (($("fr" + idp + "Role") || {}).value || "").trim();
+            who.email = (($("fr" + idp + "Email") || {}).value || "").trim();
+          };
+          if (kind === "submit") read("Prep");
+          if (kind === "review") read("Rev");
+          if (kind === "approve") read("App");
+          if (kind === "signoff") read("Sign");
+          if (!who.name) { toast("Record the person's name first - it goes on the report and the audit trail."); return; }
+          if (!frValidEmail(who.email)) { toast("Enter a valid email address - it is recorded on the report and the audit trail."); return; }
+          var at = nowISO();
+          var msg = "", toastMsg = "";
+          if (kind === "submit") {
+            if (fr.state !== "draft") return;
+            frSaveNarrativeFromForm(fr, r);
+            fr.preparedBy = who.name; fr.preparedRole = who.role; fr.preparedEmail = who.email; fr.preparedAt = at;
+            fr.state = "inreview";
+            fr.history.push({ action: "Submitted for review", by: who.name, email: who.email, at: at });
+            msg = "Final report prepared by " + who.name + (who.role ? " (" + who.role + ")" : "") + " (" + who.email + ") and submitted for review.";
+            toastMsg = "Final report submitted for review. The narrative is now locked.";
+          } else if (kind === "review") {
+            if (fr.state !== "inreview" || fr.reviewedBy) return;
+            fr.reviewedBy = who.name; fr.reviewedRole = who.role; fr.reviewedEmail = who.email; fr.reviewedAt = at;
+            fr.history.push({ action: "Reviewed", by: who.name, email: who.email, at: at });
+            msg = "Final report reviewed by " + who.name + (who.role ? " (" + who.role + ")" : "") + " (" + who.email + ").";
+            toastMsg = "Review recorded on the report audit trail.";
+          } else if (kind === "approve") {
+            if (fr.state !== "inreview" || !fr.reviewedBy) return;
+            fr.state = "approved"; fr.approvedBy = who.name; fr.approvedRole = who.role; fr.approvedEmail = who.email; fr.approvedAt = at;
+            fr.history.push({ action: "Approved", by: who.name, email: who.email, at: at });
+            msg = "Final report approved by " + who.name + (who.role ? " (" + who.role + ")" : "") + " (" + who.email + ").";
+            toastMsg = "Final report approved.";
+          } else if (kind === "signoff") {
+            if (fr.state !== "approved") return;
+            fr.state = "signedoff"; fr.signedBy = who.name; fr.signedRole = who.role; fr.signedEmail = who.email; fr.signedAt = at;
+            fr.history.push({ action: "Signed off", by: who.name, email: who.email, at: at });
+            msg = "Final report signed off by " + who.name + (who.role ? " (" + who.role + ")" : "") + " (" + who.email + "). The report is Final and locked.";
+            toastMsg = "Final report signed off. The report is Final and locked.";
+          } else { return; }
+          saveFinalReport(r, fr);
+          appendAuditLog({ reviewId: r.id, action: msg, entityType: "Final Report", entityLabel: r.name, changedBy: currentActorName() });
+          renderAudit();
+          renderFinalReport();
+          toast(toastMsg);
+        }
+        function finalReportLines(r) {
+          var fr = getFinalReport(r);
+          var isFinal = fr.state === "signedoff";
+          var findings = frSortedFindings(r);
+          var controls = getControls(r.id);
+          var items = frEvidenceItems(r);
+          var L = [];
+          var nv = function (key) { return frNarrValue(fr, r, key); };
+          var sect = function (t) { L.push("", t, ""); };
+          L.push("Final Assurance Report");
+          L.push("Review reference: " + (r.name || "") + " | Business area or entity: " + (r.businessArea || r.reviewType || "") + " | Reporting period: " + reviewPeriodText(r));
+          L.push("");
+          L.push("Report status: " + (isFinal ? "Final" : "Draft"));
+          L.push("Version: " + frVersionOf(fr));
+          L.push("Date of issue: " + (isFinal ? frDay(fr.signedAt) : "Not issued"));
+          L.push("Prepared by: " + (fr.preparedBy ? fr.preparedBy + (fr.preparedRole ? ", " + fr.preparedRole : "") + (fr.preparedEmail ? " (" + fr.preparedEmail + ")" : "") : "In preparation"));
+          L.push("Reviewed by: " + (fr.reviewedBy ? fr.reviewedBy + (fr.reviewedRole ? ", " + fr.reviewedRole : "") + (fr.reviewedEmail ? " (" + fr.reviewedEmail + ")" : "") : "Not yet reviewed"));
+          L.push("Approved by: " + (fr.approvedBy ? fr.approvedBy + (fr.approvedRole ? ", " + fr.approvedRole : "") + (fr.approvedEmail ? " (" + fr.approvedEmail + ")" : "") : "Not yet approved"));
+          L.push("Distribution: " + nv("distribution"));
+          L.push("Classification: " + nv("classification"));
+          L.push("Restrictions on use: " + nv("restrictions"));
+          sect("Document control");
+          L.push("Version history:");
+          frVersionRows(fr).forEach(function (row) { L.push("- " + row.v + " | " + row.date + " | " + row.author + " | " + row.change); });
+          L.push("Review and approval:");
+          [["Prepared by", fr.preparedBy, fr.preparedRole, fr.preparedEmail, fr.preparedAt], ["Independent reviewer", fr.reviewedBy, fr.reviewedRole, fr.reviewedEmail, fr.reviewedAt], ["Approver", fr.approvedBy, fr.approvedRole, fr.approvedEmail, fr.approvedAt], ["Final sign-off", fr.signedBy, fr.signedRole, fr.signedEmail, fr.signedAt]].forEach(function (row) {
+            L.push("- " + row[0] + ": " + (row[1] || "Not recorded") + (row[2] ? ", " + row[2] : "") + (row[3] ? " (" + row[3] + ")" : "") + (row[1] ? " | Signature: recorded in the application" : "") + (row[4] ? " | Date: " + frDay(row[4]) : ""));
+          });
+          L.push("Independence and objectivity statement: " + (nv("independence") || "Not recorded"));
+          sect("1. Executive summary");
+          L.push("1.1 Overall conclusion");
+          L.push("Overall rating: " + frTemplateRating(r));
+          L.push("Conclusion: " + (nv("conclusion") || "Not recorded"));
+          L.push("1.2 Results at a glance");
+          frGlanceData(r).forEach(function (row) { L.push("- " + row.rating + ": Number " + row.number + ", Open " + row.open + ", Closed " + row.closed + ", Overdue " + row.overdue); });
+          L.push("1.3 Key messages");
+          L.push(nv("keyMessages") || "Not recorded");
+          L.push("1.4 Decisions or support required from management");
+          L.push(nv("decisions") || "Not recorded");
+          sect("2. Background, objectives and scope");
+          L.push("2.1 Background: " + (nv("background") || "Not recorded"));
+          L.push("2.2 Objectives: " + (nv("objectives") || "Not recorded"));
+          L.push("2.3 Scope, in scope: " + (nv("scopeIn") || "Not recorded"));
+          L.push("2.3 Scope, out of scope: " + (nv("scopeOut") || "Not recorded"));
+          L.push("2.4 Criteria and standards applied: " + (nv("criteria") || "Not recorded"));
+          sect("3. Approach and methodology");
+          L.push("3.1 Work performed: " + (nv("workPerformed") || "Not recorded"));
+          L.push("Controls tested: " + controls.filter(function (c) { return c.effectiveness && c.effectiveness !== "Not Tested"; }).length + " of " + controls.length + ". Findings raised: " + findings.length + ".");
+          var rec = frSamplingRec(r);
+          if (rec && rec.state) L.push("3.2 Sampling: Population " + (rec.state.N != null ? rec.state.N : "Not recorded") + "; attribute sampling, " + rec.state.conf + "% confidence, " + rec.state.tol + "% tolerable deviation, " + rec.state.exp + "% expected deviation; sample size " + rec.state.n + "; sampling period " + reviewPeriodText(r) + ".");
+          else L.push("3.2 Sampling: as recorded per test plan in Appendix B.");
+          L.push("3.3 Test environment and data: " + (nv("testEnv") || "Not recorded"));
+          L.push("3.4 Reliance on the work of others: " + (nv("relianceOthers") || "Not recorded"));
+          sect("4. Rating scales");
+          L.push("4.1 Finding severity: Critical (severe harm, material misstatement or serious regulatory breach; remediate within 30 days). High (significant weakness, material impact; within 90 days). Medium (weakness reducing control effectiveness; within 180 days). Low (minor weakness or improvement opportunity; next planned cycle).");
+          L.push("4.2 Overall rating: Satisfactory (controls well designed and operating effectively; no critical or high findings). Needs improvement (some weaknesses; no critical findings and limited high findings). Unsatisfactory (significant weaknesses; one or more critical findings, or several high findings).");
+          L.push("4.3 Impact and likelihood: " + (nv("impactLikelihood") || "Not recorded"));
+          sect("5. Summary of findings");
+          if (findings.length) findings.forEach(function (f) { L.push("- " + (f.ref || "") + " | " + (f.title || "Finding") + " | " + frSevBucket(f.severity) + " | Owner " + (f.owner || "") + " | Due " + (f.targetDate || "") + " | " + frFindingState(f).label); });
+          else L.push("No findings raised on this review.");
+          sect("6. Detailed findings");
+          if (findings.length) findings.forEach(function (f, i) {
+            var dv = function (field) { return frDetailValue(fr, r, f, field, items) || "Not recorded"; };
+            L.push("Finding " + (i + 1) + ": " + (f.title || "Finding"));
+            L.push("Reference and rating: " + (f.ref || "") + " | " + frSevBucket(f.severity));
+            L.push("Criteria: " + dv("criteria"));
+            L.push("Condition: " + dv("condition"));
+            L.push("Cause: " + dv("cause"));
+            L.push("Effect or risk: " + dv("effect"));
+            L.push("Recommendation: " + dv("recommendation"));
+            L.push("Management response: " + dv("mgmt"));
+            L.push("Action owner: " + (f.owner || "Not recorded"));
+            L.push("Target date: " + (f.targetDate || "Not agreed"));
+            L.push("Status: " + frFindingState(f).label);
+            L.push("Evidence reference: " + dv("evidenceRef"));
+            L.push("");
+          });
+          else L.push("No findings raised on this review.");
+          sect("7. Good practice and positive observations");
+          L.push(nv("goodPractice") || "Not recorded");
+          sect("8. Limitations and reliance");
+          var untested = controls.filter(function (c) { return !c.effectiveness || c.effectiveness === "Not Tested"; });
+          L.push("8.1 What was not tested: " + (untested.length ? untested.map(function (c) { return (c.code ? c.code + " - " : "") + c.controlName; }).join("; ") : "All controls in scope were tested.") + (nv("notTested") ? " " + nv("notTested") : ""));
+          L.push("8.2 Limitations: " + (nv("limitations") || "Not recorded"));
+          L.push("8.3 Reliance: " + (nv("relianceStmt") || "Not recorded"));
+          sect("Appendix A: Evidence index");
+          if (items.length) items.forEach(function (it) { L.push("- " + it.n + " | " + it.desc + " | Source " + it.source + " | " + it.date + " | Finding " + it.findingRef); });
+          else L.push("No evidence recorded on this review.");
+          sect("Appendix B: Test results");
+          var plans = getPlans(r.id);
+          var effLabel = function (e) { return e === "Pass" ? "Pass" : e === "Fail" ? "Fail" : e === "Partial" ? "Partial" : e === "Not Tested" ? "Not tested" : "Not recorded"; };
+          if (plans.length) plans.forEach(function (p) { var c = controls.find(function (x) { return x.id === p.controlId; }); L.push("- " + (p.code || "Test") + " | " + (p.label || (c ? c.controlName : "")) + " | Sample " + (p.sampleSize != null && p.sampleSize !== "" ? p.sampleSize : (c ? c.sampleSize : "")) + " | " + (c ? effLabel(c.effectiveness) : "Not recorded") + " | " + (c ? (c.exceptions || "") : "")); });
+          else controls.forEach(function (c) { L.push("- " + (c.code || "Test") + " | " + c.controlName + " | Sample " + (c.sampleSize != null ? c.sampleSize : "") + " | " + effLabel(c.effectiveness) + " | " + (c.exceptions || "")); });
+          sect("Appendix C: Test data inventory");
+          controls.forEach(function (c) { L.push("- " + (c.code ? c.code + " - " : "") + c.controlName + ": " + (c.population || "Population not recorded")); });
+          L.push("Test data note: " + (nv("testDataNote") || "Not recorded"));
+          sect("Appendix D: Management action tracker");
+          var acts = reviewActions(r.id);
+          if (acts.length) acts.forEach(function (a) { L.push("- " + (a.findingRef || "") + " | " + (a.title || "Action") + " | Owner " + (a.owner || "") + " | Target " + (a.due || "") + " | " + (a.status || "") + " | Closure evidence: " + (fr.actionClosure[a.id] || "")); });
+          else L.push("No actions tracked from this review.");
+          sect("Appendix E: Glossary");
+          L.push("RCSA: Risk and Control Self-Assessment. ToD / ToE: Test of Design / Test of Operating Effectiveness. KRI / KCI: Key Risk Indicator / Key Control Indicator.");
+          sect("Report workflow and audit trail");
+          L.push("Report status: " + frStateLabel(fr.state) + (isFinal ? " (Final)" : ""));
+          if (fr.history.length) fr.history.forEach(function (e) { L.push("- " + frStamp(e.at) + " - " + e.action + " - " + (e.by || "") + (e.email ? " (" + e.email + ")" : "")); });
+          else L.push("- No workflow steps recorded yet.");
+          L.push("Email addresses above are recorded for the audit trail only; no email was sent by the application.");
+          return L;
+        }
+        document.querySelectorAll(".frSaveBtn").forEach(function (b) {
+          b.addEventListener("click", function () {
+            var r = getReview(currentReviewId); if (!r) return;
+            var fr = getFinalReport(r);
+            if (fr.state !== "draft") { toast("The narrative is locked now the report has left draft."); return; }
+            frSaveNarrativeFromForm(fr, r);
+            fr.history.push({ action: "Draft narrative saved", by: currentActorName(), email: "", at: nowISO() });
+            saveFinalReport(r, fr);
+            appendAuditLog({ reviewId: r.id, action: "Final report draft narrative saved by " + currentActorName() + ".", entityType: "Final Report", entityLabel: r.name, changedBy: currentActorName() });
+            renderAudit();
+            renderFinalReport();
+            var n = $("frDraftNote"); if (n) n.textContent = "Saved " + stamp() + " - on the report audit trail.";
+            toast("Final report draft saved.");
+          });
+        });
+        if ($("frDownload")) $("frDownload").addEventListener("click", function () {
+          var r = getReview(currentReviewId); if (!r) return;
+          download("riskassure-final-report-" + (r.name || "review").toLowerCase().replace(/[^a-z0-9]+/g, "-") + ".txt", finalReportLines(r));
+          toast("Final report downloaded.");
         });
 
         /* ---------- training centre data ---------- */
