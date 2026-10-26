@@ -11779,7 +11779,11 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
            its status can only become Final once the review lifecycle is
            complete, that is, once the review itself is signed off.
            Workflow: Draft (editable) -> In review -> Approved -> Signed
-           off (locked). Prepared by, the independent reviewer and the
+           off (locked). At the In review or Approved stages the submission
+           can be withdrawn back to Draft for rework: the narrative unlocks,
+           a new version-history entry records the withdrawal, and earlier
+           history is never erased. A Final report cannot be withdrawn.
+           Prepared by, the independent reviewer and the
            approver each record name, role and email address, and the
            final sign-off records the signer; the signature column of the
            template is satisfied by that recorded name, email and date.
@@ -11954,16 +11958,25 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
         }
         function frVersionOf(fr) {
           if (fr.state === "signedoff") return "1.0";
-          if (fr.state === "approved") return "0.3";
-          if (fr.state === "inreview") return "0.2";
-          return "0.1";
+          /* the current version is the latest version-history entry, so a
+             report withdrawn back to Draft keeps the version its history
+             has reached rather than resetting to 0.1 */
+          var rows = frVersionRows(fr);
+          return rows.length ? rows[rows.length - 1].v : "0.1";
         }
         function frVersionRows(fr) {
           var rows = [{ v: "0.1", date: frDay(fr.createdAt), author: fr.preparedBy || "", change: "First draft" }];
+          /* versions count up in history order: each step that issues the
+             report again (submission, approval, withdrawal for rework)
+             takes the next minor version; the review step is recorded
+             against the version under review; sign-off is the final issue */
+          var minor = 1;
+          var next = function () { minor += 1; return "0." + minor; };
           (fr.history || []).forEach(function (e) {
-            if (e.action === "Submitted for review") rows.push({ v: "0.2", date: frDay(e.at), author: e.by || "", change: "Issued for review" });
-            else if (e.action === "Reviewed") rows.push({ v: "0.2", date: frDay(e.at), author: e.by || "", change: "Reviewer comments incorporated" });
-            else if (e.action === "Approved") rows.push({ v: "0.3", date: frDay(e.at), author: e.by || "", change: "Approved" });
+            if (e.action === "Submitted for review") rows.push({ v: next(), date: frDay(e.at), author: e.by || "", change: "Issued for review" });
+            else if (e.action === "Reviewed") rows.push({ v: "0." + minor, date: frDay(e.at), author: e.by || "", change: "Reviewer comments incorporated" });
+            else if (e.action === "Approved") rows.push({ v: next(), date: frDay(e.at), author: e.by || "", change: "Approved" });
+            else if (e.action === "Withdrawn for rework") rows.push({ v: next(), date: frDay(e.at), author: e.by || "", change: "Withdrawn for rework" });
             else if (e.action === "Signed off") rows.push({ v: "1.0", date: frDay(e.at), author: e.by || "", change: "Final issue" });
           });
           return rows;
@@ -12032,7 +12045,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
               return editable ? '<input type="text" data-frn="' + key + '" value="' + esc(v) + '" style="width:100%" aria-label="' + key + '" />' : esc(v);
             };
             var rows = [
-              ["Report status", isFinal ? "Final" : "Draft"],
+              ["Report status", isFinal ? "Final" : frStateLabel(fr.state)],
               ["Version", frVersionOf(fr)],
               ["Date of issue", isFinal ? frDay(fr.signedAt) : "Not issued"],
               ["Prepared by", fr.preparedBy ? personLine(fr.preparedBy, fr.preparedRole) : "In preparation (lead reviewer: " + (r.leadReviewer || "not recorded") + ")"],
@@ -12177,6 +12190,18 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
                 + '<label class="field">' + label + ' email address<input id="fr' + idp + 'Email" type="email" placeholder="name@example.com" /></label></div>';
             };
             var lifecycleNote = reviewSignedOff ? "" : '<p class="sub" style="margin:0 0 10px">The review lifecycle is not complete yet: this review is not signed off. The report can be prepared, reviewed and approved now, but final sign-off and Final status unlock once the review itself is signed off.</p>';
+            /* Withdrawal sits in the workflow area at the two pre-Final
+               stages only (In review and Approved). It is never rendered
+               in Draft (nothing to withdraw) or once the report is Signed
+               off and Final (locked). */
+            var withdrawHtml = '<div style="margin-top:18px;padding-top:14px;border-top:1px solid var(--line)">'
+              + '<span class="label" style="font-size:14.5px;font-weight:600">Withdraw submission</span>'
+              + '<p class="sub" style="margin:6px 0 10px">If the report needs more work before it goes further, the submission can be withdrawn. Withdrawing returns the report to Draft and unlocks the narrative for editing again. The withdrawal is recorded in the version history and the audit trail, and the earlier history stays on the record. No email is sent.</p>'
+              + '<div class="btnrow"><button type="button" class="btn ghost" id="frWithdrawBtn">Withdraw submission</button></div>'
+              + '<div id="frWithdrawConfirm" hidden style="margin-top:10px">'
+              + '<p class="sub" style="margin:0 0 10px"><b>Confirm withdrawal.</b> This report will return to Draft, the narrative will unlock for editing again and Save draft will be available. The withdrawal will be recorded in the version history and the audit trail, and the earlier entries stay on the record. No email is sent.</p>'
+              + '<div class="btnrow"><button type="button" class="btn" id="frWithdrawConfirmBtn">Confirm withdrawal</button><button type="button" class="btn ghost" id="frWithdrawCancelBtn">Cancel</button></div>'
+              + '</div></div>';
             var h = "";
             if (fr.state === "draft") {
               h = lifecycleNote
@@ -12210,11 +12235,24 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
             } else {
               h = '<p class="sub" style="margin:0"><b>Signed off and Final.</b> This report is locked. It was signed off by ' + esc(fr.signedBy || "") + (fr.signedEmail ? " (" + esc(fr.signedEmail) + ")" : "") + (fr.signedAt ? " on " + esc(frStamp(fr.signedAt)) : "") + '. The record of who prepared, reviewed, approved and signed it is in Document control and the report audit trail below.</p>';
             }
+            if (fr.state === "inreview" || fr.state === "approved") h += withdrawHtml;
             area.innerHTML = h;
             var b1 = $("frSubmitReview"); if (b1) b1.addEventListener("click", function () { frTransition("submit"); });
             var b2 = $("frRecordReview"); if (b2) b2.addEventListener("click", function () { frTransition("review"); });
             var b3 = $("frApprove"); if (b3) b3.addEventListener("click", function () { frTransition("approve"); });
             var b4 = $("frSignOff"); if (b4) b4.addEventListener("click", function () { frTransition("signoff"); });
+            var bw = $("frWithdrawBtn");
+            if (bw) bw.addEventListener("click", function () {
+              var cf = $("frWithdrawConfirm"); if (cf) cf.hidden = false;
+              bw.hidden = true;
+            });
+            var bcx = $("frWithdrawCancelBtn");
+            if (bcx) bcx.addEventListener("click", function () {
+              var cf2 = $("frWithdrawConfirm"); if (cf2) cf2.hidden = true;
+              var b = $("frWithdrawBtn"); if (b) b.hidden = false;
+            });
+            var bcf = $("frWithdrawConfirmBtn");
+            if (bcf) bcf.addEventListener("click", function () { frWithdraw(); });
           }
           var trail = $("frTrail");
           if (trail) {
@@ -12323,6 +12361,40 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           try { renderFinalReportsHub(); } catch (e) {}
           toast(toastMsg);
         }
+        /* Withdrawal returns a submitted report to Draft for rework. It is
+           only possible at the In review or Approved stages: a report that
+           is Draft has nothing to withdraw, and a Signed off (Final) report
+           is locked. The withdrawal adds a new version-history entry and an
+           audit-trail entry; earlier history is never erased, so the report
+           returns to Draft with its record intact rather than to a pristine
+           earlier version. The review sign-off gate is untouched: final
+           sign-off still unlocks only once the review itself is signed off.
+           No email is sent. */
+        function frWithdraw() {
+          var r = getReview(currentReviewId); if (!r) return;
+          var fr = getFinalReport(r);
+          if (fr.state !== "inreview" && fr.state !== "approved") return;
+          var at = nowISO();
+          var by = currentActorName();
+          var email = "";
+          try { if (typeof RA !== "undefined" && RA && RA.mode === "cloud" && RA.user && RA.user.email) email = RA.user.email; } catch (e) {}
+          var fromLabel = frStateLabel(fr.state);
+          fr.state = "draft";
+          /* the review and approval stages run again if the report is
+             re-submitted, so their signatories are cleared from the
+             approval table; who reviewed and approved the withdrawn
+             submission stays on the record in the version history and the
+             report audit trail. The preparer entry stays as recorded. */
+          fr.reviewedBy = ""; fr.reviewedRole = ""; fr.reviewedEmail = ""; fr.reviewedAt = "";
+          fr.approvedBy = ""; fr.approvedRole = ""; fr.approvedEmail = ""; fr.approvedAt = "";
+          fr.history.push({ action: "Withdrawn for rework", by: by, email: email, at: at });
+          saveFinalReport(r, fr);
+          appendAuditLog({ reviewId: r.id, action: "Final report submission withdrawn by " + by + " from " + fromLabel + ". The report returned to Draft for rework, the narrative is unlocked, and the earlier history stays on the record.", entityType: "Final Report", entityLabel: r.name, changedBy: by });
+          renderAudit();
+          renderFinalReport();
+          try { renderFinalReportsHub(); } catch (e) {}
+          toast("Submission withdrawn. The report is back in Draft and the narrative is unlocked for editing.");
+        }
         function finalReportLines(r) {
           var fr = getFinalReport(r);
           var isFinal = fr.state === "signedoff";
@@ -12335,7 +12407,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           L.push("Final Assurance Report");
           L.push("Review reference: " + (r.name || "") + " | Business area or entity: " + (r.businessArea || r.reviewType || "") + " | Reporting period: " + reviewPeriodText(r));
           L.push("");
-          L.push("Report status: " + (isFinal ? "Final" : "Draft"));
+          L.push("Report status: " + (isFinal ? "Final" : frStateLabel(fr.state)));
           L.push("Version: " + frVersionOf(fr));
           L.push("Date of issue: " + (isFinal ? frDay(fr.signedAt) : "Not issued"));
           L.push("Prepared by: " + (fr.preparedBy ? fr.preparedBy + (fr.preparedRole ? ", " + fr.preparedRole : "") + (fr.preparedEmail ? " (" + fr.preparedEmail + ")" : "") : "In preparation"));
