@@ -1236,6 +1236,37 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
       .methslot b { color: var(--ink); }
       .revfilter { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
       #crSubWrap[hidden] { display: none; }
+    
+    /* ---------- Compliance Obligations Register ---------- */
+      .ob-loop { display: flex; align-items: stretch; gap: 8px; flex-wrap: wrap; margin: 0 0 14px; }
+      .ob-step { flex: 1 1 150px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); padding: 12px 14px; display: flex; flex-direction: column; gap: 2px; }
+      .ob-step b { font-size: 20px; letter-spacing: -.01em; line-height: 1.1; }
+      .ob-step span { font-size: 12.5px; color: var(--ink-3); }
+      .ob-step .ob-steplabel { font-size: 12px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--accent); }
+      .ob-arrow { align-self: center; color: var(--ink-3); font-size: 16px; flex: none; }
+      .ob-feed-item { display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid var(--line); }
+      .ob-feed-item:last-child { border-bottom: 0; }
+      .ob-feed-item .grow { flex: 1; min-width: 0; }
+      .ob-chip { display: inline-block; font-size: 12px; font-weight: 600; padding: 3px 9px; border-radius: 999px; background: var(--chip); color: var(--ink-2); margin: 1px 2px 1px 0; white-space: nowrap; }
+      .ob-chip.gap { background: #fbe7e7; color: #b23333; }
+      @media (prefers-color-scheme: dark) { .ob-chip.gap { background: #3a1e1e; color: #f08a8a; } }
+      .ob-cards { display: none; }
+      .ob-mcard { border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; margin-top: 10px; background: var(--surface); }
+      .ob-mcard .r1 { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; }
+      .ob-mcard .meta { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 13px; color: var(--ink-2); margin-top: 6px; }
+      @media (max-width: 760px) {
+        .ob-tablewrap { display: none; }
+        .ob-cards { display: block; }
+        .ob-arrow { display: none; }
+        .ob-step { flex: 1 1 42%; }
+      }
+      .ob-revchip { appearance: none; font: inherit; font-size: 13px; font-weight: 500; border: 1px solid var(--line); background: var(--surface-2); color: var(--ink-2); border-radius: 999px; padding: 6px 13px; cursor: pointer; }
+      .ob-revchip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+      .ob-revchip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+      .ob-actrow { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; padding: 8px 0; border-bottom: 1px solid var(--line); }
+      .ob-actrow:last-child { border-bottom: 0; }
+      .ob-sel { font: inherit; font-size: 13px; border: 1px solid var(--line); border-radius: 8px; padding: 5px 8px; background: var(--surface); color: var(--ink); max-width: 150px; }
+      tr.ob-selected td { background: var(--surface-2); }
     </style>
   </head>
   <body>
@@ -1272,6 +1303,10 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
         <button type="button" class="side-item" data-view-target="actions">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4.5H6.5A1.5 1.5 0 0 0 5 6v13a1.5 1.5 0 0 0 1.5 1.5h11A1.5 1.5 0 0 0 19 19V6a1.5 1.5 0 0 0-1.5-1.5H15"/><rect x="9" y="3" width="6" height="4" rx="1.2"/><path d="M8.8 13.4l2.1 2.1 4-4.2"/></svg>
           <span>Actions</span>
+        </button>
+        <button type="button" class="side-item" data-view-target="obligations">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/><path d="M15.5 16.2l1.4 1.4 2.6-2.8"/></svg>
+          <span>Obligations Register</span>
         </button>
         <button type="button" class="side-item" data-view-target="adhoc">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4.5H6.5A1.5 1.5 0 0 0 5 6v13a1.5 1.5 0 0 0 1.5 1.5h11A1.5 1.5 0 0 0 19 19V6a1.5 1.5 0 0 0-1.5-1.5H15"/><rect x="9" y="3" width="6" height="4" rx="1.2"/><path d="M12 10.5v6M9 13.5h6"/></svg>
@@ -2013,6 +2048,152 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
             </div>
           </article>
         </div>
+      </div>
+    </section>
+
+
+    <!-- ============ VIEW: OBLIGATIONS REGISTER ============ -->
+    <section class="view" id="view-obligations">
+      <div class="wrap pad">
+        <div class="headline">
+          <h1>Compliance Obligations Register</h1>
+          <p>The standing register behind Horizon Scanning. Each obligation carries its owner, status and due date, is fed by a regulatory development, is carried into implementation actions, and is picked up in the scope of the reviews that cover it &mdash; so a line runs from &ldquo;a regulator published something&rdquo; to &ldquo;this review covers it&rdquo;. <span class="asof">Fed by the Training Centre &middot; 18 regulators tracked</span></p>
+        </div>
+
+        <div class="ob-loop" aria-label="How an obligation flows through RiskAssure">
+          <div class="ob-step"><span class="ob-steplabel">1 &middot; Development</span><b id="obLoopDev">&mdash;</b><span>Regulatory developments tracked in Horizon Scanning</span></div>
+          <span class="ob-arrow" aria-hidden="true">&rarr;</span>
+          <div class="ob-step"><span class="ob-steplabel">2 &middot; Obligation</span><b id="obLoopOb">&mdash;</b><span>Obligations on this register, each with an owner and a due date</span></div>
+          <span class="ob-arrow" aria-hidden="true">&rarr;</span>
+          <div class="ob-step"><span class="ob-steplabel">3 &middot; Action</span><b id="obLoopAct">&mdash;</b><span>Implementation actions raised from obligations, tracked on the Actions page</span></div>
+          <span class="ob-arrow" aria-hidden="true">&rarr;</span>
+          <div class="ob-step"><span class="ob-steplabel">4 &middot; Review scope</span><b id="obLoopCov">&mdash;</b><span>Obligations picked up in at least one review&rsquo;s scope</span></div>
+        </div>
+
+        <div class="grid">
+          <article class="card span3" style="--i:0">
+            <div class="top"><span class="ic teal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg></span></div>
+            <span class="label">Obligations on Register</span>
+            <div class="foot"><span class="big" id="obStatTotal">&mdash;</span></div>
+            <span class="sub">Standing obligations, all regulators</span>
+          </article>
+          <article class="card span3" style="--i:1">
+            <div class="top"><span class="ic green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span></div>
+            <span class="label">Compliant</span>
+            <div class="foot"><span class="big" id="obStatDone">&mdash;</span></div>
+            <span class="sub">Assessed and evidenced as met</span>
+          </article>
+          <article class="card span3" style="--i:2">
+            <div class="top"><span class="ic red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></span></div>
+            <span class="label">Overdue</span>
+            <div class="foot"><span class="big" id="obStatOver">&mdash;</span></div>
+            <span class="sub">Past the firm&rsquo;s due date, not yet compliant</span>
+          </article>
+          <article class="card span3" style="--i:3">
+            <div class="top"><span class="ic amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4L2.5 20h19z"/><path d="M12 10v4M12 17.2v.3"/></svg></span></div>
+            <span class="label">Not in Any Review Scope</span>
+            <div class="foot"><span class="big" id="obStatGap">&mdash;</span></div>
+            <span class="sub">No review currently covers these &mdash; the gap this register exists to close</span>
+          </article>
+        </div>
+
+        <article class="card span12" style="--i:4;margin-top:14px">
+          <div class="top"><span class="label" style="font-size:16px;font-weight:600">New from Horizon Scanning</span><span style="display:flex;gap:8px;align-items:center"><span class="tag">Developments feed</span><button type="button" class="btn ghost small" data-goto-view="training">Open Training Centre</button></span></div>
+          <span class="sub">Developments tracked in the Training Centre that are not on this register yet &mdash; including any publication you log from a manual scan. Add one and it becomes a standing obligation with an owner and a due date; it then flows into actions and review scope below.</span>
+          <div id="obFeedList" style="margin-top:6px"></div>
+        </article>
+
+        <article class="card span12" style="--i:5;margin-top:14px">
+          <div class="top"><span class="label" style="font-size:16px;font-weight:600">The register</span><span style="display:flex;gap:8px;align-items:center"><span class="sub" id="obCount" role="status"></span><button type="button" class="btn ghost small" id="obExport">Export CSV</button></span></div>
+          <div class="formrow" style="grid-template-columns:repeat(auto-fit,minmax(160px,1fr));margin-top:4px">
+            <label class="field">Search<input id="obQ" type="search" placeholder="Obligation, ref or requirement" autocomplete="off" /></label>
+            <label class="field">Regulator<select id="obFReg"><option value="all">All regulators</option></select></label>
+            <label class="field">Status<select id="obFStatus"><option value="all">All statuses</option><option>Not started</option><option>In progress</option><option>In review</option><option>Compliant</option><option value="overdue">Overdue</option></select></label>
+            <label class="field">Review coverage<select id="obFCov"><option value="all">Covered and not covered</option><option value="covered">In a review scope</option><option value="gap">Not in any review scope</option></select></label>
+          </div>
+          <div class="tablewrap ob-tablewrap" style="margin-top:8px">
+            <table>
+              <thead><tr><th>Obligation</th><th>Regulator &amp; source</th><th>Owner</th><th>Due</th><th>Status</th><th>Coverage &middot; actions / reviews</th><th></th></tr></thead>
+              <tbody id="obBody"></tbody>
+            </table>
+          </div>
+          <div class="ob-cards" id="obCards"></div>
+          <p class="sub" id="obEmpty" hidden style="margin:12px 0 0">No obligations match these filters. Clear a filter, add an obligation below, or bring one in from Horizon Scanning above.</p>
+        </article>
+
+        <article class="card span12" style="--i:6;margin-top:14px" id="obDetailCard" hidden>
+          <div class="top"><span class="label" style="font-size:16px;font-weight:600" id="obDetailTitle">Obligation detail</span><span class="status prog" id="obDetailPill">In progress</span></div>
+          <p id="obDetailReq" style="margin:0;font-size:14.5px;color:var(--ink-2)"></p>
+          <div id="obDetailKv" style="margin-top:6px"></div>
+          <div style="border-top:1px solid var(--line);margin-top:14px;padding-top:14px">
+            <b style="font-size:15px">Owner, due date and status</b>
+            <div class="formrow" style="grid-template-columns:repeat(auto-fit,minmax(170px,1fr));margin-top:8px">
+              <label class="field">Owner<input id="obEdOwner" type="text" placeholder="e.g. Vendor Risk Lead" /></label>
+              <label class="field">Due date<input id="obEdDue" type="date" /></label>
+              <label class="field">Status<select id="obEdStatus"><option>Not started</option><option>In progress</option><option>In review</option><option>Compliant</option></select></label>
+              <label class="field">Evidence / assessment note<input id="obEdNote" type="text" placeholder="Where the evidence sits, or what was last assessed" /></label>
+            </div>
+            <div class="btnrow" style="margin-top:10px">
+              <button type="button" class="btn small" id="obEdSave">Save changes</button>
+              <span class="sub" id="obEdMsg" role="status"></span>
+            </div>
+          </div>
+          <div style="border-top:1px solid var(--line);margin-top:14px;padding-top:14px">
+            <b style="font-size:15px">Implementation actions</b>
+            <p class="sub" style="margin:4px 0 0">Actions raised from this obligation live on the Actions page and in the linked review, with the obligation ref carried on the record.</p>
+            <div id="obDetailActions" style="margin-top:6px"></div>
+            <div class="formrow" style="grid-template-columns:repeat(auto-fit,minmax(170px,1fr));margin-top:10px">
+              <label class="field">New action<input id="obNewActTitle" type="text" /></label>
+              <label class="field">Owner<input id="obNewActOwner" type="text" placeholder="e.g. Staff 2" /></label>
+              <label class="field">Due<input id="obNewActDue" type="text" placeholder="e.g. 30 Nov 2026" /></label>
+              <label class="field">Priority<select id="obNewActPrio"><option>High</option><option selected>Medium</option><option>Low</option></select></label>
+            </div>
+            <div class="btnrow" style="margin-top:10px">
+              <button type="button" class="btn small" id="obNewActBtn">Create implementation action</button>
+              <button type="button" class="btn ghost small" data-goto-view="actions">Open Actions page</button>
+              <span class="sub" id="obNewActMsg" role="status"></span>
+            </div>
+          </div>
+          <div style="border-top:1px solid var(--line);margin-top:14px;padding-top:14px">
+            <b style="font-size:15px">Review scope coverage</b>
+            <p class="sub" style="margin:4px 0 0">Pick the reviews whose scope covers this obligation. A covered obligation appears in that review&rsquo;s Scope tab, so the reviewer sees the requirement they are providing assurance over.</p>
+            <div id="obDetailReviews" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"></div>
+          </div>
+          <div class="btnrow" style="border-top:1px solid var(--line);margin-top:14px;padding-top:14px">
+            <button type="button" class="btn ghost small" id="obDelete">Remove from register</button>
+            <button type="button" class="btn small" id="obDeleteConfirm" hidden style="background:var(--bad);border-color:var(--bad)">Confirm removal</button>
+            <span class="sub" id="obDeleteMsg" role="status"></span>
+          </div>
+        </article>
+
+        <article class="card span12" style="--i:7;margin-top:14px">
+          <div class="top"><span class="label" style="font-size:16px;font-weight:600">Add an obligation</span><span class="sub">Standing requirement, or one fed by a development above</span></div>
+          <form id="obForm">
+            <div class="formrow" style="grid-template-columns:repeat(auto-fit,minmax(190px,1fr))">
+              <label class="field">Obligation title<input id="obTitle" type="text" placeholder="What the firm must do, in one line" /></label>
+              <label class="field">Source development<input id="obSource" type="text" list="obSourceList" placeholder="Development or publication it comes from" /><datalist id="obSourceList"></datalist></label>
+            </div>
+            <label class="field" style="margin-top:10px">Requirement<textarea id="obReq" rows="2" placeholder="The requirement in plain language: what must be in place, and the evidence that shows it"></textarea></label>
+            <div class="formrow" style="grid-template-columns:repeat(auto-fit,minmax(160px,1fr));margin-top:10px">
+              <label class="field">Regulator<select id="obReg"></select></label>
+              <label class="field">Jurisdiction<select id="obJur"><option>India</option><option>UK</option><option>US</option><option>Europe (EU)</option><option>Global</option></select></label>
+              <label class="field">Framework / theme<input id="obFw" type="text" placeholder="e.g. Operational Resilience" /></label>
+              <label class="field">Source reference<input id="obRef" type="text" placeholder="e.g. 23 NYCRR 500.12" /></label>
+            </div>
+            <div class="formrow" style="grid-template-columns:repeat(auto-fit,minmax(160px,1fr));margin-top:10px">
+              <label class="field">Owner<input id="obOwner" type="text" placeholder="e.g. Operational Resilience Lead" /></label>
+              <label class="field">Due date<input id="obDue" type="date" /></label>
+              <label class="field">Status<select id="obStatus"><option>Not started</option><option selected>In progress</option><option>In review</option><option>Compliant</option></select></label>
+              <label class="field">Applicability<input id="obApp" type="text" placeholder="e.g. All firms, Banks, Insurers" /></label>
+            </div>
+            <div class="btnrow" style="margin-top:12px">
+              <button type="submit" class="btn small">Add to register</button>
+              <span class="sub" id="obFormMsg" role="status"></span>
+            </div>
+          </form>
+        </article>
+
+        <p class="sub" style="margin:14px 2px 0">The starter register is seeded from the developments already tracked in Horizon Scanning, with the owners and implementation actions those developments carry. Edit, reassign or remove entries to make it your firm&rsquo;s own; every change is written to the audit trail.</p>
       </div>
     </section>
 
@@ -4182,6 +4363,11 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
                 <div class="kv"><span>Scope risks imported from the first-line matrix</span><b id="scopeRiskCount"></b></div>
                 <div id="scopeRisksList"></div>
               </div>
+            </article>
+            <article class="card span12" style="--i:1">
+              <div class="top"><span class="label cardtitle">Obligations covered by this review</span><span class="tag">Obligations Register</span></div>
+              <span class="sub">Standing obligations from the Compliance Obligations Register that this review&rsquo;s scope picks up. The register carries each obligation&rsquo;s owner, status and due date; covering it here is what turns a regulatory development into assurance.</span>
+              <div id="scopeObligations" style="margin-top:8px"><span class="sub">Loading the register&hellip;</span></div>
             </article>
           </div>
         </div>
@@ -10141,6 +10327,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           if (name === "reviews") { try { renderReviews(); } catch (e) {} }
           if (name === "findings") { try { renderGlobalFindings(); } catch (e) {} }
           if (name === "actions") { try { renderActionsTable(); } catch (e) {} }
+          if (name === "obligations") { try { obRender(); } catch (e) {} }
         }
         document.querySelectorAll("[data-goto-view]").forEach(function (el) {
           el.addEventListener("click", function () { goView(el.getAttribute("data-goto-view")); });
@@ -18369,6 +18556,409 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           var pm = e.target && e.target.closest ? e.target.closest("[data-open-procmap]") : null;
           if (pm) { try { renderProcMap(); openModal("procMap"); } catch (err) {} }
         });
+
+
+        /* ================================================================
+           COMPLIANCE OBLIGATIONS REGISTER - the standing register behind
+           Horizon Scanning. Storage: ra2_obligations on the app's existing
+           loadData/saveData layer (same pattern as ra2_actions and
+           ra2_hs_logged). The loop it closes:
+             development (Training Centre / Horizon Scanning)
+               -> obligation (this register: owner, status, due date)
+               -> implementation action (ra2_actions, obligationId carried)
+               -> review scope (reviewIds on the obligation; the review's
+                  Scope tab lists what it covers via obRenderScopeMount)
+           First run seeds a starter register from the developments the
+           Training Centre already tracks, with the owners and
+           implementation actions those developments carry; an existing
+           saved register (even an emptied one) always wins.
+           ================================================================ */
+        var OB_STATUSES = ["Not started", "In progress", "In review", "Compliant"];
+        var OB_REGS = ["Reserve Bank of India", "SEBI", "IRDAI", "FCA", "PRA / Bank of England", "FRC", "ICO", "MeitY / Data Protection Board", "FIU-IND", "OCC", "SEC", "NYDFS", "EBA", "ESMA", "European Commission", "BCBS", "IAIS", "FATF", "Other"];
+        /* Developments the Training Centre already tracks (curated set and
+           Developments Database), offered as the register's feed. */
+        var OB_FEED_POOL = [
+          { title: "FRC confirms Provision 29 declaration guidance", regulator: "FRC", jur: "UK", ref: "FRC Corporate Governance Code, Provision 29", fw: "Corporate Governance", owner: "Head of Assurance" },
+          { title: "EBA publishes DORA incident reporting templates", regulator: "EBA", jur: "Europe (EU)", ref: "EBA final draft regulatory technical standards on incident reporting", fw: "Operational Resilience", owner: "Operational Resilience Lead" },
+          { title: "NYDFS reminds firms on annual cybersecurity certification", regulator: "NYDFS", jur: "US", ref: "NYDFS 23 NYCRR 500 annual certification", fw: "Cybersecurity", owner: "CISO Office" },
+          { title: "RBI issues consolidated IT outsourcing directions update", regulator: "Reserve Bank of India", jur: "India", ref: "RBI Master Direction on Outsourcing of IT Services", fw: "IT Governance and Outsourcing", owner: "Vendor Risk Lead" },
+          { title: "DPDP Rules - consent manager framework consultation", regulator: "MeitY / Data Protection Board", jur: "India", ref: "Draft DPDP Rules, consent manager provisions", fw: "Data Privacy", owner: "Data Protection Officer" },
+          { title: "EU AI Act - GPAI model obligations guidance", regulator: "European Commission", jur: "Europe (EU)", ref: "EU AI Act, general-purpose AI model obligations", fw: "AI Governance", owner: "AI Governance Lead" },
+          { title: "Basel III output floor phase-in update", regulator: "BCBS", jur: "Global", ref: "BCBS Basel Framework, output floor", fw: "Capital and Prudential", owner: "Head of Prudential Risk" },
+          { title: "FCA Consumer Duty outcomes monitoring expectations", regulator: "FCA", jur: "UK", ref: "FCA Consumer Duty, outcomes monitoring supervisory communications", fw: "Conduct and Consumer Duty", owner: "Conduct Risk Lead" },
+          { title: "SEC disclosure readiness note on cyber incidents", regulator: "SEC", jur: "US", ref: "SEC cybersecurity disclosure rules, readiness communications", fw: "Disclosure and Reporting", owner: "Head of Reporting" },
+          { title: "IAIS supervisory guidance on governance and conduct", regulator: "IAIS", jur: "Global", ref: "IAIS Insurance Core Principles, application papers on governance and conduct", fw: "Insurance Supervision", owner: "Head of Assurance" },
+          { title: "FATF travel rule implementation update", regulator: "FATF", jur: "Global", ref: "FATF Recommendations 15 and 16", fw: "Financial Crime", owner: "Financial Crime Lead" },
+          { title: "PRA operational resilience self-assessment expectations", regulator: "PRA / Bank of England", jur: "UK", ref: "PRA Supervisory Statement SS1/21", fw: "Operational Resilience", owner: "Operational Resilience Lead" },
+          { title: "DORA register of information submission window", regulator: "EBA", jur: "Europe (EU)", ref: "DORA Article 28", fw: "Operational Resilience", owner: "Third-Party Risk Lead" },
+          { title: "NYDFS 500 - MFA for all user access in force", regulator: "NYDFS", jur: "US", ref: "23 NYCRR 500.12", fw: "Cybersecurity", owner: "IT Security Lead" }
+        ];
+        var obSelectedId = null;
+        function obISO(daysFromNow) {
+          var d = new Date(); d.setHours(12, 0, 0, 0); d.setDate(d.getDate() + daysFromNow);
+          var m = String(d.getMonth() + 1); if (m.length < 2) m = "0" + m;
+          var day = String(d.getDate()); if (day.length < 2) day = "0" + day;
+          return d.getFullYear() + "-" + m + "-" + day;
+        }
+        function obSeed() {
+          function mk(o) {
+            return { id: o[0], ref: o[1], title: o[2], requirement: o[3], regulator: o[4], jur: o[5], sourceDev: o[6], sourceRef: o[7], fw: o[8], owner: o[9], status: o[10], dueISO: obISO(o[11]), effISO: obISO(o[12]), app: o[13], implAction: o[14], reviewIds: o[15], actionIds: o[16], note: o[17] || "", createdAt: nowISO() };
+          }
+          var seed = [
+            mk(["ob_001", "OBL-001", "Multi-factor authentication for all user access", "MFA is enforced for all user access to information systems, with any exception documented and covered by compensating controls; coverage evidence is produced per access path.", "NYDFS", "US", "NYDFS 500 - MFA for all user access in force", "23 NYCRR 500.12", "Cybersecurity", "IT Security Lead", "In progress", 18, -30, "All firms", "Verify MFA coverage across all access paths and document any exception with compensating controls.", ["rev_access"], ["a_ob01"], "Identity platform coverage report requested from IT."]),
+            mk(["ob_002", "OBL-002", "Provision 29 material controls declaration", "The board declaration on material controls is supported by full-period testing evidence: the controls covered, the period of testing and any exceptions found are described in the annual report.", "FRC", "UK", "FRC confirms Provision 29 declaration guidance", "FRC Corporate Governance Code, Provision 29", "Corporate Governance", "Head of Assurance", "In progress", 64, 95, "Listed companies", "Update the Provision 29 evidence plan, confirm material controls coverage for the full year and brief the audit committee on declaration wording.", ["rev_ukchange"], ["a_ob02"], ""]),
+            mk(["ob_003", "OBL-003", "IT outsourcing exit strategies and concentration risk", "Exit strategies are maintained for material outsourced IT arrangements, concentration risk across providers is assessed, and a self-assessment against the consolidated directions is completed.", "Reserve Bank of India", "India", "RBI issues consolidated IT outsourcing directions update", "RBI Master Direction on Outsourcing of IT Services", "IT Governance and Outsourcing", "Vendor Risk Lead", "In progress", 32, -10, "Banks", "Complete the outsourcing self-assessment, refresh exit plans for material arrangements and review concentration risk across providers.", ["rev_vendor"], ["a_05"], "Self-assessment started with material arrangements."]),
+            mk(["ob_004", "OBL-004", "DORA register of information on ICT third-party arrangements", "A register of information on ICT third-party arrangements is maintained at entity and consolidated level, reconciled to contracts, and prepared in the required submission format.", "EBA", "Europe (EU)", "DORA register of information submission window", "DORA Article 28", "Operational Resilience", "Third-Party Risk Lead", "In progress", 12, -5, "All firms", "Reconcile the ICT register to contracts, complete missing data points and prepare the submission file.", ["rev_vendor"], [], "Completeness check running this cycle."]),
+            mk(["ob_005", "OBL-005", "DORA major ICT incident reporting templates", "Major ICT incidents are classified and reported using the final EBA templates and timelines, with the incident runbook and tooling fields aligned to the template data points.", "EBA", "Europe (EU)", "EBA publishes DORA incident reporting templates", "EBA final draft regulatory technical standards on incident reporting", "Operational Resilience", "Operational Resilience Lead", "Not started", -6, 24, "All firms", "Adopt the new incident classification templates, update the incident runbook and rehearse the reporting timelines.", ["rev_eurecords"], [], ""]),
+            mk(["ob_006", "OBL-006", "DPDP consent manager framework readiness", "Consent journeys, privacy notices and grievance handling are assessed against the draft consent manager framework, with tooling changes planned before obligations commence.", "MeitY / Data Protection Board", "India", "DPDP Rules - consent manager framework consultation", "Draft DPDP Rules, consent manager provisions", "Data Privacy", "Data Protection Officer", "In review", 74, 174, "All firms", "Assess consent journeys against the draft framework, log consultation responses and plan consent tooling changes.", [], [], "Consultation position recorded; final rules awaited."]),
+            mk(["ob_007", "OBL-007", "EU AI Act general-purpose AI model obligations", "An inventory of AI models and use cases is maintained with risk-tier classification and conformity evidence owners assigned, ahead of the phased high-risk obligations.", "European Commission", "Europe (EU)", "EU AI Act - GPAI model obligations guidance", "EU AI Act, general-purpose AI model obligations", "AI Governance", "AI Governance Lead", "Not started", 120, 114, "All firms", "Complete the AI inventory, classify use cases by risk tier and assign conformity evidence owners.", [], [], ""]),
+            mk(["ob_008", "OBL-008", "Consumer Duty outcomes monitoring evidence", "Outcomes monitoring evidences good outcomes with data rather than attestations, with poor-outcome triggers by cohort and actions recorded when indicators fire.", "FCA", "UK", "FCA Consumer Duty outcomes monitoring expectations", "FCA Consumer Duty, outcomes monitoring supervisory communications", "Conduct and Consumer Duty", "Conduct Risk Lead", "In progress", 28, 21, "All firms", "Review outcomes dashboards against the feedback, add poor-outcome triggers and evidence actions taken.", ["rev_ukchange"], [], ""]),
+            mk(["ob_009", "OBL-009", "Operational resilience self-assessment (SS1/21)", "The annual self-assessment is current and board approved: important business services, impact tolerances and mapping evidence are refreshed each cycle.", "PRA / Bank of England", "UK", "PRA operational resilience self-assessment expectations", "PRA Supervisory Statement SS1/21", "Operational Resilience", "Operational Resilience Lead", "In review", 45, 57, "Banks and insurers", "Refresh service mapping and impact tolerance evidence ahead of the self-assessment.", ["rev_ukchange"], [], "Timetable to be confirmed with the board calendar."]),
+            mk(["ob_010", "OBL-010", "Basel III output floor phase-in in capital planning", "Capital planning and RWA reporting apply the output floor phase-in percentages, with impact calculations refreshed each planning cycle.", "BCBS", "Global", "Basel III output floor phase-in update", "BCBS Basel Framework, output floor", "Capital and Prudential", "Head of Prudential Risk", "Compliant", 150, 92, "Banks", "Refresh output floor impact calculations and confirm capital planning assumptions with Finance.", ["rev_payroll"], [], "Calculation refresh evidenced in the last planning cycle pack."]),
+            mk(["ob_011", "OBL-011", "FATF travel rule information in payment chains", "Originator and beneficiary information required by the travel rule is carried end to end in payment chains, including virtual asset transfers, and message completeness is tested.", "FATF", "Global", "FATF travel rule implementation update", "FATF Recommendations 15 and 16", "Financial Crime", "Financial Crime Lead", "In progress", 38, 20, "Payments firms", "Confirm travel rule data flows with correspondent and VASP counterparties and test message completeness.", [], [], ""]),
+            mk(["ob_012", "OBL-012", "NYDFS annual cybersecurity certification", "Annual certification of compliance with 23 NYCRR 500 is filed, with the risk assessment and CISO report evidence retained for examination.", "NYDFS", "US", "NYDFS reminds firms on annual cybersecurity certification", "NYDFS 23 NYCRR 500 annual certification", "Cybersecurity", "CISO Office", "In review", 9, 11, "All firms", "Assemble the certification evidence pack from monitoring data and confirm CISO report sign-off.", ["rev_access"], [], "Evidence pack being assembled from monitoring data."])
+          ];
+          saveData("ra2_obligations", seed);
+          /* Two starter implementation actions, appended once, so the
+             obligation -> action link is visible on the Actions page from
+             the first open. Existing seeded action a_05 (vendor contract
+             exit clauses) is the implementation of OBL-003 and is linked
+             from the obligation side only. */
+          try {
+            var acts = DB.actions;
+            var have = {}; acts.forEach(function (a) { have[a.id] = 1; });
+            if (!have["a_05"]) return seed;
+            var extra = [];
+            if (!have["a_ob01"]) extra.push({ id: "a_ob01", title: "Verify MFA coverage across all access paths and document any exception with compensating controls", reviewName: "Q3 Access Review", findingRef: "", owner: "Staff 2", due: "30 Nov", priority: "High", status: "In progress", overdue: 0, obligationId: "ob_001", obligationRef: "OBL-001", createdAt: nowISO() });
+            if (!have["a_ob02"]) extra.push({ id: "a_ob02", title: "Confirm material controls coverage for the full year and brief the audit committee on declaration wording", reviewName: "UK Change Audit", findingRef: "", owner: "Staff 4", due: "15 Dec", priority: "High", status: "In progress", overdue: 0, obligationId: "ob_002", obligationRef: "OBL-002", createdAt: nowISO() });
+            if (extra.length) saveData("ra2_actions", acts.concat(extra));
+          } catch (e) {}
+          return seed;
+        }
+        function obDemoWorkspace() {
+          return ensureArray(loadData("ra2_reviews", [])).some(function (r) { return r.id === "rev_access"; });
+        }
+        function obAll() {
+          var saved = loadData("ra2_obligations", null);
+          if (saved !== null) return ensureArray(saved);
+          /* Seed the starter register only into the seeded starter
+             workspace (rev_access is its signature). A real workspace
+             with no register yet starts empty and honest, and a
+             pre-boot call (reviews not yet loaded) must not seed -
+             or append starter actions - ahead of seedIfEmpty. */
+          if (!obDemoWorkspace()) return [];
+          return obSeed();
+        }
+        function obSaveAll(list) { saveData("ra2_obligations", list); }
+        function obById(id) { return obAll().find(function (o) { return o.id === id; }) || null; }
+        function obReviews() { try { loadReviews(); } catch (e) {} return (typeof REVIEWS !== "undefined" && REVIEWS && REVIEWS.length) ? REVIEWS : ensureArray(loadData("ra2_reviews", [])); }
+        function obReviewName(id) { var r = obReviews().find(function (x) { return x.id === id; }); return r ? r.name : id; }
+        function obActionsFor(ob) {
+          var ids = {}; (ob.actionIds || []).forEach(function (i) { ids[i] = 1; });
+          return DB.actions.filter(function (a) { return a.obligationId === ob.id || ids[a.id]; });
+        }
+        function obAge(ob) { return actionAgeing({ status: ob.status === "Compliant" ? "Complete" : ob.status, due: ob.dueISO }); }
+        function obIsOverdue(ob) { return obAge(ob).overdue; }
+        function obDispStatus(ob) { return obIsOverdue(ob) ? "Overdue" : ob.status; }
+        function obStatusCls(ob) { var s = obDispStatus(ob); return s === "Compliant" ? "done" : statusClass(s); }
+        function obFeedItems() {
+          var obs = obAll();
+          var used = {};
+          obs.forEach(function (o) { if (o.sourceDev) used[o.sourceDev] = 1; if (o.title) used[o.title] = 1; });
+          var items = OB_FEED_POOL.filter(function (f) { return !used[f.title]; }).map(function (f) { return { title: f.title, regulator: f.regulator, jur: f.jur, ref: f.ref, fw: f.fw, owner: f.owner, logged: false }; });
+          ensureArray(loadData("ra2_hs_logged", [])).forEach(function (l) {
+            if (l && l.title && !used[l.title]) items.unshift({ title: l.title, regulator: l.regulator || "", jur: l.jur || "", ref: "", fw: l.fw || "", owner: "", logged: true });
+          });
+          return items;
+        }
+        function obFiltered() {
+          var q = ($("obQ") ? $("obQ").value : "").trim().toLowerCase();
+          var fr = $("obFReg") ? $("obFReg").value : "all";
+          var fs = $("obFStatus") ? $("obFStatus").value : "all";
+          var fc = $("obFCov") ? $("obFCov").value : "all";
+          return obAll().filter(function (o) {
+            if (q && (o.title + " " + o.ref + " " + o.requirement + " " + (o.sourceDev || "")).toLowerCase().indexOf(q) === -1) return false;
+            if (fr !== "all" && o.regulator !== fr) return false;
+            if (fs === "overdue" && !obIsOverdue(o)) return false;
+            if (fs !== "all" && fs !== "overdue" && o.status !== fs) return false;
+            if (fc === "covered" && !(o.reviewIds && o.reviewIds.length)) return false;
+            if (fc === "gap" && o.reviewIds && o.reviewIds.length) return false;
+            return true;
+          }).sort(function (a, b) {
+            var ao = obIsOverdue(a) ? 0 : 1, bo = obIsOverdue(b) ? 0 : 1;
+            if (ao !== bo) return ao - bo;
+            return String(a.dueISO || "").localeCompare(String(b.dueISO || ""));
+          });
+        }
+        function obCoverageHtml(o) {
+          var acts = obActionsFor(o);
+          var revs = (o.reviewIds || []).map(function (id) { return '<span class="ob-chip">' + esc(obReviewName(id)) + "</span>"; }).join("");
+          if (!revs) revs = '<span class="ob-chip gap">Not in any review scope</span>';
+          return '<div>' + revs + '</div><div class="s" style="margin-top:3px">' + acts.length + (acts.length === 1 ? " implementation action" : " implementation actions") + "</div>";
+        }
+        function obRender() {
+          if (!$("obBody")) return;
+          var obs = obAll();
+          var over = obs.filter(obIsOverdue).length;
+          var gaps = obs.filter(function (o) { return !(o.reviewIds && o.reviewIds.length); }).length;
+          var done = obs.filter(function (o) { return o.status === "Compliant"; }).length;
+          var withAct = obs.filter(function (o) { return obActionsFor(o).length > 0; }).length;
+          if ($("obStatTotal")) $("obStatTotal").textContent = String(obs.length);
+          if ($("obStatDone")) $("obStatDone").textContent = String(done);
+          if ($("obStatOver")) $("obStatOver").textContent = String(over);
+          if ($("obStatGap")) $("obStatGap").textContent = String(gaps);
+          if ($("obLoopDev")) $("obLoopDev").textContent = String(OB_FEED_POOL.length + ensureArray(loadData("ra2_hs_logged", [])).length);
+          if ($("obLoopOb")) $("obLoopOb").textContent = String(obs.length);
+          if ($("obLoopAct")) $("obLoopAct").textContent = String(withAct) + " of " + obs.length;
+          if ($("obLoopCov")) $("obLoopCov").textContent = String(obs.length - gaps) + " of " + obs.length;
+          /* regulator filter + add-form selects */
+          var regSel = $("obFReg");
+          if (regSel && regSel.options.length <= 1) {
+            var seen = {};
+            obs.forEach(function (o) { seen[o.regulator] = 1; });
+            Object.keys(seen).sort().forEach(function (r) { var op = document.createElement("option"); op.value = r; op.textContent = r; regSel.appendChild(op); });
+          }
+          var addReg = $("obReg");
+          if (addReg && !addReg.options.length) OB_REGS.forEach(function (r) { var op = document.createElement("option"); op.textContent = r; addReg.appendChild(op); });
+          var dl = $("obSourceList");
+          if (dl && !dl.children.length) OB_FEED_POOL.forEach(function (f) { var op = document.createElement("option"); op.value = f.title; dl.appendChild(op); });
+          /* feed */
+          var feed = obFeedItems();
+          var fl = $("obFeedList");
+          if (fl) {
+            fl.innerHTML = feed.length ? feed.map(function (f, i) {
+              return '<div class="ob-feed-item"><div class="grow"><span class="t" style="font-weight:600">' + esc(f.title) + '</span><div class="s">' + esc(f.regulator) + (f.jur ? " &middot; " + esc(f.jur) : "") + (f.logged ? ' &middot; <span class="tag">Logged from a manual scan</span>' : "") + '</div></div><button type="button" class="btn small" data-ob-feed="' + i + '">Add as obligation</button></div>';
+            }).join("") : '<p class="sub" style="margin:6px 0 0">Every tracked development is on the register. New publications you log in Horizon Scanning will appear here.</p>';
+            fl.querySelectorAll("[data-ob-feed]").forEach(function (b) {
+              b.addEventListener("click", function () { obPrefill(feed[+b.getAttribute("data-ob-feed")]); });
+            });
+          }
+          /* table + mobile cards */
+          var rows = obFiltered();
+          if ($("obCount")) $("obCount").textContent = rows.length + (rows.length === 1 ? " obligation" : " obligations");
+          if ($("obEmpty")) $("obEmpty").hidden = rows.length > 0;
+          $("obBody").innerHTML = rows.map(function (o) {
+            var age = obAge(o);
+            var sel = '<select class="ob-sel" data-ob-status="' + o.id + '" aria-label="Status for ' + esc(o.ref) + '">' + OB_STATUSES.map(function (s) { return '<option' + (s === o.status ? " selected" : "") + ">" + s + "</option>"; }).join("") + "</select>";
+            return '<tr' + (o.id === obSelectedId ? ' class="ob-selected"' : "") + '><td><span class="t">' + esc(o.title) + '</span><div class="s mono">' + esc(o.ref) + (o.fw ? " &middot; " + esc(o.fw) : "") + '</div><div class="s">' + esc(o.requirement) + '</div></td>' +
+              '<td><span class="t" style="font-weight:600">' + esc(o.regulator) + '</span><div class="s">' + esc(o.jur || "") + '</div>' + (o.sourceDev ? '<div class="s">From: ' + esc(o.sourceDev) + "</div>" : "") + (o.sourceRef ? '<div class="s mono">' + esc(o.sourceRef) + "</div>" : "") + "</td>" +
+              "<td>" + esc(o.owner || "Not assigned") + "</td>" +
+              '<td class="mono">' + esc(fmtDate((o.dueISO || "") + "T12:00:00")) + '<div class="s">' + esc(age.label) + "</div></td>" +
+              "<td>" + sel + '<div style="margin-top:5px"><span class="status ' + obStatusCls(o) + '">' + esc(obDispStatus(o)) + "</span></div></td>" +
+              "<td>" + obCoverageHtml(o) + "</td>" +
+              '<td><button type="button" class="btn ghost small" data-ob-open="' + o.id + '">Detail</button></td></tr>';
+          }).join("");
+          var cards = $("obCards");
+          if (cards) cards.innerHTML = rows.map(function (o) {
+            var age = obAge(o);
+            return '<div class="ob-mcard"><div class="r1"><span class="t" style="font-weight:600">' + esc(o.title) + '</span><span class="status ' + obStatusCls(o) + '">' + esc(obDispStatus(o)) + '</span></div>' +
+              '<div class="s mono">' + esc(o.ref) + " &middot; " + esc(o.regulator) + " &middot; " + esc(o.jur || "") + "</div>" +
+              '<div class="s" style="margin-top:4px">' + esc(o.requirement) + "</div>" +
+              '<div class="meta"><span>Owner: <b>' + esc(o.owner || "Not assigned") + '</b></span><span>Due: <b>' + esc(fmtDate((o.dueISO || "") + "T12:00:00")) + "</b> (" + esc(age.label) + ")</span></div>" +
+              '<div style="margin-top:8px">' + obCoverageHtml(o) + "</div>" +
+              '<div class="btnrow" style="margin-top:8px"><button type="button" class="btn ghost small" data-ob-open="' + o.id + '">Detail &middot; owner, actions, scope</button></div></div>';
+          }).join("");
+          document.querySelectorAll("[data-ob-open]").forEach(function (b) {
+            b.addEventListener("click", function () { obSelect(b.getAttribute("data-ob-open")); });
+          });
+          document.querySelectorAll("[data-ob-status]").forEach(function (s) {
+            s.addEventListener("change", function () { obSetStatus(s.getAttribute("data-ob-status"), s.value); });
+          });
+          if (obSelectedId && obById(obSelectedId)) obRenderDetail();
+          try { obRenderScopeMount(); } catch (e) {}
+        }
+        function obPrefill(f) {
+          if (!f) return;
+          if ($("obSource")) $("obSource").value = f.title;
+          if ($("obTitle")) $("obTitle").value = f.title;
+          if ($("obReg")) { var rs = $("obReg"); for (var i = 0; i < rs.options.length; i++) if (rs.options[i].textContent === f.regulator) rs.selectedIndex = i; }
+          if ($("obJur") && f.jur) $("obJur").value = f.jur;
+          if ($("obRef")) $("obRef").value = f.ref || "";
+          if ($("obFw")) $("obFw").value = f.fw || "";
+          if ($("obOwner")) $("obOwner").value = f.owner || "";
+          if ($("obFormMsg")) $("obFormMsg").textContent = "Prefilled from Horizon Scanning - set the due date, adjust the title into the obligation it creates, then add it to the register.";
+          var form = $("obForm"); if (form) form.scrollIntoView({ block: "center", behavior: "smooth" });
+          if ($("obDue")) $("obDue").focus();
+        }
+        function obSetStatus(id, status) {
+          var list = obAll();
+          var ob = list.find(function (o) { return o.id === id; }); if (!ob) return;
+          ob.status = status;
+          obSaveAll(list);
+          try { appendAuditLog({ reviewId: null, action: "Obligation status set to " + status, entityType: "Obligation", entityLabel: ob.ref + " - " + ob.title, changedBy: currentActorName() }); } catch (e) {}
+          toast(ob.ref + " is now " + status + ".");
+          obRender();
+        }
+        function obSelect(id) {
+          obSelectedId = id;
+          obRender();
+          var card = $("obDetailCard");
+          if (card) { card.hidden = false; card.scrollIntoView({ block: "nearest", behavior: "smooth" }); }
+        }
+        function obRenderDetail() {
+          var o = obById(obSelectedId); if (!o) return;
+          var card = $("obDetailCard"); if (!card) return;
+          card.hidden = false;
+          $("obDetailTitle").textContent = o.ref + " - " + o.title;
+          var pill = $("obDetailPill"); pill.textContent = obDispStatus(o); pill.className = "status " + obStatusCls(o);
+          $("obDetailReq").textContent = o.requirement || "";
+          var age = obAge(o);
+          var kv = [
+            ["Regulator", o.regulator + (o.jur ? " - " + o.jur : "")],
+            ["Source development", o.sourceDev || "Standing obligation (no single development)"],
+            ["Source reference", o.sourceRef || "-"],
+            ["Framework / theme", o.fw || "-"],
+            ["Applicability", o.app || "-"],
+            ["Effective", o.effISO ? fmtDate(o.effISO + "T12:00:00") : "-"],
+            ["Due", (o.dueISO ? fmtDate(o.dueISO + "T12:00:00") : "-") + " - " + age.label]
+          ];
+          $("obDetailKv").innerHTML = kv.map(function (p) { return '<div class="kv"><span>' + esc(p[0]) + "</span><b>" + esc(p[1]) + "</b></div>"; }).join("");
+          $("obEdOwner").value = o.owner || "";
+          $("obEdDue").value = o.dueISO || "";
+          $("obEdStatus").value = o.status || "In progress";
+          $("obEdNote").value = o.note || "";
+          if ($("obEdMsg")) $("obEdMsg").textContent = o.note ? "" : "";
+          var acts = obActionsFor(o);
+          $("obDetailActions").innerHTML = acts.length ? acts.map(function (a) {
+            return '<div class="ob-actrow"><span class="t" style="font-weight:600;flex:1;min-width:200px">' + esc(a.title) + '<div class="s">From ' + esc(a.reviewName || "") + (a.obligationRef ? " - " + esc(a.obligationRef) : "") + '</div></span><span>' + esc(a.owner || "") + '</span><span class="mono">' + esc(a.due || "") + '</span><span class="status ' + statusClass(a.status) + '">' + esc(a.status || "") + "</span></div>";
+          }).join("") : '<p class="sub" style="margin:4px 0 0">No implementation action yet. Create the first one below and it appears here, on the Actions page, and in the linked review.</p>';
+          if ($("obNewActTitle")) $("obNewActTitle").value = o.implAction || "";
+          if ($("obNewActOwner") && !$("obNewActOwner").value) $("obNewActOwner").value = o.owner || "";
+          var revs = obReviews();
+          $("obDetailReviews").innerHTML = revs.length ? revs.map(function (r) {
+            var on = (o.reviewIds || []).indexOf(r.id) > -1;
+            return '<button type="button" class="ob-revchip" data-ob-rev="' + r.id + '" aria-pressed="' + String(on) + '">' + esc(r.name) + "</button>";
+          }).join("") : '<span class="sub">No reviews exist yet - create a review and it can pick this obligation up in scope.</span>';
+          $("obDetailReviews").querySelectorAll("[data-ob-rev]").forEach(function (b) {
+            b.addEventListener("click", function () { obToggleReview(o.id, b.getAttribute("data-ob-rev")); });
+          });
+          var dc = $("obDeleteConfirm"); if (dc) dc.hidden = true;
+          var dm = $("obDeleteMsg"); if (dm) dm.textContent = "";
+        }
+        function obToggleReview(obId, revId) {
+          var list = obAll();
+          var o = list.find(function (x) { return x.id === obId; }); if (!o) return;
+          o.reviewIds = o.reviewIds || [];
+          var i = o.reviewIds.indexOf(revId);
+          var added = i === -1;
+          if (added) o.reviewIds.push(revId); else o.reviewIds.splice(i, 1);
+          obSaveAll(list);
+          try { appendAuditLog({ reviewId: revId, action: (added ? "Obligation added to review scope: " : "Obligation removed from review scope: ") + o.ref, entityType: "Obligation", entityLabel: o.ref + " - " + o.title, changedBy: currentActorName() }); } catch (e) {}
+          toast(added ? o.ref + " now sits in the scope of " + obReviewName(revId) + "." : o.ref + " removed from the scope of " + obReviewName(revId) + ".");
+          obRender();
+        }
+        function obRenderScopeMount() {
+          var mount = $("scopeObligations"); if (!mount) return;
+          var rid = (typeof currentReviewId !== "undefined") ? currentReviewId : null;
+          if (!rid) { mount.innerHTML = '<span class="sub">Open a review to see the obligations its scope covers.</span>'; return; }
+          var mine = obAll().filter(function (o) { return (o.reviewIds || []).indexOf(rid) > -1; });
+          if (!mine.length) {
+            mount.innerHTML = '<span class="sub">No obligations from the register are in this review&rsquo;s scope yet.</span> <button type="button" class="btn ghost small" data-ob-goto="obligations" style="margin-left:8px">Open the Obligations Register</button>';
+            return;
+          }
+          mount.innerHTML = mine.map(function (o) {
+            return '<div class="kv"><span><b class="mono">' + esc(o.ref) + "</b> - " + esc(o.title) + '<div class="s">' + esc(o.regulator) + " - owner " + esc(o.owner || "not assigned") + " - due " + esc(fmtDate((o.dueISO || "") + "T12:00:00")) + '</div></span><span class="status ' + obStatusCls(o) + '">' + esc(obDispStatus(o)) + "</span></div>";
+          }).join("") + '<div class="btnrow" style="margin-top:8px"><button type="button" class="btn ghost small" data-ob-goto="obligations">Open the Obligations Register</button></div>';
+        }
+        document.addEventListener("click", function (e) {
+          var t = e.target && e.target.closest ? e.target.closest("[data-ob-goto]") : null;
+          if (t) { try { goView(t.getAttribute("data-ob-goto")); } catch (err) {} }
+        });
+        (function obInit() {
+          if (!$("obBody")) return;
+          ["obQ"].forEach(function (id) { var el = $(id); if (el) el.addEventListener("input", obRender); });
+          ["obFReg", "obFStatus", "obFCov"].forEach(function (id) { var el = $(id); if (el) el.addEventListener("change", obRender); });
+          var form = $("obForm");
+          if (form) form.addEventListener("submit", function (e) {
+            e.preventDefault();
+            var title = $("obTitle").value.trim();
+            var msg = $("obFormMsg");
+            if (!title) { msg.textContent = "Give the obligation a title first - what the firm must do, in one line."; $("obTitle").focus(); return; }
+            var list = obAll();
+            var n = list.length + 1;
+            var usedRefs = {}; list.forEach(function (o) { usedRefs[o.ref] = 1; });
+            var ref = "OBL-" + String(n).padStart(3, "0");
+            while (usedRefs[ref]) { n++; ref = "OBL-" + String(n).padStart(3, "0"); }
+            var o = { id: uid(), ref: ref, title: title, requirement: $("obReq").value.trim(), regulator: $("obReg").value, jur: $("obJur").value, sourceDev: $("obSource").value.trim(), sourceRef: $("obRef").value.trim(), fw: $("obFw").value.trim(), owner: $("obOwner").value.trim(), status: $("obStatus").value, dueISO: $("obDue").value || "", effISO: "", app: $("obApp").value.trim(), implAction: "", reviewIds: [], actionIds: [], note: "", createdAt: nowISO() };
+            list.push(o); obSaveAll(list);
+            try { appendAuditLog({ reviewId: null, action: "Obligation added to the register" + (o.sourceDev ? " from development: " + o.sourceDev : ""), entityType: "Obligation", entityLabel: o.ref + " - " + o.title, changedBy: currentActorName() }); } catch (err) {}
+            msg.textContent = "Added: " + o.ref + " - " + o.title + ". Open its Detail to raise an implementation action and place it in a review scope.";
+            ["obTitle", "obReq", "obSource", "obRef", "obFw", "obOwner", "obApp"].forEach(function (id) { $(id).value = ""; });
+            obSelectedId = o.id;
+            obRender();
+            toast("Obligation added: " + o.ref);
+          });
+          var saveBtn = $("obEdSave");
+          if (saveBtn) saveBtn.addEventListener("click", function () {
+            var list = obAll();
+            var o = list.find(function (x) { return x.id === obSelectedId; }); if (!o) return;
+            o.owner = $("obEdOwner").value.trim();
+            o.dueISO = $("obEdDue").value || o.dueISO;
+            o.status = $("obEdStatus").value;
+            o.note = $("obEdNote").value.trim();
+            obSaveAll(list);
+            try { appendAuditLog({ reviewId: null, action: "Obligation updated (owner " + (o.owner || "not set") + ", due " + (o.dueISO || "not set") + ", status " + o.status + ")", entityType: "Obligation", entityLabel: o.ref + " - " + o.title, changedBy: currentActorName() }); } catch (err) {}
+            if ($("obEdMsg")) $("obEdMsg").textContent = "Saved.";
+            toast(o.ref + " updated.");
+            obRender();
+          });
+          var actBtn = $("obNewActBtn");
+          if (actBtn) actBtn.addEventListener("click", function () {
+            var o = obById(obSelectedId); if (!o) return;
+            var title = $("obNewActTitle").value.trim();
+            var msg = $("obNewActMsg");
+            if (!title) { msg.textContent = "Give the action a title first."; return; }
+            var revName = (o.reviewIds && o.reviewIds.length) ? obReviewName(o.reviewIds[0]) : "Compliance Obligations Register";
+            var a = { id: uid(), title: title, reviewName: revName, findingRef: "", owner: $("obNewActOwner").value.trim(), due: $("obNewActDue").value.trim(), priority: $("obNewActPrio").value || "Medium", status: "Not started", overdue: 0, obligationId: o.id, obligationRef: o.ref, createdAt: nowISO() };
+            saveData("ra2_actions", DB.actions.concat([a]));
+            var list = obAll();
+            var oo = list.find(function (x) { return x.id === o.id; });
+            if (oo) { oo.actionIds = (oo.actionIds || []).concat([a.id]); if (!oo.implAction) oo.implAction = title; obSaveAll(list); }
+            try { appendAuditLog({ reviewId: (o.reviewIds && o.reviewIds[0]) || null, action: "Implementation action created from obligation " + o.ref + ": " + title, entityType: "Action", entityLabel: title, changedBy: currentActorName() }); } catch (err) {}
+            try { renderActionsTable(); } catch (err) {}
+            if (msg) msg.textContent = "Action created and linked to " + o.ref + " - it is on the Actions page under " + revName + ".";
+            toast("Implementation action created for " + o.ref + ".");
+            obRender();
+          });
+          var del = $("obDelete");
+          if (del) del.addEventListener("click", function () { var c = $("obDeleteConfirm"); if (c) c.hidden = false; if ($("obDeleteMsg")) $("obDeleteMsg").textContent = "This removes the obligation from the register. Linked actions stay on the Actions page."; });
+          var delC = $("obDeleteConfirm");
+          if (delC) delC.addEventListener("click", function () {
+            var o = obById(obSelectedId); if (!o) return;
+            obSaveAll(obAll().filter(function (x) { return x.id !== o.id; }));
+            try { appendAuditLog({ reviewId: null, action: "Obligation removed from the register", entityType: "Obligation", entityLabel: o.ref + " - " + o.title, changedBy: currentActorName() }); } catch (err) {}
+            obSelectedId = null;
+            var card = $("obDetailCard"); if (card) card.hidden = true;
+            toast(o.ref + " removed from the register.");
+            obRender();
+          });
+          var exp = $("obExport");
+          if (exp) exp.addEventListener("click", function () {
+            function csv(v) { return '"' + String(v == null ? "" : v).replace(/"/g, '""') + '"'; }
+            var lines = [["Ref", "Obligation", "Requirement", "Regulator", "Jurisdiction", "Source development", "Source reference", "Framework", "Owner", "Status", "Due", "Effective", "Reviews covering it", "Implementation actions"].join(",")];
+            obAll().forEach(function (o) {
+              lines.push([o.ref, o.title, o.requirement, o.regulator, o.jur, o.sourceDev, o.sourceRef, o.fw, o.owner, obDispStatus(o), o.dueISO, o.effISO, (o.reviewIds || []).map(obReviewName).join("; "), obActionsFor(o).length].map(csv).join(","));
+            });
+            var blob = new Blob([lines.join("\n")], { type: "text/csv" });
+            var aEl = document.createElement("a");
+            aEl.href = URL.createObjectURL(blob);
+            aEl.download = "compliance-obligations-register.csv";
+            document.body.appendChild(aEl); aEl.click(); aEl.remove();
+            setTimeout(function () { URL.revokeObjectURL(aEl.href); }, 2000);
+            toast("Register exported as CSV.");
+          });
+          var sideBtn = document.querySelector('.side-item[data-view-target="obligations"]');
+          if (sideBtn) sideBtn.addEventListener("click", function () { setTimeout(obRender, 60); });
+          /* Refresh the review Scope tab whenever the workspace re-renders. */
+          try {
+            var __obRW = renderWorkspace;
+            renderWorkspace = function () { __obRW.apply(null, arguments); try { obRenderScopeMount(); } catch (e) {} };
+          } catch (e) {}
+          obRender();
+          setTimeout(obRender, 1200);
+          setTimeout(obRender, 3000);
+          setTimeout(obRender, 6000);
+        })();
 
         renderConfiguration();
         setTimeout(renderConfiguration, 900);
