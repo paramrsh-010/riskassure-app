@@ -3521,7 +3521,7 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
             </article>
 
             <article class="card span12" style="--i:9">
-              <div class="top"><span class="label cardtitle">Appendices</span><span class="sub">Evidence index, test results, test data, action tracker, glossary</span></div>
+              <div class="top"><span class="label cardtitle">Appendices</span><span class="sub">Evidence index, test results, test data, action tracker, glossary, regulatory obligations</span></div>
               <span class="label" style="font-size:14.5px;font-weight:600">Appendix A: Evidence index</span>
               <div class="tablewrap" style="margin-top:6px"><table>
                 <thead><tr><th>Item</th><th>Description</th><th>Source</th><th>Date</th><th>Finding ref</th></tr></thead>
@@ -3542,12 +3542,6 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
                 <thead><tr><th>Ref</th><th>Agreed action</th><th>Owner</th><th>Target date</th><th>Status</th><th>Closure evidence</th></tr></thead>
                 <tbody id="frAppD"></tbody>
               </table></div>
-              <span class="label" style="font-size:14.5px;font-weight:600;display:block;margin-top:14px">Appendix F: Regulatory obligations in scope</span>
-              <span class="sub">Live from the Compliance Obligations Register &middot; the obligations in Section 2.5, in full</span>
-              <div class="tablewrap" style="margin-top:6px"><table>
-                <thead><tr><th>Ref</th><th>Obligation</th><th>Regulator &amp; source</th><th>Owner</th><th>Due</th><th>Status</th><th>Implementation actions</th></tr></thead>
-                <tbody id="frAppF"></tbody>
-              </table></div>
               <span class="label" style="font-size:14.5px;font-weight:600;display:block;margin-top:14px">Appendix E: Glossary</span>
               <div class="tablewrap" style="margin-top:6px"><table>
                 <thead><tr><th>Term</th><th>Meaning</th></tr></thead>
@@ -3556,6 +3550,12 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
                   <tr><td><span class="t">ToD / ToE</span></td><td>Test of Design / Test of Operating Effectiveness</td></tr>
                   <tr><td><span class="t">KRI / KCI</span></td><td>Key Risk Indicator / Key Control Indicator</td></tr>
                 </tbody>
+              </table></div>
+              <span class="label" style="font-size:14.5px;font-weight:600;display:block;margin-top:14px">Appendix F: Regulatory obligations in scope</span>
+              <span class="sub">Live from the Compliance Obligations Register &middot; the obligations in Section 2.5, in full</span>
+              <div class="tablewrap" style="margin-top:6px"><table>
+                <thead><tr><th>Ref</th><th>Obligation</th><th>Regulator &amp; source</th><th>Owner</th><th>Due</th><th>Status</th><th>Implementation actions</th></tr></thead>
+                <tbody id="frAppF"></tbody>
               </table></div>
               <div class="btnrow" style="margin-top:10px"><button type="button" class="btn small frSaveBtn">Save draft</button></div>
             </article>
@@ -20183,6 +20183,11 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           try { appendAuditLog({ reviewId: revId, action: (added ? "Obligation added to review scope: " : "Obligation removed from review scope: ") + o.ref, entityType: "Obligation", entityLabel: o.ref + " - " + o.title, changedBy: currentActorName() }); } catch (e) {}
           toast(added ? o.ref + " now sits in the scope of " + obReviewName(revId) + "." : o.ref + " removed from the scope of " + obReviewName(revId) + ".");
           obRender();
+          /* A scope change is exactly what the Executive Pack reports
+             (in-scope count, ExCo block, tracker coverage), so redraw
+             the pack in the same breath. Guarded: a pack redraw error
+             must never break the toggle itself. */
+          try { renderExecPack(); } catch (e) {}
         }
         function obRenderScopeMount() {
           var mount = $("scopeObligations"); if (!mount) return;
@@ -20286,6 +20291,12 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           });
           var sideBtn = document.querySelector('.side-item[data-view-target="obligations"]');
           if (sideBtn) sideBtn.addEventListener("click", function () { setTimeout(obRender, 60); });
+          /* Sidebar navigation to the Executive Pack only switches the
+             view (it does not pass through goView), so refresh the pack
+             on entry the same way - register edits (owner, due date,
+             status, scope) are then never stale when the pack opens. */
+          var pkSideBtn = document.querySelector('.side-item[data-view-target="execpack"]');
+          if (pkSideBtn) pkSideBtn.addEventListener("click", function () { setTimeout(function () { try { renderExecPack(); } catch (e) {} }, 60); });
           /* Refresh the review Scope tab whenever the workspace re-renders. */
           try {
             var __obRW = renderWorkspace;
