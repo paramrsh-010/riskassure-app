@@ -1565,10 +1565,6 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.6-3 8.4-7 10-4-1.6-7-5.4-7-10V6z"/><path d="M9 12l2 2 4-4.2"/></svg>
           <span>EU AI Act Mapping</span>
         </button>
-        <button type="button" class="side-item" data-view-target="adhoc">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4.5H6.5A1.5 1.5 0 0 0 5 6v13a1.5 1.5 0 0 0 1.5 1.5h11A1.5 1.5 0 0 0 19 19V6a1.5 1.5 0 0 0-1.5-1.5H15"/><rect x="9" y="3" width="6" height="4" rx="1.2"/><path d="M12 10.5v6M9 13.5h6"/></svg>
-          <span>Adhoc Tasks</span>
-        </button>
         <button type="button" class="side-item" data-view-target="finalreports">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 3.5H14l4.5 4.5v12.5h-12z"/><path d="M14 3.5V8h4.5"/><path d="M9.2 15.4l2 2 3.6-3.9"/></svg>
           <span>Final Report</span>
@@ -1601,10 +1597,6 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
         <button type="button" class="side-item" data-view-target="policies">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 3.5H14l4.5 4.5v12.5h-12z"/><path d="M14 3.5V8h4.5"/><path d="M9.3 13h5.4M9.3 16.5h5.4"/></svg>
           <span>Policy Library</span>
-        </button>
-        <button type="button" class="side-item" data-view-target="monitoring">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>
-          <span>Monitoring</span>
         </button>
         <button type="button" class="side-item" data-view-target="compliance">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.5-3 8.1-7 10-4-1.9-7-5.5-7-10V6z"/><path d="M8.5 12h7M8.5 15h4.5"/></svg>
@@ -2223,7 +2215,7 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
       <div class="wrap pad">
         <div class="headline">
           <h1>Actions</h1>
-          <p>Remediation actions agreed with management, tracked to verified closure. <span class="asof">All reviews</span></p>
+          <p>Remediation actions agreed with management, plus one-off adhoc requests from regulators, the board and management - each carrying its requester and type - tracked to verified closure in the same audit trail. <span class="asof">All reviews</span></p>
         </div>
         <div class="grid">
           <article class="card span3" style="--i:0">
@@ -2282,6 +2274,12 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
                 </label>
                 <label class="field">Linked finding ref<input id="gaActFinding" type="text" placeholder="e.g. F-1042 (optional)" /></label>
               </div>
+              <div class="formrow" style="margin-top:10px">
+                <label class="field">Requester<input id="gaActRequester" type="text" placeholder="Who raised it - e.g. Compliance, Board office, Management" /></label>
+                <label class="field">Type
+                  <select id="gaActType"><option>Remediation</option><option>Evidence pull</option><option>Analysis</option><option>Spot check</option><option>Register update</option><option>Extract</option><option>Other request</option></select>
+                </label>
+              </div>
               <div class="btnrow" style="margin-top:12px">
                 <button type="submit" class="btn small" id="gaActAdd">Add action</button>
                 <span class="sub" id="gaActStatus" role="status"></span>
@@ -2292,14 +2290,19 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
             <div class="top"><span class="label" style="font-size:16px;font-weight:600">All open actions</span><button type="button" class="tglx" id="overdueToggle" aria-pressed="false">Overdue only</button></div>
             <div class="tablewrap">
               <table>
-                <thead><tr><th>Action</th><th>Linked finding</th><th>Owner</th><th>Due</th><th>Ageing</th><th>Priority</th><th>Status</th></tr></thead>
+                <thead><tr><th>Action</th><th>Linked finding</th><th>Requester</th><th>Type</th><th>Owner</th><th>Due</th><th>Ageing</th><th>Priority</th><th>Status</th></tr></thead>
                 <tbody id="actionsBody">
-                  <tr data-overdue="1"><td><span class="t">Recertify privileged access accounts</span><div class="s">From Q3 Access Review</div></td><td class="mono">F-1042</td><td>Staff 2</td><td class="mono">18 Oct</td><td><span class="sev"><i style="background:#d64545"></i>High</span></td><td><span class="status over">Overdue</span></td></tr>
-                  <tr data-overdue="1"><td><span class="t">Close dormant vendor portal accounts</span><div class="s">From Vendor Assurance FY26</div></td><td class="mono">F-1011</td><td>Staff 3</td><td class="mono">19 Oct</td><td><span class="sev"><i style="background:#d64545"></i>High</span></td><td><span class="status over">Overdue</span></td></tr>
-                  <tr><td><span class="t">Update review checklist</span><div class="s">From US SOX Readiness</div></td><td class="mono">F-1019</td><td>Staff 1</td><td class="mono">22 Oct</td><td><span class="sev"><i style="background:#1d9e75"></i>Low</span></td><td><span class="status review">In review</span></td></tr>
-                  <tr><td><span class="t">Segregate change approval duties</span><div class="s">From UK Change Audit</div></td><td class="mono">F-1031</td><td>Staff 4</td><td class="mono">25 Oct</td><td><span class="sev"><i style="background:#d9930d"></i>Medium</span></td><td><span class="status prog">In progress</span></td></tr>
-                  <tr><td><span class="t">Add exit clauses to vendor contracts</span><div class="s">From Vendor Assurance FY26</div></td><td class="mono">F-1037</td><td>Staff 3</td><td class="mono">28 Oct</td><td><span class="sev"><i style="background:#d64545"></i>High</span></td><td><span class="status prog">In progress</span></td></tr>
-                  <tr><td><span class="t">Extend evidence retention to 7 years</span><div class="s">From EU Records Review</div></td><td class="mono">F-1028</td><td>Staff 5</td><td class="mono">30 Oct</td><td><span class="sev"><i style="background:#d9930d"></i>Medium</span></td><td><span class="status todo">Not started</span></td></tr>
+                  <tr data-overdue="1"><td><span class="t">Recertify privileged access accounts</span><div class="s">From Q3 Access Review</div></td><td class="mono">F-1042</td><td>Management</td><td><span class="tag">Remediation</span></td><td>Staff 2</td><td class="mono">18 Oct</td><td class="mono"></td><td><span class="sev"><i style="background:#d64545"></i>High</span></td><td><span class="status over">Overdue</span></td></tr>
+                  <tr data-overdue="1"><td><span class="t">Close dormant vendor portal accounts</span><div class="s">From Vendor Assurance FY26</div></td><td class="mono">F-1011</td><td>Management</td><td><span class="tag">Remediation</span></td><td>Staff 3</td><td class="mono">19 Oct</td><td class="mono"></td><td><span class="sev"><i style="background:#d64545"></i>High</span></td><td><span class="status over">Overdue</span></td></tr>
+                  <tr><td><span class="t">Update review checklist</span><div class="s">From US SOX Readiness</div></td><td class="mono">F-1019</td><td>Management</td><td><span class="tag">Remediation</span></td><td>Staff 1</td><td class="mono">22 Oct</td><td class="mono"></td><td><span class="sev"><i style="background:#1d9e75"></i>Low</span></td><td><span class="status review">In review</span></td></tr>
+                  <tr><td><span class="t">Segregate change approval duties</span><div class="s">From UK Change Audit</div></td><td class="mono">F-1031</td><td>Management</td><td><span class="tag">Remediation</span></td><td>Staff 4</td><td class="mono">25 Oct</td><td class="mono"></td><td><span class="sev"><i style="background:#d9930d"></i>Medium</span></td><td><span class="status prog">In progress</span></td></tr>
+                  <tr><td><span class="t">Add exit clauses to vendor contracts</span><div class="s">From Vendor Assurance FY26</div></td><td class="mono">F-1037</td><td>Management</td><td><span class="tag">Remediation</span></td><td>Staff 3</td><td class="mono">28 Oct</td><td class="mono"></td><td><span class="sev"><i style="background:#d64545"></i>High</span></td><td><span class="status prog">In progress</span></td></tr>
+                  <tr><td><span class="t">Extend evidence retention to 7 years</span><div class="s">From EU Records Review</div></td><td class="mono">F-1028</td><td>Management</td><td><span class="tag">Remediation</span></td><td>Staff 5</td><td class="mono">30 Oct</td><td class="mono"></td><td><span class="sev"><i style="background:#d9930d"></i>Medium</span></td><td><span class="status todo">Not started</span></td></tr>
+                  <tr><td><span class="t">Regulator data request: Q2 sampling evidence</span><div class="s">From Adhoc request - Full sample listing with selection rationale</div></td><td class="mono">-</td><td>Compliance</td><td><span class="tag">Evidence pull</span></td><td></td><td class="mono">23 Oct</td><td class="mono"></td><td><span class="sev"><i style="background:#d9930d"></i>Medium</span></td><td><span class="status prog">In progress</span></td></tr>
+                  <tr><td><span class="t">Board query: vendor concentration summary</span><div class="s">From Adhoc request - Top 10 vendors by spend and control status</div></td><td class="mono">-</td><td>Board office</td><td><span class="tag">Analysis</span></td><td></td><td class="mono">24 Oct</td><td class="mono"></td><td><span class="sev"><i style="background:#d9930d"></i>Medium</span></td><td><span class="status review">In review</span></td></tr>
+                  <tr><td><span class="t">Spot check: expense approvals sample</span><div class="s">From Adhoc request - 25 approvals across two cost centres</div></td><td class="mono">-</td><td>Finance</td><td><span class="tag">Spot check</span></td><td></td><td class="mono">29 Oct</td><td class="mono"></td><td><span class="sev"><i style="background:#d9930d"></i>Medium</span></td><td><span class="status todo">Not started</span></td></tr>
+                  <tr><td><span class="t">Policy exception register refresh</span><div class="s">From Adhoc request - Reconfirm 14 live exceptions with owners</div></td><td class="mono">-</td><td>Risk</td><td><span class="tag">Register update</span></td><td></td><td class="mono">27 Oct</td><td class="mono"></td><td><span class="sev"><i style="background:#d9930d"></i>Medium</span></td><td><span class="status prog">In progress</span></td></tr>
+                  <tr><td><span class="t">Management letter extract for auditors</span><div class="s">From Adhoc request - Q3 findings in external audit format</div></td><td class="mono">-</td><td>External audit</td><td><span class="tag">Extract</span></td><td></td><td class="mono">21 Oct</td><td class="mono"></td><td><span class="sev"><i style="background:#d9930d"></i>Medium</span></td><td><span class="status done">Complete</span></td></tr>
                 </tbody>
               </table>
             </div>
@@ -3288,60 +3291,6 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
       </div>
     </section>
 
-    <!-- ============ VIEW: ADHOC TASKS ============ -->
-    <section class="view" id="view-adhoc">
-      <div class="wrap pad">
-        <div class="headline">
-          <h1>Adhoc Tasks</h1>
-          <p>One-off requests from regulators, the board and management, handled inside the same audit trail. <span class="asof">Triaged within a business day</span></p>
-        </div>
-        <div class="grid">
-          <article class="card hero" style="--i:0">
-            <div class="top">
-              <span class="label">Adhoc Requests</span>
-              <span class="verdict">Triaged within a business day</span>
-            </div>
-            <div class="score-row">
-              <div>
-                <div class="score">&mdash;</div>
-                <p class="note">Open requests are listed below. Each one is triaged within a business day and tracked like review work, inside the same audit trail.</p>
-              </div>
-            </div>
-            <div class="minirow">
-              <div><b>5</b><span>Request types</span></div>
-              <div><b>&mdash;</b><span>Completed this cycle</span></div>
-              <div><b>&mdash;</b><span>Overdue</span></div>
-            </div>
-          </article>
-          <article class="card span7" style="--i:1">
-            <div class="top"><span class="label" style="font-size:16px;font-weight:600">Completion by type</span></div>
-            <div class="regionrows wide">
-              <div class="r"><b>Evidence pulls</b><div class="progress"><i data-fill="0"></i></div><span class="pct mono">—</span></div>
-              <div class="r"><b>Auditor extracts</b><div class="progress"><i data-fill="0"></i></div><span class="pct mono">—</span></div>
-              <div class="r"><b>Data analysis</b><div class="progress"><i data-fill="0"></i></div><span class="pct mono">—</span></div>
-              <div class="r"><b>Spot checks</b><div class="progress"><i data-fill="0"></i></div><span class="pct mono">—</span></div>
-            </div>
-            <span class="sub">Share of each request type completed this cycle, counted from the request list below.</span>
-          </article>
-          <article class="card span12" style="--i:2">
-            <div class="top"><span class="label" style="font-size:16px;font-weight:600">Adhoc requests</span><span class="sub">Newest first</span></div>
-            <div class="tablewrap">
-              <table>
-                <thead><tr><th>Task</th><th>Requested by</th><th>Type</th><th>Due</th><th>Status</th></tr></thead>
-                <tbody id="tasksBody">
-                  <tr><td><span class="t">Regulator data request: Q2 sampling evidence</span><div class="s">Full sample listing with selection rationale</div></td><td>Compliance</td><td><span class="tag">Evidence pull</span></td><td class="mono">23 Oct</td><td><span class="status prog">In progress</span></td></tr>
-                  <tr><td><span class="t">Board query: vendor concentration summary</span><div class="s">Top 10 vendors by spend and control status</div></td><td>Board office</td><td><span class="tag">Analysis</span></td><td class="mono">24 Oct</td><td><span class="status review">In review</span></td></tr>
-                  <tr><td><span class="t">Spot check: expense approvals sample</span><div class="s">25 approvals across two cost centres</div></td><td>Finance</td><td><span class="tag">Spot check</span></td><td class="mono">29 Oct</td><td><span class="status todo">Not started</span></td></tr>
-                  <tr><td><span class="t">Policy exception register refresh</span><div class="s">Reconfirm 14 live exceptions with owners</div></td><td>Risk</td><td><span class="tag">Register update</span></td><td class="mono">27 Oct</td><td><span class="status prog">In progress</span></td></tr>
-                  <tr><td><span class="t">Management letter extract for auditors</span><div class="s">Q3 findings in external audit format</div></td><td>External audit</td><td><span class="tag">Extract</span></td><td class="mono">21 Oct</td><td><span class="status done">Complete</span></td></tr>
-                </tbody>
-              </table>
-            </div>
-          </article>
-        </div>
-      </div>
-    </section>
-
     <!-- ============ VIEW: FINAL REPORTS ============ -->
     <section class="view" id="view-finalreports">
       <div class="wrap">
@@ -4034,7 +3983,7 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
               </div>
               <div class="vrow">
                 <div class="vn"><b>IAIS Insurance Core Principles</b><span>Expects insurers to run governance, risk management and internal controls a supervisor can assess against the ICPs.</span></div>
-                <div class="vc"><div class="caps"><span class="tag">All 24 ICPs mapped</span><span class="tag">Per-ICP test expectations</span><span class="tag">Insurance review scoping</span><span class="tag">ORSA evidence support</span></div><p>Every one of the 24 ICPs now carries a plain-language requirement, applicability by insurer type (life, general, health, reinsurer, group), the methodology step it maps to, a control and test expectation, and the evidence expected, at the same depth as the banking frameworks. The Organisation Regulatory Mapping in the Training Centre expands an insurer profile into one row per ICP, and a starter set of ICP-mapped controls can be adopted into an insurance review from Settings - Configuration.</p></div>
+                <div class="vc"><div class="caps"><span class="tag">All 24 ICPs mapped</span><span class="tag">Per-ICP test expectations</span><span class="tag">Insurance review scoping</span><span class="tag">ORSA evidence support</span></div><p>Every one of the 24 ICPs now carries a plain-language requirement, applicability by insurer type (life, general, health, reinsurer, group), the methodology step it maps to, a control and test expectation, and the evidence expected, at the same depth as the banking frameworks. A starter set of ICP-mapped controls can be adopted into an insurance review from Settings - Configuration.</p></div>
                 <div class="vr"><div class="sc"><b>4.0<small>/5</small></b><span class="rate st">Strong</span></div><div class="progress"><i data-fill="80"></i></div></div>
               </div>
               <div class="vrow">
@@ -4174,113 +4123,13 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
           </article>
         </div>
 
-        <!-- AI content generator -->
-        <article class="card span12" style="--i:3;margin-bottom:6px">
-          <div class="top">
-            <span class="label" style="font-size:16px;font-weight:600;color:var(--accent-deep)">AI Content Generator</span>
-            <span class="tag">2LOD briefings</span>
-          </div>
-          <span class="sub">Select a regulation for a focused 2LOD briefing, or leave the defaults to refresh the current training topic.</span>
-          <div class="formrow" style="grid-template-columns:repeat(auto-fit,minmax(160px,1fr))">
-            <label class="field">Jurisdiction
-              <select id="genJur">
-                <option value="global" selected>Global</option>
-                <option value="uk">United Kingdom</option>
-                <option value="india">India</option>
-                <option value="us">United States</option>
-                <option value="europe">Europe</option>
-              </select>
-            </label>
-            <label class="field">Industry
-              <select id="genInd">
-                <option value="Any Industry" selected>Any Industry</option>
-                <option>Banking</option>
-                <option>Insurance</option>
-                <option>Payments and Fintech</option>
-                <option>Asset Management</option>
-                <option>Capital Markets</option>
-              </select>
-            </label>
-            <label class="field">Regulation
-              <select id="genReg"><option value="All Regulations" selected>All Regulations</option></select>
-            </label>
-            <label class="field">Depth
-              <select id="genDepth">
-                <option value="overview" selected>Overview</option>
-                <option value="detailed">Detailed</option>
-                <option value="deep">Practitioner Deep-Dive</option>
-              </select>
-            </label>
-          </div>
-          <div class="btnrow">
-            <button type="button" class="btn" id="genBtn">Generate Summary</button>
-            <button type="button" class="btn ghost" id="genReset">Reset</button>
-            <span class="sub" id="genStatus" role="status"></span>
-          </div>
-          <div id="genOut" hidden>
-            <div class="callout">
-              <b id="genOutTitle">Briefing</b>
-              <p id="genOutText"></p>
-            </div>
-          </div>
-        </article>
-
-        <!-- organisation regulatory mapping -->
-        <article class="card span12" style="--i:4;margin-bottom:6px">
-          <div class="top">
-            <span class="label" style="font-size:16px;font-weight:600;color:var(--accent-deep)">Organisation Regulatory Mapping</span>
-            <span class="tag">Standards &middot; Conduct &middot; Impact</span>
-          </div>
-          <span class="sub">Enter a bank or an organisation, or pick an industry, and the application maps the latest industry standards, conduct and regulatory rules that apply, the key requirements under each, and an impact analysis for the organisation. Generate the full mapping as a PDF and share it with stakeholders.</span>
-          <div class="formrow" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr))">
-            <label class="field">Bank / organisation name
-              <input id="rmOrg" type="text" placeholder="e.g. HDFC Bank, a UK challenger bank, a payments firm" />
-            </label>
-            <label class="field">Industry
-              <select id="rmInd">
-                <option>Banking</option><option>Insurance</option><option>Payments and Fintech</option><option>Asset Management</option><option>Capital Markets</option>
-              </select>
-            </label>
-            <label class="field">Primary jurisdiction
-              <select id="rmJur">
-                <option value="india">India</option><option value="uk">United Kingdom</option><option value="us">United States</option><option value="europe">Europe (EU)</option><option value="global">Global</option>
-              </select>
-            </label>
-          </div>
-          <div class="btnrow">
-            <button type="button" class="btn" id="rmMapBtn">Map Regulations</button>
-            <span class="sub" id="rmStatus" role="status"></span>
-          </div>
-          <div id="rmOut" hidden>
-            <div class="tablewrap mapout" style="margin-top:10px">
-              <table>
-                <thead><tr><th>Standard / Regulation</th><th>Regulator</th><th>Key requirements</th><th>Impact analysis</th><th>Assurance focus</th></tr></thead>
-                <tbody id="rmBody"></tbody>
-              </table>
-            </div>
-            <div style="border-top:1px solid var(--line);margin-top:16px;padding-top:14px">
-              <b style="font-size:15px">Share this mapping with stakeholders</b>
-              <div class="formrow" style="margin-top:10px">
-                <label class="field">Stakeholder email<input id="rmEmail" type="email" placeholder="stakeholder@example.com" /></label>
-                <label class="field">Description (auto-drafted by AI - edit before sending)<textarea id="rmDesc" rows="3"></textarea></label>
-              </div>
-              <div class="btnrow" style="margin-top:10px">
-                <button type="button" class="btn" id="rmPdf">Generate PDF Document</button>
-                <button type="button" class="btn ghost" id="rmSend">Send to Stakeholder</button>
-                <span class="sub" id="rmSendStatus" role="status"></span>
-              </div>
-              <span class="sub" id="rmLog" style="display:block;margin-top:8px"></span>
-            </div>
-          </div>
-        </article>
-
         <!-- IAIS ICP library -->
         <article class="card span12" style="--i:4;margin-bottom:6px" id="icpCard">
           <div class="top">
             <span class="label" style="font-size:16px;font-weight:600;color:var(--accent-deep)">IAIS Insurance Core Principles - Full Library</span>
             <span class="tag">24 ICPs &middot; banking-grade depth</span>
           </div>
-          <span class="sub">All 24 Insurance Core Principles with a plain-language requirement, applicability by insurer type, the methodology step each ICP maps to, the control and test expectation, and the evidence expected. Insurer profiles in the Organisation Regulatory Mapping above expand into one row per applicable ICP, and the starter ICP control set can be adopted into a review from Settings - Configuration.</span>
+          <span class="sub">All 24 Insurance Core Principles with a plain-language requirement, applicability by insurer type, the methodology step each ICP maps to, the control and test expectation, and the evidence expected. The starter ICP control set can be adopted into a review from Settings - Configuration.</span>
           <div class="formrow" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr))">
             <label class="field">Insurer type
               <select id="icpAppFilter"><option value="all">All insurer types</option><option>Life</option><option>General</option><option>Health</option><option>Reinsurer</option><option>Group</option></select>
@@ -4327,7 +4176,7 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
           </div>
           <div id="horizonSources" style="border:1px solid var(--line);border-radius:12px;padding:12px;background:var(--surface);margin-top:10px">
             <div class="top"><span class="label" style="font-size:15px;font-weight:600">Horizon Scanning Sources</span><span style="display:flex;gap:8px;align-items:center"><span class="tag">Open sources</span><button type="button" class="btn small" id="hsLogGeneral">Log a publication</button></span></div>
-            <span class="sub">Horizon scanning runs on open sources. Every source in this register is public: open the Publications and News pages to pull the latest publications, and subscribe to the regulator's own email alerts, where offered, so new publications also land in your inbox. Use Mark checked to record each manual scan against your name, and Log a publication to capture what you find as a development in the results below, with its source link, instead of leaving it in someone's inbox. The automated layers in this panel (the server feed where deployed, the browser fetch attempt and the curated set) sit alongside this register; they never replace the firm's own horizon scanning duty. The industry and jurisdiction tags here are the same mapping used by the Organisation Regulatory Mapping above and by Global Validation, so a source appears consistently everywhere.</span>
+            <span class="sub">Horizon scanning runs on open sources. Every source in this register is public: open the Publications and News pages to pull the latest publications, and subscribe to the regulator's own email alerts, where offered, so new publications also land in your inbox. Use Mark checked to record each manual scan against your name, and Log a publication to capture what you find as a development in the results below, with its source link, instead of leaving it in someone's inbox. The automated layers in this panel (the server feed where deployed, the browser fetch attempt and the curated set) sit alongside this register; they never replace the firm's own horizon scanning duty. The industry and jurisdiction tags here are the same mapping used by Global Validation, so a source appears consistently everywhere.</span>
             <div class="formrow" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr));margin-top:8px">
               <label class="field">Industry
                 <select id="hsInd"><option value="all">All industries</option><option>Banking</option><option>Insurance</option><option>Capital Markets</option><option>Payments</option><option>Cross-sector</option></select>
@@ -4424,7 +4273,6 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
           <button type="button" role="tab" aria-selected="false" data-ttab="standards">Industry Standards</button>
           <button type="button" role="tab" aria-selected="false" data-ttab="developments">Developments Database</button>
           <button type="button" role="tab" aria-selected="false" data-ttab="horizon">Regulatory Horizon</button>
-          <button type="button" role="tab" aria-selected="false" data-ttab="assistant">AI Assistant</button>
           <button type="button" role="tab" aria-selected="false" data-ttab="docreview">Document Review</button>
         </div>
 
@@ -4478,25 +4326,6 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
             <article class="card span12" style="--i:0">
               <div class="top"><span class="label" style="font-size:16px;font-weight:600">Regulatory Horizon</span><span class="sub">Confirmed and expected change over the next 18 months</span></div>
               <div id="horizonList"></div>
-            </article>
-          </div>
-        </div>
-
-        <!-- AI assistant -->
-        <div class="tpanel" data-tpanel="assistant">
-          <div class="grid">
-            <article class="card span12" style="--i:0">
-              <div class="top"><span class="label" style="font-size:16px;font-weight:600">AI Assistant</span><span class="sub">Ask about regulations, testing or report writing</span></div>
-              <div style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap"">
-                <label class="field" style="flex:1;min-width:220px">Your question
-                  <input id="aiAsk" type="text" placeholder="e.g. What sample size do I need for a population of 340 at 95% confidence?" />
-                </label>
-                <button type="button" class="btn" id="aiAskBtn">Ask</button>
-              </div>
-              <div id="aiAnswer" hidden>
-                <div class="callout"><b>Assistant</b><p id="aiAnswerText"></p></div>
-              </div>
-              <span class="sub">Try: &ldquo;What does Provision 29 require?&rdquo;, &ldquo;Explain the DPDP Act&rdquo;, &ldquo;How do I test a material control?&rdquo;</span>
             </article>
           </div>
         </div>
@@ -4607,8 +4436,7 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
       <div class="wrap pad">
         <div class="headline">
           <h1>Framework Library</h1>
-          <p>External frameworks mapped once to the RiskAssure control library, then reused by every review. <span class="asof">10 frameworks</span></p>
-          <div class="btnrow" style="margin-top:14px"><button type="button" class="btn" data-goto-view="proposal">Propose New Framework</button><span class="sub">Draft a mapping proposal for methodology board approval</span></div>
+          <p>External frameworks mapped once to the RiskAssure control library, then reused by every review. <span class="asof">8 frameworks</span></p>
         </div>
         <div class="grid">
           <article class="card span4" style="--i:0">
@@ -4621,16 +4449,7 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
             <div class="btnrow" style="margin-top:10px"><button type="button" class="btn ghost small" data-goto-view="isomap">Open the ISO 27001 mapping</button></div>
             
           </article>
-          <article class="card span4" style="--i:1">
-            <div class="top">
-              <span class="ic slate"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 9.8L12 4l8.5 5.8"/><path d="M5 9.8V17M9.7 9.8V17M14.3 9.8V17M19 9.8V17"/><path d="M3.5 20h17M3.5 17h17"/></svg></span>
-              <span class="tag">ISACA</span>
-            </div>
-            <span class="label">COBIT 2019</span>
-            <div class="foot"><span class="big"><span data-count="40">0</span><small> objectives</small></span><span class="delta flat">Mapped to the control library</span></div>
-            
-          </article>
-          <article class="card span4" style="--i:2">
+                    <article class="card span4" style="--i:2">
             <div class="top">
               <span class="ic slate"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 9.8L12 4l8.5 5.8"/><path d="M5 9.8V17M9.7 9.8V17M14.3 9.8V17M19 9.8V17"/><path d="M3.5 20h17M3.5 17h17"/></svg></span>
               <span class="tag">AICPA</span>
@@ -4660,16 +4479,7 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
             <div class="btnrow" style="margin-top:10px"><button type="button" class="btn ghost small" data-goto-view="soxmap">Open the SOX mapping</button></div>
 
           </article>
-          <article class="card span4" style="--i:3">
-            <div class="top">
-              <span class="ic slate"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 9.8L12 4l8.5 5.8"/><path d="M5 9.8V17M9.7 9.8V17M14.3 9.8V17M19 9.8V17"/><path d="M3.5 20h17M3.5 17h17"/></svg></span>
-              <span class="tag">NIST</span>
-            </div>
-            <span class="label">NIST CSF 2.0</span>
-            <div class="foot"><span class="big"><span data-count="106">0</span><small> subcategories</small></span><span class="delta flat">Mapped to the control library</span></div>
-            
-          </article>
-          <article class="card span4" style="--i:4">
+                    <article class="card span4" style="--i:4">
             <div class="top">
               <span class="ic slate"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 9.8L12 4l8.5 5.8"/><path d="M5 9.8V17M9.7 9.8V17M14.3 9.8V17M19 9.8V17"/><path d="M3.5 20h17M3.5 17h17"/></svg></span>
               <span class="tag">COSO</span>
@@ -4763,92 +4573,6 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
       </div>
     </section>
 
-    <!-- ============ VIEW: MONITORING ============ -->
-    <section class="view" id="view-monitoring">
-      <div class="wrap">
-        <div class="headline">
-          <h1>Monitoring</h1>
-          <p>Continuous control monitoring between review cycles, fed by live evidence sources. <span class="asof">Between review cycles</span></p>
-        </div>
-        <div class="grid">
-          <article class="card span3" style="--i:0">
-            <div class="top">
-              <span class="ic teal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 8L9 4l-3 8H2"/></svg></span>
-            </div>
-            <span class="label">Controls Monitored</span>
-            <div class="foot"><span class="big">—</span></div>
-            <span class="sub">Continuous, across all regions</span>
-          </article>
-          <article class="card span3" style="--i:1">
-            <div class="top">
-              <span class="ic green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></span>
-            </div>
-            <span class="label">Live Evidence Feeds</span>
-            <div class="foot"><span class="big">—</span></div>
-            <span class="sub">Delays raise an alert below</span>
-          </article>
-          <article class="card span3" style="--i:2">
-            <div class="top">
-              <span class="ic amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4L2.5 20h19z"/><path d="M12 10v4M12 17.2v.3"/></svg></span>
-            </div>
-            <span class="label">Alerts This Week</span>
-            <div class="foot"><span class="big">—</span></div>
-            <span class="sub">Critical alerts are investigated first</span>
-          </article>
-          <article class="card span3" style="--i:3">
-            <div class="top">
-              <span class="ic slate"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
-            </div>
-            <span class="label">Auto-Resolved</span>
-            <div class="foot"><span class="big">—</span></div>
-            <span class="sub">Cleared by evidence, no reviewer time</span>
-          </article>
-          <article class="card span12" style="--i:4">
-            <div class="top"><span class="label" style="font-size:16px;font-weight:600">Recent alerts</span><span class="sub">Newest first</span></div>
-            <div class="tablewrap">
-              <table>
-                <thead><tr><th>Alert</th><th>Control</th><th>Detected</th><th>Severity</th><th>Status</th></tr></thead>
-                <tbody>
-                  <tr><td><span class="t">Failed login spike on UK admin console</span><div class="s">214 attempts in 10 minutes</div></td><td>AC-04 &middot; Authentication</td><td class="mono">Yesterday, 22:15</td><td><span class="sev"><i style="background:#d64545"></i>Critical</span></td><td><span class="status prog">Investigating</span></td></tr>
-                  <tr><td><span class="t">Privileged account dormant for 45 days</span><div class="s">Service account with admin rights</div></td><td>AC-12 &middot; Access control</td><td class="mono">Today, 07:42</td><td><span class="sev"><i style="background:#d9930d"></i>Major</span></td><td><span class="status prog">Investigating</span></td></tr>
-                  <tr><td><span class="t">Vendor certificate expires in 14 days</span><div class="s">Payment gateway integration</div></td><td>TP-19 &middot; Third party</td><td class="mono">Mon, 11:26</td><td><span class="sev"><i style="background:#d9930d"></i>Major</span></td><td><span class="status over">Open</span></td></tr>
-                  <tr><td><span class="t">Evidence feed delayed: ERP change logs</span><div class="s">Feed recovered after 6 hours</div></td><td>CM-07 &middot; Change</td><td class="mono">Yesterday, 09:03</td><td><span class="sev"><i style="background:#1d9e75"></i>Minor</span></td><td><span class="status done">Resolved</span></td></tr>
-                  <tr><td><span class="t">Backup job missed its scheduled window</span><div class="s">Completed on the retry run</div></td><td>BC-03 &middot; Continuity</td><td class="mono">Sun, 03:10</td><td><span class="sev"><i style="background:#1d9e75"></i>Minor</span></td><td><span class="status done">Resolved</span></td></tr>
-                </tbody>
-              </table>
-            </div>
-          </article>
-        </div>
-      </div>
-      <div class="darkband">
-        <div class="wrap" style="padding-top:0">
-          <div class="grid">
-            <div class="darkcard span7" style="--i:0">
-              <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
-                <div>
-                  <h3>Exceptions Detected per Week</h3>
-                  <span class="sub">All monitored controls, trailing 12 weeks</span>
-                </div>
-              </div>
-              <div class="emptyviz">No exceptions recorded yet this week.<br/>Detected exceptions appear here as monitoring runs.</div>
-            </div>
-            <div class="darkcard span5" style="--i:1">
-              <h3>Feed Health</h3>
-              <span class="sub">Evidence received on schedule, last 30 days</span>
-              <div class="regionrows" style="margin-top:16px">
-                <div class="r"><b>Identity provider</b><div class="progress"><i data-fill="0"></i></div><span class="pct mono">—</span></div>
-                <div class="r"><b>ERP change logs</b><div class="progress"><i data-fill="0"></i></div><span class="pct mono">—</span></div>
-                <div class="r"><b>HR roster feed</b><div class="progress"><i data-fill="0"></i></div><span class="pct mono">—</span></div>
-                <div class="r"><b>Ticketing system</b><div class="progress"><i data-fill="0"></i></div><span class="pct mono">—</span></div>
-              </div>
-              <span class="sub" style="display:block;margin-top:14px">A feed below 90% raises an alert to the control owner automatically.</span>
-            </div>
-          </div>
-          <p class="foot-note">Monitoring &middot; continuous assurance &middot; <span data-org>RiskAssure</span></p>
-        </div>
-      </div>
-    </section>
-
     <!-- ============ VIEW: SETTINGS ============ -->
     <section class="view" id="view-settings">
       <div class="wrap pad">
@@ -4898,7 +4622,6 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
             <div>
               <div class="kv"><span>Overdue action alerts</span><button type="button" class="tgl" aria-pressed="true">On</button></div>
               <div class="kv"><span>Critical finding alerts</span><button type="button" class="tgl" aria-pressed="true">On</button></div>
-              <div class="kv"><span>Weekly summary email</span><button type="button" class="tgl" aria-pressed="false">Off</button></div>
               <div class="kv"><span>Digest frequency</span>
                 <span class="lseg" role="group" aria-label="Digest frequency" id="digestSeg">
                   <button type="button" aria-selected="false">Daily</button>
@@ -4924,7 +4647,7 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
               <div class="kv"><span><b>Dataset upload and sampling</b> - upload a population spreadsheet inside a review's Sampling stage; the sample is drawn from your data with the methodology defaults</span><b><button type="button" class="btn ghost small" data-open-review="Q3 Access Review">Open a review workspace</button></b></div>
               <div class="kv"><span><b>Evidence upload</b> - attach evidence files inside a review's Evidence stage; each upload is hashed and recorded separately, and same-name files never overwrite each other</span><b><button type="button" class="btn ghost small" data-open-review="Q3 Access Review">Open a review workspace</button></b></div>
               <div class="kv"><span><b>Your own templates</b> - stage templates and document templates are edited in the Templates library and saved as your firm's own wording; the Template Plug-in stage in each review issues reports in your own report template. There is no separate template file upload: templates are maintained in the app so every stage uses the same saved version</span><b><button type="button" class="btn ghost small" data-goto-view="templates">Open Templates</button></b></div>
-              <div class="kv"><span><b>Framework Library</b> - frameworks are mapped once and reused by every review. There is no direct framework file upload in this build: a new framework enters through the proposal flow for methodology board approval, so an unreviewed framework never reaches live reviews</span><b><button type="button" class="btn ghost small" data-goto-view="frameworks">Open Framework Library</button></b></div>
+              <div class="kv"><span><b>Framework Library</b> - frameworks are mapped once and reused by every review. There is no direct framework file upload in this build: the library is maintained by the methodology team, so an unreviewed framework never reaches live reviews</span><b><button type="button" class="btn ghost small" data-goto-view="frameworks">Open Framework Library</button></b></div>
               <div class="kv"><span><b>Thresholds, policies and organisation name</b> - tailor severity, escalation and sign-off thresholds in Configuration above, maintain policies in the Policy Library, and set the organisation name shown on every report at the top of this page</span><b><button type="button" class="btn ghost small" data-goto-view="policies">Open Policy Library</button></b></div>
             </div>
           </article>
@@ -5029,7 +4752,7 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
             <span class="sub">Admins enrol an authenticator at the sign-in gate before the workspace opens, and enter a code at every sign-in after that. If the verification check itself fails, sign-in pauses rather than continuing without it. Enrolment, removal and challenge results are recorded on the audit trail in Compliance &amp; Legal.</span>
           </article>
           <article class="card span12" style="--i:2">
-            <div class="top"><span class="label" style="font-size:16px;font-weight:600">AI Provider</span><span class="sub">Powers methodology analysis, AI findings and the Training Centre assistant</span></div>
+            <div class="top"><span class="label" style="font-size:16px;font-weight:600">AI Provider</span><span class="sub">Powers methodology analysis and AI findings</span></div>
             <div style="border:1px solid var(--line);border-radius:12px;padding:14px;background:var(--surface-2)">
               <b style="font-size:14.5px">AI disclosure - read before using AI features</b>
               <p class="sub" style="margin:6px 0 0">When AI features are used, the content you submit (text you enter, and content from documents, datasets and evidence you send to an AI feature) is sent to the AI provider configured below with your own key, or to the built-in AI service if no provider key is configured. Do not submit personal data, including names inside populations and evidence, unless your firm has a lawful basis for the processing and its own agreement with the provider. Your firm's relationship with its chosen provider is governed by your firm's own terms with that provider. This same disclosure is shown the first time an AI feature is used in each session.</p>
@@ -5048,7 +4771,7 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
               <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
                 <b style="font-size:14.5px">Built-in AI</b><span class="tag" id="aiActiveBadge_builtin" hidden>Active provider</span>
               </div>
-              <span class="sub" style="display:block;margin-top:10px">Ready to use - no API key or setup needed. Built-in AI powers methodology analysis, AI findings generation, template AI fill and the Training Centre AI Content Generator straight away. Prefer your own provider? Select Anthropic, Google Gemini, OpenAI or Custom above and save your key instead.</span>
+              <span class="sub" style="display:block;margin-top:10px">Ready to use - no API key or setup needed. Built-in AI powers methodology analysis, AI findings generation, template AI fill straight away. Prefer your own provider? Select Anthropic, Google Gemini, OpenAI or Custom above and save your key instead.</span>
             </div>
             <div style="border:1px solid var(--line);border-radius:12px;padding:14px;margin-top:12px">
               <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
@@ -5107,7 +4830,7 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
               <span style="display:inline-flex;align-items:center;gap:8px"><button type="button" class="tglx" id="aiEnabled" aria-pressed="true">On</button><span class="sub">AI features enabled workspace-wide</span></span>
               <span class="sub" id="aiTestResult" role="status"></span>
             </div>
-            <span class="sub">The provider selected here powers methodology analysis, AI findings generation and the Training Centre AI Content Generator. Built-in AI needs no key. For the other providers, keys are held in this tab's session storage only (cleared when the tab closes), are never written to disk, and are sent directly from your browser to the provider's API. Never use a production key here.</span>
+            <span class="sub">The provider selected here powers methodology analysis and AI findings generation. Built-in AI needs no key. For the other providers, keys are held in this tab's session storage only (cleared when the tab closes), are never written to disk, and are sent directly from your browser to the provider's API. Never use a production key here.</span>
           </article>
           <article class="card span12" style="--i:3" id="privacyCard">
             <div class="top"><span class="label" style="font-size:16px;font-weight:600">Privacy</span><span class="sub">Your consent, your data, your rights</span></div>
@@ -5183,16 +4906,16 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
               </table>
             </div>
             <span class="sub" id="teamStatus" role="status"></span>
-            <div class="top" style="margin-top:10px"><span class="label" style="font-size:15px;font-weight:600">Invite by email</span></div>
-            <span class="sub">This is the only way to join this workspace. When a person creates an account with an invited email, they join this workspace with the role chosen here. Anyone who signs up without an invite gets their own separate workspace instead, never this one.</span>
+            <div class="top" style="margin-top:10px"><span class="label" style="font-size:15px;font-weight:600">Record an invite</span></div>
+            <span class="sub">This is the only way to join this workspace. No email is sent by the application: the invite is recorded here as pending, and when a person creates an account with that email address, they join this workspace with the role chosen here. Anyone who signs up without an invite gets their own separate workspace instead, never this one.</span>
             <div class="formrow" style="margin-top:10px">
-              <label class="field">Email to invite<input id="teamInviteEmail" type="email" placeholder="person@example.com" autocomplete="off" /></label>
+              <label class="field">Email for the invite record<input id="teamInviteEmail" type="email" placeholder="person@example.com" autocomplete="off" /></label>
               <label class="field">Role
                 <select id="teamInviteRole"><option value="admin">Admin</option><option value="lead">Lead</option><option value="reviewer" selected>Reviewer</option><option value="first_line">First line</option><option value="stakeholder">Stakeholder (read-only)</option></select>
               </label>
             </div>
             <div class="btnrow" style="margin-top:10px">
-              <button type="button" class="btn small" id="teamInviteBtn">Send invite</button>
+              <button type="button" class="btn small" id="teamInviteBtn">Record invite</button>
               <span class="sub" id="teamInviteStatus" role="status"></span>
             </div>
             <div id="teamInviteList" style="margin-top:8px"></div>
@@ -5211,10 +4934,10 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
                 </tbody>
               </table>
             </div>
-            <div class="top" style="margin-top:10px"><span class="label" style="font-size:15px;font-weight:600">Invite by email</span></div>
-            <span class="sub">Joining a workspace is by invite only. Record an invite here and it is held on this device and on the audit trail; in the cloud workspace, admins send invites from this same card and the invite is matched by email when the person creates their account. A public sign-up without an invite creates that person's own workspace, never this one.</span>
+            <div class="top" style="margin-top:10px"><span class="label" style="font-size:15px;font-weight:600">Record an invite</span></div>
+            <span class="sub">Joining a workspace is by invite only. Record an invite here and it is held on this device and on the audit trail; in the cloud workspace, admins record invites on this same card (no email is sent there either) and the invite is matched by email when the person creates their account. A public sign-up without an invite creates that person's own workspace, never this one.</span>
             <div class="formrow" style="margin-top:10px">
-              <label class="field">Email to invite<input id="localInviteEmail" type="email" placeholder="person@example.com" autocomplete="off" /></label>
+              <label class="field">Email for the invite record<input id="localInviteEmail" type="email" placeholder="person@example.com" autocomplete="off" /></label>
               <label class="field">Role
                 <select id="localInviteRole"><option value="admin">Admin</option><option value="lead">Lead</option><option value="reviewer" selected>Reviewer</option><option value="first_line">First line</option><option value="stakeholder">Stakeholder (read-only)</option></select>
               </label>
@@ -5234,69 +4957,49 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
     <section class="view" id="view-servicedesk">
       <div class="wrap pad">
         <div class="headline">
-          <h1>Service Desk</h1>
-          <p>Raise a concern about the existing workflow and the built-in AI troubleshoots it on submission. Enhancement requests are captured for product planning - they are never auto-built. <span class="asof">Every ticket joins the audit trail</span></p>
+          <h1>Service Desk - Privacy Requests</h1>
+          <p>Data rights requests only: access, correction, erasure, grievance and consent withdrawal, tracked against a 30-day response target and visible to workspace admins. <span class="asof">Every request joins the audit trail</span></p>
         </div>
         <div class="grid">
           <article class="card span7" style="--i:0">
-            <div class="top"><span class="label cardtitle">Raise a ticket</span></div>
+            <div class="top"><span class="label cardtitle">Raise a Privacy Request</span></div>
             <div class="formrow">
-              <label class="field">Type
-                <select id="sdType">
-                  <option value="issue">Issue with the existing workflow</option>
-                  <option value="enhancement">Enhancement request</option>
-                  <option value="privacy">Privacy Request (data rights)</option>
-                </select>
+              <label class="field">Privacy request type
+                <select id="sdPrivacyType"><option>Access</option><option>Correction</option><option>Erasure</option><option>Grievance</option><option>Consent withdrawal</option></select>
               </label>
-              <label class="field">Area
-                <select id="sdModule">
-                  <option>Sign-in and access</option><option>Review workspace</option><option>Control testing</option><option>Sampling and datasets</option><option>Findings and actions</option><option>Annual plan</option><option>Training Centre</option><option>Reports and Executive Pack</option><option>Other</option>
-                </select>
-              </label>
-              <label class="field">Severity
-                <select id="sdSeverity"><option>Low</option><option selected>Medium</option><option>High</option><option>Critical - work is blocked</option></select>
-              </label>
+              <label class="field">Requester name<input id="sdReqName" type="text" placeholder="Your name" autocomplete="name" /></label>
+              <label class="field">Requester email<input id="sdReqEmail" type="email" placeholder="you@example.com" autocomplete="email" /></label>
             </div>
-            <div id="sdPrivacyFields" hidden style="margin-top:12px">
-              <div class="formrow">
-                <label class="field">Privacy request type
-                  <select id="sdPrivacyType"><option>Access</option><option>Correction</option><option>Erasure</option><option>Grievance</option><option>Consent withdrawal</option></select>
-                </label>
-                <label class="field">Requester name<input id="sdReqName" type="text" placeholder="Your name" autocomplete="name" /></label>
-                <label class="field">Requester email<input id="sdReqEmail" type="email" placeholder="you@example.com" autocomplete="email" /></label>
-              </div>
-              <span class="sub" style="display:block;margin-top:8px">Privacy Requests are tracked against a 30-day response target, are visible to workspace admins, and are noted in the Compliance &amp; Legal access record. Describe what you are asking for below; the workspace owner answers the request itself.</span>
-            </div>
-            <label class="field" style="margin-top:12px">Describe the error or the enhancement
-              <textarea id="sdDesc" rows="4" placeholder="What were you doing, what did you expect to happen, and what happened instead? Include any message shown on screen."></textarea>
+            <span class="sub" style="display:block;margin-top:8px">Privacy Requests are tracked against a 30-day response target, are visible to workspace admins, and are noted in the Compliance &amp; Legal access record. Describe what you are asking for below; the workspace owner answers the request itself.</span>
+            <label class="field" style="margin-top:12px">Describe what you are asking for
+              <textarea id="sdDesc" rows="4" placeholder="The data the request covers and what you would like the workspace owner to do."></textarea>
             </label>
             <div class="btnrow" style="margin-top:12px">
-              <button type="button" class="btn" id="sdSubmit">Submit Ticket</button>
+              <button type="button" class="btn" id="sdSubmit">Submit Privacy Request</button>
               <span class="sub" id="sdStatus" role="status"></span>
             </div>
             <div id="sdAiOut" hidden style="margin-top:14px">
-              <div class="callout"><b id="sdAiTitle">AI troubleshooting</b><p id="sdAiText" style="white-space:pre-line"></p></div>
+              <div class="callout"><b id="sdAiTitle">Privacy Request logged</b><p id="sdAiText" style="white-space:pre-line"></p></div>
             </div>
           </article>
           <article class="card span5" style="--i:1">
             <div class="top"><span class="label cardtitle">How this works</span></div>
             <ul class="checklist">
-              <li><span class="ck">&#10003;</span><span><b>Issues</b> are analysed by the built-in AI the moment you submit: known workflow problems get a diagnosis and a fix you can apply straight away, and the ticket is marked resolved or escalated.</span></li>
-              <li><span class="ck">&#10003;</span><span><b>Enhancements</b> are logged verbatim for the product roadmap. The AI deliberately does not attempt them - an enhancement needs its own designed build, review and release.</span></li>
-              <li><span class="ck">&#10003;</span><span>Early sight of recurring issues feeds the product backlog, so the same problem is fixed once, for every team.</span></li>
-              <li><span class="ck">&#10003;</span><span><b>Privacy Requests</b> (access, correction, erasure, grievance, consent withdrawal) skip the AI troubleshooting: they are logged as tracked requests with a 30-day response target, visible to workspace admins, and noted in the Compliance &amp; Legal access record.</span></li>
+              <li><span class="ck">&#10003;</span><span><b>Privacy Requests only.</b> This desk takes data rights requests under India's DPDP Act 2023, GDPR and UK GDPR: access, correction, erasure, grievance and consent withdrawal.</span></li>
+              <li><span class="ck">&#10003;</span><span><b>Tracked to a 30-day target.</b> Each request is logged with its age against the 30-day response target, visible to workspace admins, and noted in the Compliance &amp; Legal access record.</span></li>
+              <li><span class="ck">&#10003;</span><span><b>Answered by the workspace owner.</b> The application tracks and routes the request; answering it, and meeting the statutory response duties, is the workspace owner's responsibility.</span></li>
             </ul>
             <p class="sub" id="sdPrivacySummary" style="margin-top:10px"></p>
           </article>
           <article class="card span12" style="--i:2">
-            <div class="top"><span class="label cardtitle">Tickets</span><span class="sub" id="sdCount">0 tickets</span></div>
+            <div class="top"><span class="label cardtitle">Privacy Requests</span><span class="sub" id="sdCount">0 requests</span></div>
             <div class="tablewrap">
               <table>
-                <thead><tr><th>Ref</th><th>Ticket</th><th>Area</th><th>Raised</th><th>Status</th></tr></thead>
+                <thead><tr><th>Ref</th><th>Request</th><th>Area</th><th>Raised</th><th>Status</th></tr></thead>
                 <tbody id="sdBody"></tbody>
               </table>
             </div>
-            <span class="sub" id="sdEmpty" hidden>No tickets yet. The first concern raised will appear here with its AI diagnosis.</span>
+            <span class="sub" id="sdEmpty" hidden>No privacy requests yet. The first request raised will appear here.</span>
           </article>
         </div>
       </div>
@@ -6348,291 +6051,34 @@ function a(e,t){return n(e)||r(e,t)||o(e,t)||i()}function o(e,n){if(e){if(typeof
       </div>
     </section>
 
-    <!-- ============ VIEW: FRAMEWORK PROPOSAL ============ -->
-    <section class="view" id="view-proposal">
-      <div class="wrap pad">
-        <button type="button" class="btn ghost small" data-goto-view="frameworks">&#8592; Framework Library</button>
-        <div class="headline" style="padding-top:14px">
-          <h1>Framework Proposal</h1>
-          <p>Propose a new framework mapping for the RiskAssure control library. <span class="asof">Methodology board reviews proposals monthly</span></p>
-        </div>
-        <div class="grid">
-          <article class="card span7" style="--i:0">
-            <div class="top"><span class="label cardtitle">Proposal details</span></div>
-            <div class="formrow">
-              <label class="field">Framework name<input id="fpName" type="text" value="UK Corporate Governance Code 2024" /></label>
-              <label class="field">Publisher<input id="fpPub" type="text" value="Financial Reporting Council (FRC)" /></label>
-              <label class="field">Why this framework
-                <textarea id="fpWhy" rows="3">Provision 29 requires boards to declare the effectiveness of material controls. Mapping the Code to the control library lets every UK review evidence the declaration from live testing.</textarea>
-              </label>
-            </div>
-            <div class="btnrow" style="margin-top:14px">
-              <button type="button" class="btn" id="fpSubmit">Submit Proposal</button>
-              <span class="sub" id="fpStatus" role="status"></span>
-            </div>
-          </article>
-          <article class="card span5" style="--i:1">
-            <div class="top"><span class="label cardtitle">Proposed mapping</span><span class="sub">Draft, for board review</span></div>
-            <div>
-              <div class="kv"><span>Provision 29 &middot; Material controls</span><span class="status review">Proposed</span></div>
-              <div class="kv"><span>Provision 25 &middot; Audit committee duties</span><span class="status review">Proposed</span></div>
-              <div class="kv"><span>Principle M &middot; Risk management</span><span class="status prog">Mapped to ISO 31000</span></div>
-              <div class="kv"><span>Estimated effort</span><b>3 reviewer days</b></div>
-              <div class="kv"><span>Reviews affected</span><b>3 UK reviews</b></div>
-            </div>
-          </article>
-        </div>
-      </div>
-    </section>
-
     <!-- ============ VIEW: HOW TO USE (SOP) ============ -->
     <section class="view" id="view-guide">
       <div class="wrap pad">
         <div class="headline">
-          <h1>How to Use the Tool</h1>
-          <p>The standard operating procedure for running a review in RiskAssure, from creating it from a methodology to exporting the executive pack. <span class="asof">Work the steps in order; each one builds on the last</span></p>
-        </div>
-        <div class="callout" style="margin-bottom:16px">
-          <b>Practitioner-led, by design</b>
-          <p>AI drafts and assists in RiskAssure; it never replaces practitioner judgment. Eight stages - from methodology extraction to the final sign-off attestation - require a person's review and approval before the tool proceeds.</p>
-          <div class="btnrow" style="margin-top:10px"><button type="button" class="btn small" data-open-modal="welcome">Read the human-review caveat</button></div>
+          <h1>How to Use - Quick Start</h1>
+          <p>The essentials for running a review in RiskAssure, on one page. <span class="asof">For the full method, use the Procedure Companion</span></p>
         </div>
         <div class="grid">
           <article class="card span12" style="--i:0">
-            <div class="top"><span class="label cardtitle">The review lifecycle</span><span class="sub">Sixteen steps, in order</span></div>
-            <div class="taxchips">
-              <span class="taxchip static">1 &middot; Create</span>
-              <span class="taxchip static">2 &middot; Scope</span>
-              <span class="taxchip static">3 &middot; Import controls</span>
-              <span class="taxchip static">4 &middot; Sample</span>
-              <span class="taxchip static">5 &middot; Test</span>
-              <span class="taxchip static">6 &middot; Exceptions</span>
-              <span class="taxchip static">7 &middot; Findings</span>
-              <span class="taxchip static">8 &middot; Actions</span>
-              <span class="taxchip static">9 &middot; Export</span>
-            </div>
-            <div class="taxchips" style="margin-top:8px">
-              <span class="taxchip static">Plan &middot; Annual Plan</span>
-              <span class="taxchip static">People &middot; Resourcing</span>
-              <span class="taxchip static">Daily &middot; Progress log</span>
-              <span class="taxchip static">Map &middot; Stakeholders</span>
-              <span class="taxchip static">Output &middot; Template plug-in</span>
-              <span class="taxchip static">Method &middot; COSO + Material/Key</span>
-            </div>
-            <span class="sub">Every step happens inside the review workspace or the screens it feeds, and every step is written to the audit trail as you go.</span>
+            <div class="top"><span class="label cardtitle">A review in eight steps</span><span class="sub">Work them in order; every step is written to the audit trail</span></div>
+            <ul class="checklist">
+              <li><span class="ck">1</span><span><b>Create the review from a methodology.</b> In Reviews, name the review, classify it (family, type and, for Key Controls, subcategory), pick the jurisdictions, assign the lead and set the due date.</span></li>
+              <li><span class="ck">2</span><span><b>Scope it.</b> Agree the period, applications and locations in scope, and any exclusions, with the sponsor, and record them in the review workspace.</span></li>
+              <li><span class="ck">3</span><span><b>Import the first-line controls.</b> In the review's Controls stage, upload the control register as a Word document, a PDF, a photo or scan, or CSV; check the mapping preview and confirm the import.</span></li>
+              <li><span class="ck">4</span><span><b>Calculate the sample.</b> Enter the population, confidence level and deviation rates; the sample size is calculated from the methodology defaults, never guessed.</span></li>
+              <li><span class="ck">5</span><span><b>Test and record exceptions.</b> Execute each control test, attach the evidence, and write an exception note for every Fail or Partial while it is in front of you.</span></li>
+              <li><span class="ck">6</span><span><b>Raise findings and actions.</b> Draft findings from the exceptions, tag each to the risk taxonomy, and agree remediation actions with management (owner, due date, priority) on the Actions page. One-off adhoc requests live on the Actions page too, each with its requester and type.</span></li>
+              <li><span class="ck">7</span><span><b>Report.</b> The Final Report and the Executive Pack build live from the review record, so what the committee reads is what the testing supports.</span></li>
+              <li><span class="ck">8</span><span><b>Sign off.</b> Work the sign-off checklist in the workspace; sign-off locks the fieldwork data and feeds the Executive Pack.</span></li>
+            </ul>
           </article>
-
           <article class="card span12" style="--i:1">
-            <div class="top">
-              <span style="display:flex;align-items:center;gap:12px"><span class="sopnum">1</span><span class="label cardtitle">Create the review from a methodology</span></span>
-              <span class="tag">Reviews &middot; Create Review</span>
+            <div class="top"><span class="label cardtitle">The full method lives in the Procedure Companion</span><span class="tag">Procedure reference</span></div>
+            <span class="sub">The Companion sets out the stage-by-stage method - scoping, planning, fieldwork, reporting and follow-up - with the sampling and rating guidance for each stage, kept beside the work so you can check the method at the point of work. Where your firm has uploaded its own methodology for a classification path, that methodology governs reviews on the path; the Companion remains the generic reference.</span>
+            <div class="btnrow" style="margin-top:10px">
+              <button type="button" class="btn" data-goto-view="companion">Open the Procedure Companion</button>
+              <button type="button" class="btn ghost" data-goto-view="demo">Open the Demo Walkthrough</button>
             </div>
-            <div class="lines3">
-              <div class="lc"><b>You do</b><p>Name the review, then classify it with the three dedicated dropdowns: Review Family (Independent Assurance Review or Independent Controls Review), Review Type (Monitoring Review or Thematic Review for assurance; Material Controls or Key Controls for controls), and, only for Key Controls, the Control Testing Subcategory (Manual Control, Hybrid Controls - Manual and Automated, or Automated Controls). Select one or more jurisdictions, pick the methodology template, assign the lead reviewer and set the due date.</p></div>
-              <div class="lc"><b>The application does</b><p>Adds the review to the Reviews list showing its full classification path, and opens a workspace whose Methodology stage carries that path's own dedicated methodology profile and dedicated upload slot: a Monitoring Review runs indicators, thresholds and trend reporting; a Thematic Review compares across processes and entities; Material Controls applies materiality thresholds and full coverage; Key Controls Manual runs walkthrough and attribute sampling; Key Controls Hybrid runs split manual and automated tracks with reliance logic; Key Controls Automated works configuration-first over the full population. The methodology mapping combines the global baseline, the selected jurisdictions' regulators and laws, and this review's process mapping table.</p></div>
-              <div class="lc"><b>Good looks like</b><p>The review exists before any fieldwork begins, with a named lead, a due date and the methodology on record. Nothing starts from a blank page or a spreadsheet.</p></div>
-            </div>
-            <div class="btnrow"><button type="button" class="btn small" data-open-modal="createReview">Create a review</button></div>
-          </article>
-
-          <article class="card span12" style="--i:2">
-            <div class="top">
-              <span style="display:flex;align-items:center;gap:12px"><span class="sopnum">2</span><span class="label cardtitle">Scope the review</span></span>
-              <span class="tag">Review workspace &middot; Scope</span>
-            </div>
-            <div class="lines3">
-              <div class="lc"><b>You do</b><p>Confirm the scope statement with the sponsor: the period under review, the applications and locations in scope, and any exclusions, agreed and recorded.</p></div>
-              <div class="lc"><b>The tool does</b><p>Holds the scope statement on the workspace Scope tab and in the review summary, so every reviewer works from the same definition.</p></div>
-              <div class="lc"><b>Good looks like</b><p>Scope is explicit and exclusions carry sponsor sign-off. Disagreements about what is in scope are settled now, not at reporting.</p></div>
-            </div>
-            <div class="btnrow"><button type="button" class="btn small ghost" data-open-review="Q3 Access Review">Open a review workspace</button></div>
-          </article>
-
-          <article class="card span12" style="--i:3">
-            <div class="top">
-              <span style="display:flex;align-items:center;gap:12px"><span class="sopnum">3</span><span class="label cardtitle">Import first-line controls (Word, PDF, image or CSV)</span></span>
-              <span class="tag">Review workspace &middot; Controls</span>
-            </div>
-            <div class="lines3">
-              <div class="lc"><b>You do</b><p>Bring the first-line control register in whatever form the first line holds it: usually a Word document (.doc/.docx), a PDF, or a photo/scan (JPEG or PNG) of the register. Upload it and check what comes back in the mapping and preview. If the first line can export a clean spreadsheet file, structured data (CSV) is the secondary option: upload it and map the columns (Control ID, Description, Owner, Frequency) to the RiskAssure fields.</p></div>
-              <div class="lc"><b>The tool does</b><p>For Word, PDF and images it extracts the text on your device (OCR for scans and images, rejecting anything it cannot read confidently), then the configured AI provider structures the text into the same fields, preserving each row's Control ID (PC-01 and the like) into the Control ID field so every structured row becomes a control. For structured data (CSV) it parses the file directly. Every format lands in the same mapping and preview step, where any row whose Control ID could not be mapped is flagged as a warning before import - never silently dropped - so you review and confirm before anything is imported into the control library as a 1LOD intake.</p></div>
-              <div class="lc"><b>Good looks like</b><p>Every control in the library has an ID, an owner and a frequency, and its source is visible. No control lives only in someone's spreadsheet - or in a photo of one.</p></div>
-            </div>
-            <div class="btnrow"><button type="button" class="btn small ghost" data-open-review="Q3 Access Review">Open a review workspace</button></div>
-          </article>
-
-          <article class="card span12" style="--i:4">
-            <div class="top">
-              <span style="display:flex;align-items:center;gap:12px"><span class="sopnum">4</span><span class="label cardtitle">Calculate the sample size</span></span>
-              <span class="tag">Review workspace &middot; Sampling</span>
-            </div>
-            <div class="lines3">
-              <div class="lc"><b>You do</b><p>Enter the population size, the confidence level, and the tolerable and expected deviation rates set by the methodology.</p></div>
-              <div class="lc"><b>The tool does</b><p>Calculates the required sample using attribute sampling (Poisson reliability factors with a finite population correction) and can apply it to the review, recorded on the audit trail.</p></div>
-              <div class="lc"><b>Good looks like</b><p>The sample size is calculated, never guessed or rounded by feel, and the basis is recorded so a quality reviewer can reproduce it exactly.</p></div>
-            </div>
-            <div class="btnrow"><button type="button" class="btn small ghost" data-open-review="Q3 Access Review">Open a review workspace</button></div>
-          </article>
-
-          <article class="card span12" style="--i:5">
-            <div class="top">
-              <span style="display:flex;align-items:center;gap:12px"><span class="sopnum">5</span><span class="label cardtitle">Execute control tests</span></span>
-              <span class="tag">Review workspace &middot; Control Testing</span>
-            </div>
-            <div class="lines3">
-              <div class="lc"><b>You do</b><p>Work through each control in the test list, attach the evidence for it, and record the result: Pass, Fail or Partial. Add controls to the list as the library grows.</p></div>
-              <div class="lc"><b>The tool does</b><p>Updates the effectiveness rate live from the tests actually executed, and writes every execution to the audit trail with the time and the reviewer.</p></div>
-              <div class="lc"><b>Good looks like</b><p>Every in-scope control has a result and evidence behind it. The effectiveness rate reflects testing done, not testing planned.</p></div>
-            </div>
-            <div class="btnrow"><button type="button" class="btn small ghost" data-open-review="Q3 Access Review">Open a review workspace</button></div>
-          </article>
-
-          <article class="card span12" style="--i:6">
-            <div class="top">
-              <span style="display:flex;align-items:center;gap:12px"><span class="sopnum">6</span><span class="label cardtitle">Record exceptions</span></span>
-              <span class="tag">Review workspace &middot; Control Testing</span>
-            </div>
-            <div class="lines3">
-              <div class="lc"><b>You do</b><p>For every Fail or Partial, write the exception note while it is in front of you: what did not operate, on which item, and the evidence reference.</p></div>
-              <div class="lc"><b>The tool does</b><p>Keeps each exception on the audit trail, linked to its control, and feeds the exceptions into findings generation.</p></div>
-              <div class="lc"><b>Good looks like</b><p>No unlogged exceptions. Each one is traceable to a sample item, has an owner, and is assessed for whether it is an isolated error or a pattern.</p></div>
-            </div>
-            <div class="btnrow"><button type="button" class="btn small ghost" data-open-review="Q3 Access Review">Open a review workspace</button></div>
-          </article>
-
-          <article class="card span12" style="--i:7">
-            <div class="top">
-              <span style="display:flex;align-items:center;gap:12px"><span class="sopnum">7</span><span class="label cardtitle">Generate findings with taxonomy tagging</span></span>
-              <span class="tag">Review workspace &middot; Findings</span>
-            </div>
-            <div class="lines3">
-              <div class="lc"><b>You do</b><p>Generate draft findings with AI from the executed tests and exceptions, edit them into board language, set the severity, and tag each finding to one of the 17 risk taxonomy types.</p></div>
-              <div class="lc"><b>The tool does</b><p>Drafts the findings for you, holds them on the Findings tab, and filters them by taxonomy type on the Risk Taxonomy tab.</p></div>
-              <div class="lc"><b>Good looks like</b><p>One finding, one owner, one date, one taxonomy tag. AI drafts are always reviewed and owned by a named person before sign-off.</p></div>
-            </div>
-            <div class="btnrow"><button type="button" class="btn small ghost" data-open-review="Q3 Access Review">Open a review workspace</button></div>
-          </article>
-
-          <article class="card span12" style="--i:8">
-            <div class="top">
-              <span style="display:flex;align-items:center;gap:12px"><span class="sopnum">8</span><span class="label cardtitle">Track actions</span></span>
-              <span class="tag">Actions</span>
-            </div>
-            <div class="lines3">
-              <div class="lc"><b>You do</b><p>Agree each remediation action with management (owner, due date, priority), then follow up: chase what is due, escalate what is overdue to the sponsor.</p></div>
-              <div class="lc"><b>The tool does</b><p>Tracks every action to verified closure, flags overdue items on the Overview SLA panel, and filters the Actions list to overdue only when you need it.</p></div>
-              <div class="lc"><b>Good looks like</b><p>Actions close on evidence of remediation, not on assertion, and overdue items are visible early rather than discovered at the next committee.</p></div>
-            </div>
-            <div class="btnrow"><button type="button" class="btn small ghost" data-goto-view="actions">Open Actions</button></div>
-          </article>
-
-          <article class="card span12" style="--i:9">
-            <div class="top">
-              <span style="display:flex;align-items:center;gap:12px"><span class="sopnum">9</span><span class="label cardtitle">Export the executive pack</span></span>
-              <span class="tag">Executive Pack</span>
-            </div>
-            <div class="lines3">
-              <div class="lc"><b>You do</b><p>Work through the four pack templates (ExCo Pack, Risk Committee Findings, Regulatory Implementation Tracker, Program Health), filtering by jurisdiction, severity or status as the audience needs, then export.</p></div>
-              <div class="lc"><b>The tool does</b><p>Generates a formatted PDF narrative dashboard from the pack contents on screen: KPI tiles, the executive narrative and the drill-downs, branded for <span data-org>RiskAssure</span>.</p></div>
-              <div class="lc"><b>Good looks like</b><p>The pack the committee reads is the pack the signed-off reviews support, and what is in the PDF matches what was on screen at export.</p></div>
-            </div>
-            <div class="btnrow"><button type="button" class="btn small ghost" data-goto-view="execpack">Open Executive Pack</button></div>
-          </article>
-
-          <article class="card span12" style="--i:10">
-            <div class="top">
-              <span style="display:flex;align-items:center;gap:12px"><span class="sopnum">10</span><span class="label cardtitle">Run the year from the Annual Plan</span></span>
-              <span class="tag">Annual Plan</span>
-            </div>
-            <div class="lines3">
-              <div class="lc"><b>You do</b><p>Agree the year's scheduled reviews by quarter, jurisdiction and owner. When the plan has to change, submit the change through the plan's change control form with a rationale and the evidence behind it (a committee decision, a regulator request, a resourcing note).</p></div>
-              <div class="lc"><b>The tool does</b><p>Holds the plan at plan level, applies only controlled changes, and writes every change to the plan change log: who changed what, the before and after values, when, the rationale and the evidence reference.</p></div>
-              <div class="lc"><b>Good looks like</b><p>Nobody can quietly move a review. Any difference between the agreed plan and today's plan is explainable from the change log alone.</p></div>
-            </div>
-            <div class="btnrow"><button type="button" class="btn small ghost" data-goto-view="annualplan">Open the Annual Plan</button></div>
-          </article>
-
-          <article class="card span12" style="--i:11">
-            <div class="top">
-              <span style="display:flex;align-items:center;gap:12px"><span class="sopnum">11</span><span class="label cardtitle">Resource the review, with contingency</span></span>
-              <span class="tag">Review workspace &middot; Resourcing</span>
-            </div>
-            <div class="lines3">
-              <div class="lc"><b>You do</b><p>Allocate each team member to the review with planned days and hours, set the contingency rate for the review, and update actual days as the work lands.</p></div>
-              <div class="lc"><b>The tool does</b><p>Tracks planned vs actual per person and for the review, and shows the contingency buffer: allocated effort (planned plus contingency) against actuals, so an overrun is visible while there is still time to act.</p></div>
-              <div class="lc"><b>Good looks like</b><p>The buffer is a managed number, not a surprise. If actuals eat the contingency, the daily progress log explains why.</p></div>
-            </div>
-            <div class="btnrow"><button type="button" class="btn small ghost" data-open-review="Q3 Access Review">Open a review workspace</button></div>
-          </article>
-
-          <article class="card span12" style="--i:12">
-            <div class="top">
-              <span style="display:flex;align-items:center;gap:12px"><span class="sopnum">12</span><span class="label cardtitle">Log progress daily</span></span>
-              <span class="tag">Review workspace &middot; Daily Progress</span>
-            </div>
-            <div class="lines3">
-              <div class="lc"><b>You do</b><p>Each day, record what was done, who did it, how many tests were executed, and any blocker raised - while it is still today's news.</p></div>
-              <div class="lc"><b>The tool does</b><p>Date-stamps every entry, counts open blockers, and draws the burndown: the ideal burn across the review timeline against the tests actually logged day by day.</p></div>
-              <div class="lc"><b>Good looks like</b><p>A slipping review shows on the burndown a week before the deadline does. Blockers are named, dated and owned, not discovered at the wash-up.</p></div>
-            </div>
-            <div class="btnrow"><button type="button" class="btn small ghost" data-open-review="Q3 Access Review">Open a review workspace</button></div>
-          </article>
-
-          <article class="card span12" style="--i:13">
-            <div class="top">
-              <span style="display:flex;align-items:center;gap:12px"><span class="sopnum">13</span><span class="label cardtitle">Map and manage stakeholders</span></span>
-              <span class="tag">Review workspace &middot; Stakeholders</span>
-            </div>
-            <div class="lines3">
-              <div class="lc"><b>You do</b><p>Record every stakeholder: name, title, email, type, influence and interest, RACI designation, the engagement owner, contact frequency and last contact. Log an update after each meaningful contact and keep the engagement status honest (Engaged, Neutral, At risk, Disengaged).</p></div>
-              <div class="lc"><b>The tool does</b><p>Places each stakeholder on the influence/interest matrix (Manage closely, Keep satisfied, Keep informed, Monitor) and keeps the contact history per stakeholder inside the review.</p></div>
-              <div class="lc"><b>Good looks like</b><p>No finding lands on someone who has never been engaged. High-influence stakeholders hear results from the review team first, at the agreed frequency.</p></div>
-            </div>
-            <div class="btnrow"><button type="button" class="btn small ghost" data-open-review="Q3 Access Review">Open a review workspace</button></div>
-          </article>
-
-          <article class="card span12" style="--i:14">
-            <div class="top">
-              <span style="display:flex;align-items:center;gap:12px"><span class="sopnum">14</span><span class="label cardtitle">Designate Material/Key controls and map COSO</span></span>
-              <span class="tag">Review workspace &middot; Controls</span>
-            </div>
-            <div class="lines3">
-              <div class="lc"><b>You do</b><p>Set every control's designation (Material, Key or Standard) and its COSO 2013 principle, following the methodology. Material controls are the ones whose failure could drive a material misstatement, breach or customer harm.</p></div>
-              <div class="lc"><b>The tool does</b><p>Counts COSO coverage live by component and principle, carries the designation into Control Testing and the test procedures, and for a Material/Key Controls review, makes that coverage the centre of the Overview and the sign-off attestation.</p></div>
-              <div class="lc"><b>Good looks like</b><p>The review demonstrably follows COSO 2013: every control mapped, coverage visible, and no Material control left untested or unmapped at sign-off.</p></div>
-            </div>
-            <div class="btnrow"><button type="button" class="btn small ghost" data-open-review="Q3 Access Review">Open a review workspace</button></div>
-          </article>
-
-          <article class="card span12" style="--i:15">
-            <div class="top">
-              <span style="display:flex;align-items:center;gap:12px"><span class="sopnum">15</span><span class="label cardtitle">Follow the methodology's testing track per control type</span></span>
-              <span class="tag">Review workspace &middot; Methodology &middot; Test Plans</span>
-            </div>
-            <div class="lines3">
-              <div class="lc"><b>You do</b><p>Input the methodology (upload it for AI analysis, or maintain it in the Methodology Designer) and let each control's classification drive its testing: Manual, Semi-Automated (hybrid) or Automated.</p></div>
-              <div class="lc"><b>The tool does</b><p>Turns the methodology steps into an executable procedure per control on the Test Plans tab: sampling and inspection for manual controls, system-output verification plus manual follow-up testing for hybrids, and configuration inspection with full-population re-performance for automated controls.</p></div>
-              <div class="lc"><b>Good looks like</b><p>Two controls with the same name but different types are tested differently, and the working papers show why. Automated controls are never "sampled" as if a person operated them.</p></div>
-            </div>
-            <div class="btnrow"><button type="button" class="btn small ghost" data-open-review="Q3 Access Review">Open a review workspace</button></div>
-          </article>
-
-          <article class="card span12" style="--i:16">
-            <div class="top">
-              <span style="display:flex;align-items:center;gap:12px"><span class="sopnum">16</span><span class="label cardtitle">Issue reports in the second line's own template</span></span>
-              <span class="tag">Review workspace &middot; Template Plug-in</span>
-            </div>
-            <div class="lines3">
-              <div class="lc"><b>You do</b><p>Upload the second line's external report template (Word or HTML) with placeholders where review data belongs, then run the fill.</p></div>
-              <div class="lc"><b>The tool does</b><p>Fills the template with this review's data - AI-assisted via Built-in AI or your own provider key, deterministic placeholder replacement otherwise - and offers the completed document as a download.</p></div>
-              <div class="lc"><b>Good looks like</b><p>The issued report is in the house template, with figures that trace back to the executed tests, not a retyped summary.</p></div>
-            </div>
-            <div class="btnrow"><button type="button" class="btn small ghost" data-open-review="Q3 Access Review">Open a review workspace</button></div>
-          </article>
-
-          <article class="card span12" style="--i:17">
-            <div class="top"><span class="label cardtitle">Closing the loop: sign-off</span><span class="tag">Review workspace &middot; Sign-off</span></div>
-            <p style="margin:0;color:var(--ink-2);font-size:14.5px">When fieldwork is complete, the lead reviewer works through the sign-off checklist in the workspace (all controls tested or an exclusion agreed, every exception logged, findings tagged to the taxonomy, evidence complete, management responses received) and signs the review off. Sign-off locks the workspace and feeds the Executive Pack, so the pack a committee reads is built only from signed-off work. Everything above stays on the audit trail, so any step can be re-performed by a quality reviewer.</p>
           </article>
         </div>
       </div>
@@ -8304,7 +7750,6 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           try { renderReviews(); } catch (e) {}
           try { renderGlobalFindings(); } catch (e) {}
           try { renderActionsTable(); } catch (e) {}
-          try { renderTasks(); } catch (e) {}
           try { renderWorkspace(); } catch (e) {}
           try { renderStageTemplates(); } catch (e) {}
           try { renderDatasets(); } catch (e) {}
@@ -9691,7 +9136,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
               try {
                 var r = await RA.sb.from("team_invites").insert({ tenant_id: RA.tenantId, email: em, role: $("teamInviteRole").value, invited_by: RA.user ? RA.user.id : null, status: "pending" });
                 if (r.error) throw r.error;
-                accessLog("Team invite sent", "Invite for " + em + " to join this workspace as " + roleLabel($("teamInviteRole").value) + ", issued by " + currentUserName() + ".");
+                accessLog("Team invite recorded", "Invite for " + em + " recorded as pending for this workspace as " + roleLabel($("teamInviteRole").value) + ", issued by " + currentUserName() + ".");
                 st.textContent = "Invite saved for " + em + ". When they create an account with that email, they join this workspace with that role.";
                 $("teamInviteEmail").value = "";
                 renderInvites();
@@ -10510,22 +9955,20 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           ]);
           saveData("ra2_finding_seq", 1051);
           saveData("ra2_actions", [
-            { id: "a_01", title: "Recertify privileged access accounts", reviewName: "Q3 Access Review", findingRef: "F-1042", owner: "Staff 2", due: "18 Oct", priority: "High", status: "Overdue", overdue: 1, createdAt: T },
-            { id: "a_02", title: "Close dormant vendor portal accounts", reviewName: "Vendor Assurance FY26", findingRef: "F-1011", owner: "Staff 3", due: "19 Oct", priority: "High", status: "Overdue", overdue: 1, createdAt: T },
-            { id: "a_03", title: "Update review checklist", reviewName: "US SOX Readiness", findingRef: "F-1019", owner: "Staff 1", due: "22 Oct", priority: "Low", status: "In review", overdue: 0, createdAt: T },
-            { id: "a_04", title: "Segregate change approval duties", reviewName: "UK Change Audit", findingRef: "F-1031", owner: "Staff 4", due: "25 Oct", priority: "Medium", status: "In progress", overdue: 0, createdAt: T },
-            { id: "a_05", title: "Add exit clauses to vendor contracts", reviewName: "Vendor Assurance FY26", findingRef: "F-1037", owner: "Staff 3", due: "28 Oct", priority: "High", status: "In progress", overdue: 0, createdAt: T },
-            { id: "a_06", title: "Extend evidence retention to 7 years", reviewName: "EU Records Review", findingRef: "F-1028", owner: "Staff 5", due: "30 Oct", priority: "Medium", status: "Not started", overdue: 0, createdAt: T },
-            { id: "a_07", title: "Enforce four-eyes on emergency changes", reviewName: "Q3 Access Review", findingRef: "", owner: "Staff 4", due: "25 Oct", priority: "Medium", status: "In progress", overdue: 0, createdAt: T },
-            { id: "a_08", title: "Disable or justify the six dormant privileged accounts", reviewName: "Q3 Access Review", findingRef: "F-1051", owner: "Staff 2", due: "30 Nov", priority: "High", status: "In progress", overdue: 0, createdAt: T },
-            { id: "a_09", title: "Brief all service desks on the no-verbal-requests rule", reviewName: "Q3 Access Review", findingRef: "F-1050", owner: "Staff 2", due: "14 Nov", priority: "Low", status: "Not started", overdue: 0, createdAt: T }
-          ]);
-          saveData("ra2_tasks", [
-            { id: "t_01", title: "Regulator data request: Q2 sampling evidence", detail: "Full sample listing with selection rationale", requestedBy: "Compliance", type: "Evidence pull", due: "23 Oct", status: "In progress", createdAt: T },
-            { id: "t_02", title: "Board query: vendor concentration summary", detail: "Top 10 vendors by spend and control status", requestedBy: "Board office", type: "Analysis", due: "24 Oct", status: "In review", createdAt: T },
-            { id: "t_03", title: "Spot check: expense approvals sample", detail: "25 approvals across two cost centres", requestedBy: "Finance", type: "Spot check", due: "29 Oct", status: "Not started", createdAt: T },
-            { id: "t_04", title: "Policy exception register refresh", detail: "Reconfirm 14 live exceptions with owners", requestedBy: "Risk", type: "Register update", due: "27 Oct", status: "In progress", createdAt: T },
-            { id: "t_05", title: "Management letter extract for auditors", detail: "Q3 findings in external audit format", requestedBy: "External audit", type: "Extract", due: "21 Oct", status: "Complete", createdAt: T }
+            { id: "a_01", title: "Recertify privileged access accounts", reviewName: "Q3 Access Review", findingRef: "F-1042", requester: "Management", type: "Remediation", owner: "Staff 2", due: "18 Oct", priority: "High", status: "Overdue", overdue: 1, createdAt: T },
+            { id: "a_02", title: "Close dormant vendor portal accounts", reviewName: "Vendor Assurance FY26", findingRef: "F-1011", requester: "Management", type: "Remediation", owner: "Staff 3", due: "19 Oct", priority: "High", status: "Overdue", overdue: 1, createdAt: T },
+            { id: "a_03", title: "Update review checklist", reviewName: "US SOX Readiness", findingRef: "F-1019", requester: "Management", type: "Remediation", owner: "Staff 1", due: "22 Oct", priority: "Low", status: "In review", overdue: 0, createdAt: T },
+            { id: "a_04", title: "Segregate change approval duties", reviewName: "UK Change Audit", findingRef: "F-1031", requester: "Management", type: "Remediation", owner: "Staff 4", due: "25 Oct", priority: "Medium", status: "In progress", overdue: 0, createdAt: T },
+            { id: "a_05", title: "Add exit clauses to vendor contracts", reviewName: "Vendor Assurance FY26", findingRef: "F-1037", requester: "Management", type: "Remediation", owner: "Staff 3", due: "28 Oct", priority: "High", status: "In progress", overdue: 0, createdAt: T },
+            { id: "a_06", title: "Extend evidence retention to 7 years", reviewName: "EU Records Review", findingRef: "F-1028", requester: "Management", type: "Remediation", owner: "Staff 5", due: "30 Oct", priority: "Medium", status: "Not started", overdue: 0, createdAt: T },
+            { id: "a_07", title: "Enforce four-eyes on emergency changes", reviewName: "Q3 Access Review", findingRef: "", requester: "Management", type: "Remediation", owner: "Staff 4", due: "25 Oct", priority: "Medium", status: "In progress", overdue: 0, createdAt: T },
+            { id: "a_08", title: "Disable or justify the six dormant privileged accounts", reviewName: "Q3 Access Review", findingRef: "F-1051", requester: "Management", type: "Remediation", owner: "Staff 2", due: "30 Nov", priority: "High", status: "In progress", overdue: 0, createdAt: T },
+            { id: "a_09", title: "Brief all service desks on the no-verbal-requests rule", reviewName: "Q3 Access Review", findingRef: "F-1050", requester: "Management", type: "Remediation", owner: "Staff 2", due: "14 Nov", priority: "Low", status: "Not started", overdue: 0, createdAt: T },
+            { id: "a_10", title: "Regulator data request: Q2 sampling evidence", detail: "Full sample listing with selection rationale", reviewName: "Adhoc request", findingRef: "", requester: "Compliance", type: "Evidence pull", owner: "", due: "23 Oct", priority: "Medium", status: "In progress", overdue: 0, createdAt: T },
+            { id: "a_11", title: "Board query: vendor concentration summary", detail: "Top 10 vendors by spend and control status", reviewName: "Adhoc request", findingRef: "", requester: "Board office", type: "Analysis", owner: "", due: "24 Oct", priority: "Medium", status: "In review", overdue: 0, createdAt: T },
+            { id: "a_12", title: "Spot check: expense approvals sample", detail: "25 approvals across two cost centres", reviewName: "Adhoc request", findingRef: "", requester: "Finance", type: "Spot check", owner: "", due: "29 Oct", priority: "Medium", status: "Not started", overdue: 0, createdAt: T },
+            { id: "a_13", title: "Policy exception register refresh", detail: "Reconfirm 14 live exceptions with owners", reviewName: "Adhoc request", findingRef: "", requester: "Risk", type: "Register update", owner: "", due: "27 Oct", priority: "Medium", status: "In progress", overdue: 0, createdAt: T },
+            { id: "a_14", title: "Management letter extract for auditors", detail: "Q3 findings in external audit format", reviewName: "Adhoc request", findingRef: "", requester: "External audit", type: "Extract", owner: "", due: "21 Oct", priority: "Medium", status: "Complete", overdue: 0, createdAt: T }
           ]);
           saveData("ra2_evidence_files", [
             { id: "ev_01", reviewId: "rev_access", name: "Access provisioning workflow screenshots (Sep)", ref: "AC-01", docType: "evidence", uploadedAt: T },
@@ -10806,6 +10249,8 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           var a = {
             id: uid(), title: title, reviewName: reviewName,
             findingRef: ($("gaActFinding").value || "").trim(),
+            requester: ($("gaActRequester").value || "").trim(),
+            type: $("gaActType").value || "Remediation",
             owner: ($("gaActOwner").value || "").trim(),
             due: ($("gaActDue").value || "").trim(),
             priority: $("gaActPriority").value || "Medium",
@@ -10813,7 +10258,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           };
           saveData("ra2_actions", DB.actions.concat([a]));
           appendAuditLog({ reviewId: rev ? rev.id : null, action: "Follow-up action created from the global Actions page" + (a.findingRef ? " for " + a.findingRef : "") + ": " + a.title + " (owner " + (a.owner || "not set") + ", due " + (a.due || "not set") + ")", entityType: "Action", entityLabel: a.title, changedBy: currentActorName() });
-          $("gaActTitle").value = ""; $("gaActFinding").value = ""; $("gaActOwner").value = ""; $("gaActDue").value = "";
+          $("gaActTitle").value = ""; $("gaActFinding").value = ""; $("gaActOwner").value = ""; $("gaActDue").value = ""; $("gaActRequester").value = "";
           if (st) st.textContent = "Action added: " + a.title;
           renderActionsTable();
           if (rev && rev.id === currentReviewId) renderWsActions();
@@ -10826,7 +10271,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           tbody.innerHTML = DB.actions.map(function (a) {
             var age = actionAgeing(a);
             var fnd2 = findingByRef(a.findingRef);
-            return '<tr' + (age.overdue ? ' data-overdue="1"' : "") + '><td><span class="t">' + esc(a.title) + '</span><div class="s">From ' + esc(a.reviewName || "") + '</div></td><td class="mono">' + esc(a.findingRef ? a.findingRef + (fnd2 ? " - " + fnd2.title : "") : "-") + "</td><td>" + esc(a.owner || "") + '</td><td class="mono">' + esc(a.due || "") + '</td><td class="mono">' + esc(age.label) + '</td><td><span class="sev"><i style="background:' + (PRIO[a.priority] || "#75839a") + '"></i>' + esc(a.priority || "") + '</span></td><td><span class="status ' + statusClass(a.status) + '">' + esc(a.status || "") + "</span></td></tr>";
+            return '<tr' + (age.overdue ? ' data-overdue="1"' : "") + '><td><span class="t">' + esc(a.title) + '</span><div class="s">From ' + esc(a.reviewName || "") + (a.detail ? " - " + esc(a.detail) : "") + '</div></td><td class="mono">' + esc(a.findingRef ? a.findingRef + (fnd2 ? " - " + fnd2.title : "") : "-") + "</td><td>" + esc(a.requester || "\u2014") + '</td><td><span class="tag">' + esc(a.type || "Remediation") + "</span></td><td>" + esc(a.owner || "") + '</td><td class="mono">' + esc(a.due || "") + '</td><td class="mono">' + esc(age.label) + '</td><td><span class="sev"><i style="background:' + (PRIO[a.priority] || "#75839a") + '"></i>' + esc(a.priority || "") + '</span></td><td><span class="status ' + statusClass(a.status) + '">' + esc(a.status || "") + "</span></td></tr>";
           }).join("");
           /* Same fix as the Findings page: the four stat cards above
              this table were fixed markup and kept their placeholder
@@ -10844,43 +10289,23 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
             aBig(aCard("Closed This Cycle"), String(DB.actions.filter(function (a) { return a.status === "Complete" || a.status === "Closed"; }).length));
           }
         }
-        function renderTasks() {
-          var tbody = $("tasksBody"); if (!tbody) return;
-          tbody.innerHTML = DB.tasks.map(function (t) {
-            return '<tr><td><span class="t">' + esc(t.title) + '</span><div class="s">' + esc(t.detail || "") + "</div></td><td>" + esc(t.requestedBy || "") + '</td><td><span class="tag">' + esc(t.type || "") + '</span></td><td class="mono">' + esc(t.due || "") + '</td><td><span class="status ' + statusClass(t.status) + '">' + esc(t.status || "") + "</span></td></tr>";
-          }).join("");
-          /* The Adhoc hero card and the by-type card were fixed markup
-             as well: the request list re-rendered while the open count,
-             the completed count and the type bars stayed on their
-             placeholder dashes and zeros. Tasks record no completion
-             dates, so an "on time" rate cannot be computed honestly -
-             the card now shows the counts the data does carry (open,
-             completed, overdue) and completion share by type. */
-          var tview = $("view-adhoc");
-          if (tview) {
-            var openT = DB.tasks.filter(function (t) { return t.status !== "Complete" && t.status !== "Closed"; });
-            var doneT = DB.tasks.filter(function (t) { return t.status === "Complete" || t.status === "Closed"; });
-            var hero = tview.querySelector(".card.hero");
-            if (hero) {
-              var score = hero.querySelector(".score"); if (score) score.textContent = String(openT.length);
-              var minis = hero.querySelectorAll(".minirow > div b");
-              if (minis.length >= 3) {
-                minis[0].textContent = String(new Set(DB.tasks.map(function (t) { return t.type; })).size);
-                minis[1].textContent = String(doneT.length);
-                minis[2].textContent = String(openT.filter(function (t) { var d = parseDueDate(t.due); return !!(d && d < todayD()); }).length);
-              }
-            }
-            var typeOf = { "Evidence pulls": "Evidence pull", "Auditor extracts": "Extract", "Data analysis": "Analysis", "Spot checks": "Spot check" };
-            tview.querySelectorAll(".regionrows .r").forEach(function (row) {
-              var lbl = (row.querySelector("b") || {}).textContent || "";
-              var type = typeOf[lbl]; if (!type) return;
-              var mine = DB.tasks.filter(function (t) { return t.type === type; });
-              var done = mine.filter(function (t) { return t.status === "Complete" || t.status === "Closed"; }).length;
-              var pctEl = row.querySelector(".pct"); if (pctEl) pctEl.textContent = mine.length ? done + " of " + mine.length : "\u2014";
-              var bar = row.querySelector(".progress i");
-              if (bar) { bar.setAttribute("data-fill", String(mine.length ? Math.round(done / mine.length * 100) : 0)); try { fillBar(bar); } catch (e) {} }
+        /* Adhoc Tasks are folded into Actions: any tasks still held
+           under the old store key are converted once into Actions
+           carrying their requester and type, and the old list cleared. */
+        function migrateTasksToActions() {
+          try {
+            if (RA.mode === "cloud") return;
+            var tasks = ensureArray(loadData("ra2_tasks", []));
+            if (!tasks.length) return;
+            var acts = ensureArray(loadData("ra2_actions", []));
+            var changed = false;
+            tasks.forEach(function (tk) {
+              var dup = acts.some(function (a) { return a.title === tk.title && (a.type || "") === (tk.type || ""); });
+              if (!dup) { acts.push({ id: uid(), title: tk.title, detail: tk.detail || "", reviewName: "Adhoc request", findingRef: "", requester: tk.requestedBy || "", type: tk.type || "Other request", owner: "", due: tk.due || "", priority: "Medium", status: tk.status || "Not started", overdue: 0, createdAt: tk.createdAt || nowISO() }); changed = true; }
             });
-          }
+            if (changed) saveData("ra2_actions", acts);
+            saveData("ra2_tasks", []);
+          } catch (e) {}
         }
         function designationOf(c) { return ["Material", "Key", "Standard"].indexOf(c.designation) > -1 ? c.designation : "Standard"; }
         function renderControls() {
@@ -14082,19 +13507,10 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           $("regSumBy").textContent = info[0] + " \u00B7 " + info[1] + " \u00B7 Depth: " + depthLbl;
           $("regSumText").textContent = regSummary(curReg, curDepth);
         }
-        function fillGenRegs() {
-          var sel = $("genReg"); var keep = sel.value;
-          sel.innerHTML = '<option value="All Regulations">All Regulations</option>';
-          var regs = [];
-          JURISDICTIONS[$("genJur").value].regulators.forEach(function (r) { r[2].forEach(function (x) { if (regs.indexOf(x) === -1) regs.push(x); }); });
-          regs.forEach(function (x) { var o = document.createElement("option"); o.textContent = x; sel.appendChild(o); });
-          if (regs.indexOf(keep) > -1) sel.value = keep;
-        }
         function selectJur(key) {
           curJur = key;
           document.querySelectorAll("[data-jur]").forEach(function (b) { b.setAttribute("aria-selected", String(b.getAttribute("data-jur") === key)); });
           renderMap(); renderRegCards();
-          $("genJur").value = key; fillGenRegs();
         }
         document.querySelectorAll("[data-jur]").forEach(function (b) {
           b.addEventListener("click", function () { selectJur(b.getAttribute("data-jur")); });
@@ -14107,46 +13523,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
             showRegSummary();
           });
         });
-        renderMap(); renderRegCards(); fillGenRegs();
-
-        /* ---------- AI content generator ---------- */
-        $("genJur").addEventListener("change", function () { fillGenRegs(); });
-        $("genBtn").addEventListener("click", async function () {
-          var jur = JURISDICTIONS[$("genJur").value];
-          var ind = $("genInd").value, reg = $("genReg").value, depth = $("genDepth").value;
-          var title, text;
-          if (reg === "All Regulations") {
-            title = "2LOD briefing \u00B7 " + jur.label + " \u00B7 " + ind;
-            text = "Across " + jur.label + ", the assurance focus this cycle is evidence quality: regulators are asking second-line teams to show control operation over the full period, with exceptions grouped by root cause. Prioritise " + jur.regulators.map(function (r) { return r[0]; }).join(", ") + " expectations in upcoming reviews, and refresh the current training topic against any regulation that changed since last quarter.";
-          } else {
-            title = "2LOD briefing \u00B7 " + reg + " \u00B7 " + ind;
-            text = regSummary(reg, depth) + (ind !== "Any Industry" ? " Applied to " + ind.toLowerCase() + ", the highest-risk processes are onboarding, outsourced operations and customer communications; scope testing there first." : "");
-          }
-          if (isAIEnabled() && getAIKey() && aiConsentState() === "granted") {
-            $("genStatus").textContent = "Generating live with " + aiProviderLabel() + " (" + getAIModel() + ")...";
-            try {
-              var regList = reg === "All Regulations" ? jur.regulators.map(function (r) { return r[2].join(", "); }).join("; ") : reg;
-              var data = await aiRequest("You are a second-line (2LOD) assurance specialist writing a training briefing for assurance practitioners.\n\nJurisdiction: " + jur.label + "\nRegulation(s) in scope: " + regList + "\nIndustry focus: " + ind + "\nDepth requested: " + depth + " (overview = short summary; detailed = obligations and practical impact; practitioner = deep-dive testing guidance)\n\nReference summary to build on: " + text + "\n\nWrite the briefing as one or two paragraphs of plain prose, no headings, no bullet lists, no markdown. Focus on what a 2LOD reviewer must test and evidence.", 900);
-              var aiText = ((data.content || []).map(function (b) { return b.text || ""; }).join("") || "").trim();
-              if (aiText) text = aiText;
-              $("genStatus").textContent = "Briefing generated live by " + aiProviderLabel() + " for the " + depth + " depth.";
-            } catch (e) {
-              $("genStatus").textContent = "Live generation failed (" + (e.message === "__NO_KEY__" ? aiNoKeyMessage() : e.message) + "). Showing the reference briefing instead.";
-            }
-          } else {
-            $("genStatus").textContent = "Reference briefing assembled from Training Centre content. Enable AI features in Settings for live AI generation.";
-          }
-          $("genOutTitle").textContent = title;
-          $("genOutText").textContent = text;
-          $("genOut").hidden = false;
-          toast("Briefing generated: " + title);
-        });
-        $("genReset").addEventListener("click", function () {
-          $("genJur").value = "global"; $("genInd").value = "Any Industry"; fillGenRegs();
-          $("genReg").value = "All Regulations"; $("genDepth").value = "overview";
-          $("genOut").hidden = true; $("genStatus").textContent = "";
-          toast("Generator reset.");
-        });
+        renderMap(); renderRegCards();
 
         /* ---------- training tabs + topics ---------- */
         document.querySelectorAll("[data-ttab]").forEach(function (b) {
@@ -14178,7 +13555,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
             '<li><span class="ck">5</span><span><b>Evaluate pervasiveness.</b> One exception is an error; a pattern is a finding.</span></li></ul>' },
           "landscape": { t: "Regulatory Landscape", body:
             '<p style="color:var(--ink-2);font-size:14.5px;margin-top:0">The landscape is organised by jurisdiction in the Global Regulatory Map above. The pattern across all five: regulators are moving from policy attestations to evidence of operation. Provision 29 in the UK, DORA in Europe, the DPDP Act in India and NYDFS 500 in the US all ask the same question in different words - show us the control working, over time, with the exceptions you found and what you did about them.</p>' +
-            '<p style="color:var(--ink-2);font-size:14.5px">Use the jurisdiction tabs to move between Global, UK, India, US and Europe, and the AI Content Generator to turn any regulation into a 2LOD briefing at the depth you need.</p>' },
+            '<p style="color:var(--ink-2);font-size:14.5px">Use the jurisdiction tabs to move between Global, UK, India, US and Europe, and read any regulation summary at the depth you need - Overview, Detailed or Practitioner Deep-Dive.</p>' },
           "writing": { t: "Report Writing", body:
             '<ul class="checklist"><li><span class="ck">1</span><span><b>Lead with the conclusion.</b> The board reads the first two lines; put the rating and the ask there.</span></li>' +
             '<li><span class="ck">2</span><span><b>One finding, one owner, one date.</b> Shared ownership is no ownership.</span></li>' +
@@ -14739,7 +14116,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
            and Log a publication captures a manually pulled publication as
            a development in the Auto Refresh results above, badged Logged.
            Industry and jurisdiction tags reuse the same mapping values as
-           the Organisation Regulatory Mapping and Global Validation.
+           Global Validation.
            Links are stable landing pages on the official sites only; where
            a page type is not offered, or no stable sign-up page can be
            stood over, the cell says so instead of inventing a link, and
@@ -14997,29 +14374,6 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           hsApplyDefaults();
           setTimeout(hsApplyDefaults, 1200);
         })();
-
-        /* ---------- AI assistant ---------- */
-        $("aiAskBtn").addEventListener("click", async function () {
-          var qRaw = $("aiAsk").value.trim();
-          var q = qRaw.toLowerCase();
-          var ans;
-          if (!q) { ans = "Ask me about a regulation, a sample size, or how to test a control, and I will answer from the Training Centre content."; }
-          else if (q.indexOf("provision 29") > -1) { ans = regSummary("UK CGC - Provision 29", "detailed"); }
-          else if (q.indexOf("dpdp") > -1) { ans = regSummary("DPDP Act 2023", "detailed"); }
-          else if (q.indexOf("sample") > -1) { ans = "Use the Sample Size Calculator in the review workspace. As a worked example: population 340, 95% confidence, 7% tolerable deviation and 2% expected deviation gives a sample of 57 items - calculated with Poisson reliability factors, not guessed."; }
-          else if (q.indexOf("material") > -1 || q.indexOf("test") > -1) { ans = TOPICS["material"].body.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim(); }
-          else if (q.indexOf("2lod") > -1 || q.indexOf("second line") > -1) { ans = "The second line sets methodology, independently tests first-line controls, challenges the business and reports to the board. The first line owns the risk and the controls; internal audit (third line) assures both."; }
-          else { ans = "Based on the Training Centre content: " + regSummary(curReg === "uk" ? "SM&CR" : curReg === "india" ? "DPDP Act 2023" : curReg === "us" ? "NYDFS Cyber 500" : curReg === "europe" ? "DORA" : "ISO 31000:2018", "overview") + " For a fuller answer, pick the regulation in the map above and switch the summary depth to Practitioner Deep-Dive."; }
-          if (qRaw && isAIEnabled() && getAIKey() && aiConsentState() === "granted") {
-            try {
-              var data = await aiRequest("You are the RiskAssure Training Centre assistant for second-line (2LOD) assurance practitioners. Answer the question concisely in plain prose, using the reference material where relevant.\n\nReference material: " + regSummary(curReg === "uk" ? "SM&CR" : curReg === "india" ? "DPDP Act 2023" : curReg === "us" ? "NYDFS Cyber 500" : curReg === "europe" ? "DORA" : "ISO 31000:2018", "detailed") + "\n\nQuestion: " + qRaw, 700);
-              var aiText = ((data.content || []).map(function (b) { return b.text || ""; }).join("") || "").trim();
-              if (aiText) ans = aiText;
-            } catch (e) { /* fall back to the Training Centre content answer above */ }
-          }
-          $("aiAnswerText").textContent = ans;
-          $("aiAnswer").hidden = false;
-        });
 
         /* ---------- document review ---------- */
         function runDocReview(name) {
@@ -15467,7 +14821,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           var p = getAIProvider();
           var label = aiProviderLabel(p);
           if (p === "builtin") {
-            el.innerHTML = "<b>Built-in AI is active and ready.</b> No API key is needed - methodology analysis, AI findings generation, template AI fill and the Training Centre AI Content Generator work straight away. If Built-in AI is busy, retry in a moment or switch to your own provider key below.";
+            el.innerHTML = "<b>Built-in AI is active and ready.</b> No API key is needed - methodology analysis, AI findings generation and template AI fill work straight away. If Built-in AI is busy, retry in a moment or switch to your own provider key below.";
             if (clearBtn) clearBtn.style.display = "none";
           } else {
             var key = getAIKey(p);
@@ -15750,19 +15104,6 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           saveData("ra2_templates", all);
           closeModal();
           toast("Methodology design saved: " + name + " now has " + DZ_STEPS.length + " steps.");
-        });
-
-        /* framework proposal */
-        $("fpSubmit").addEventListener("click", function () {
-          var fname = $("fpName").value.trim();
-          if (!fname) {
-            $("fpStatus").textContent = "Not submitted - give the framework a name first.";
-            toast("Give the framework a name first - the proposal was not submitted.");
-            $("fpName").focus();
-            return;
-          }
-          $("fpStatus").textContent = "Submitted to the methodology board \u00B7 " + fname;
-          toast("Framework proposal submitted for board review.");
         });
 
         /* ================================================================
@@ -17849,7 +17190,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
 
         /* ---------- init: seed on first run, then load + render from the store ---------- */
         function bootApp() {
-          if (RA.mode !== "cloud") { seedIfEmpty(); }
+          if (RA.mode !== "cloud") { seedIfEmpty(); migrateTasksToActions(); }
           loadReviews();
           if (!getReview(currentReviewId) && REVIEWS.length) currentReviewId = REVIEWS[0].id;
           if (RA.mode !== "cloud") { seedAnnualPlan(); }
@@ -17858,7 +17199,6 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           renderReviews();
           renderGlobalFindings();
           renderActionsTable();
-          renderTasks();
           renderWorkspace();
           try { restoreSamplingCalc(); } catch (e) {}
           renderStageTemplates();
@@ -18662,101 +18002,48 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           }
         }
 
-        /* ---------- service desk: AI troubleshoots issues, never enhancements ---------- */
-        function troubleshoot(text, module) {
-          var q = (text + " " + (module || "")).toLowerCase();
-          var rules = [
-            { k: ["sign in", "sign-in", "login", "password", "locked", "reset"], t: "Sign-in and access", fix: "Most likely cause: the account is locked after repeated attempts, or the password no longer meets the 12-character policy.\nFix applied guidance: use Forgot your password on the sign-in screen - the reset link expires in 60 minutes and signs out other sessions. If the account shows as locked, wait 30 minutes or ask an admin to unlock it from Settings - Team. Your sign-in attempts are on the audit trail if you need to evidence them." },
-            { k: ["save", "not saving", "lost", "disappeared", "gone"], t: "Saving and sync", fix: "Most likely cause: the workspace is in on-device mode, or a cloud sync was interrupted, so the change only exists in this browser.\nFix: check the mode pill at the top right. On this device means data is stored locally in this browser - sign in to move it to the shared cloud workspace (Settings - Move my on-device data to the cloud). If the cloud banner is showing, use Retry to flush the pending sync before closing the tab." },
-            { k: ["sample", "sampling", "dataset", "csv", "upload", "import"], t: "Sampling and data intake", fix: "Most likely cause: the file format or column mapping was rejected at intake - files over the size limit, or a register whose Control ID column could not be mapped.\nFix: re-run the intake and read the mapping preview before confirming; rows that cannot be mapped are flagged as warnings, never silently dropped. For scanned registers, a clearer scan (300 dpi, straight page) resolves most OCR rejections." },
-            { k: "slow|freeze|frozen|hang|loading".split("|"), t: "Performance", fix: "Most likely cause: a very large evidence file or dataset is being read in the browser, which pauses the screen while it processes.\nFix: wait for the progress indicator to finish rather than re-clicking (repeat clicks queue duplicate work). If it persists, split evidence files above 10 MB and re-upload; the ticket has been logged with timing so the team can see if it recurs." },
-            { k: ["finding", "exception", "test result", "pass", "fail"], t: "Testing and findings", fix: "Most likely cause: the result was recorded against a control whose test plan changed after execution, so the finding drafted from the exception looks mismatched.\nFix: open the control on Control Testing, confirm the exception note is the one you entered, and use the AI Stage Check on the Findings stage - it lists findings missing a root cause or management response, which is what usually blocks agreement." },
-            { k: ["pdf", "report", "export", "download", "pack"], t: "Reports and exports", fix: "Most likely cause: the report is built only from signed-off work, so a review that has not been signed off produces an empty or partial pack.\nFix: check the review status on the workspace Overview. If it is signed off and the export is still blank, regenerate from the Executive Pack tab; the pack summary PDF is produced in your browser, so allow downloads for this site if the browser blocked it." },
-            { k: ["permission", "read-only", "cannot edit", "can't edit", "stakeholder"], t: "Permissions", fix: "Most likely cause: your role is Stakeholder, which is read-only by design, or you are signed in on a different account.\nFix: check the role shown beside your name at the top right. An admin can change roles from Settings - Team. No data is at risk: read-only access blocks edits at the screen level, it does not hide the workspace." }
-          ];
-          for (var i = 0; i < rules.length; i++) {
-            var ks = Array.isArray(rules[i].k) ? rules[i].k : [rules[i].k];
-            for (var j = 0; j < ks.length; j++) { if (q.indexOf(ks[j]) > -1) return rules[i]; }
-          }
-          return { t: "General workflow", fix: "The AI could not match this to a known workflow problem, so it has been escalated to the support team with your description verbatim.\nWhat helps them: the stage you were on, what you clicked last, and any message on screen (all of which this ticket already captures). You do not need to raise it again - the ticket reference is your tracking number." };
-        }
+        /* ---------- service desk: Privacy Requests only ---------- */
         function ticketAgeDays(t) { var ms = Date.now() - new Date(t.ts || Date.now()).getTime(); return isNaN(ms) ? 0 : Math.max(0, Math.floor(ms / 86400000)); }
         function renderTickets() {
-          var tickets = ensureArray(loadData("ra2_tickets", []));
+          var tickets = ensureArray(loadData("ra2_tickets", [])).filter(function (t) { return t.type === "privacy"; });
           var tb = $("sdBody"); if (!tb) return;
           tb.innerHTML = tickets.slice().reverse().map(function (t) {
-            var cls = t.status.indexOf("AI fix") === 0 ? "tk-ai" : t.type === "enhancement" ? "tk-enh" : "tk-open";
-            var age = "";
-            if (t.type === "privacy") {
-              var d = ticketAgeDays(t);
-              var over = d > 30;
-              age = '<div class="s" style="margin-top:4px"><span class="tag" style="' + (over ? "background:#fbe7e7;color:#b23333" : "") + '">Privacy Request - day ' + d + ' of the 30-day response target' + (over ? " - OVERDUE" : "") + '</span> <span class="sub">Requester: ' + esc(t.requester || t.by || "") + (t.privacyType ? " - " + esc(t.privacyType) : "") + '</span></div>';
-            }
-            return "<tr><td class=\"mono\">" + esc(t.ref) + "</td><td><span class=\"t\">" + esc(t.title) + "</span><div class=\"s\">" + esc(t.diagnosis || "") + "</div>" + age + "</td><td>" + esc(t.module) + "</td><td>" + esc(t.by) + "<div class=\"s\">" + esc(fmtDT(t.ts)) + "</div></td><td><span class=\"tkstatus " + cls + "\">" + esc(t.status) + "</span></td></tr>";
+            var d = ticketAgeDays(t);
+            var over = d > 30;
+            var age = '<div class="s" style="margin-top:4px"><span class="tag" style="' + (over ? "background:#fbe7e7;color:#b23333" : "") + '">Privacy Request - day ' + d + ' of the 30-day response target' + (over ? " - OVERDUE" : "") + '</span> <span class="sub">Requester: ' + esc(t.requester || t.by || "") + (t.privacyType ? " - " + esc(t.privacyType) : "") + '</span></div>';
+            return "<tr><td class=\"mono\">" + esc(t.ref) + "</td><td><span class=\"t\">" + esc(t.title) + "</span><div class=\"s\">" + esc(t.diagnosis || "") + "</div>" + age + "</td><td>" + esc(t.module) + "</td><td>" + esc(t.by) + "<div class=\"s\">" + esc(fmtDT(t.ts)) + "</div></td><td><span class=\"tkstatus tk-open\">" + esc(t.status) + "</span></td></tr>";
           }).join("");
-          $("sdCount").textContent = tickets.length + (tickets.length === 1 ? " ticket" : " tickets");
+          $("sdCount").textContent = tickets.length + (tickets.length === 1 ? " request" : " requests");
           $("sdEmpty").hidden = tickets.length > 0;
           var sum = $("sdPrivacySummary");
           if (sum) {
-            var priv = tickets.filter(function (t) { return t.type === "privacy"; });
-            if (priv.length) {
-              var oldest = Math.max.apply(null, priv.map(ticketAgeDays));
-              var overN = priv.filter(function (t) { return ticketAgeDays(t) > 30; }).length;
-              sum.innerHTML = "<b>Privacy Requests (admin view):</b> " + priv.length + " tracked, oldest at day " + oldest + " of the 30-day response target" + (overN ? ", " + overN + " overdue" : "") + ". Submissions are also noted in the Compliance &amp; Legal access record.";
+            if (tickets.length) {
+              var oldest = Math.max.apply(null, tickets.map(ticketAgeDays));
+              var overN = tickets.filter(function (t) { return ticketAgeDays(t) > 30; }).length;
+              sum.innerHTML = "<b>Privacy Requests (admin view):</b> " + tickets.length + " tracked, oldest at day " + oldest + " of the 30-day response target" + (overN ? ", " + overN + " overdue" : "") + ". Submissions are also noted in the Compliance &amp; Legal access record.";
             } else sum.textContent = "";
           }
         }
         function wireServiceDesk() {
-          var typeSel = $("sdType");
-          if (typeSel && !typeSel.__wired) {
-            typeSel.__wired = true;
-            typeSel.addEventListener("change", function () {
-              var pf = $("sdPrivacyFields"); if (pf) pf.hidden = typeSel.value !== "privacy";
-              if (typeSel.value === "privacy") {
-                if ($("sdReqName") && !$("sdReqName").value) $("sdReqName").value = currentUserName();
-                if ($("sdReqEmail") && !$("sdReqEmail").value && RA.mode === "cloud" && RA.user) $("sdReqEmail").value = RA.user.email || "";
-              }
-            });
-          }
           var btn = $("sdSubmit"); if (!btn || btn.__wired) return; btn.__wired = true;
           btn.addEventListener("click", function () {
             var desc = $("sdDesc").value.trim();
-            if (!desc) { $("sdStatus").textContent = "Describe the issue or enhancement first."; return; }
-            var type = $("sdType").value, module = $("sdModule").value;
+            if (!desc) { $("sdStatus").textContent = "Describe what you are asking for first."; return; }
             var tickets = ensureArray(loadData("ra2_tickets", []));
             var ref = "SD-" + String(1000 + tickets.length + 1);
-            var rec = { id: uid(), ref: ref, type: type, module: module, severity: $("sdSeverity").value, title: desc.split("\n")[0].slice(0, 90), desc: desc, by: currentUserName() + " (" + currentInitials() + ")", ts: nowISO(), status: "", diagnosis: "" };
-            if (type === "privacy") {
-              var ptype = $("sdPrivacyType") ? $("sdPrivacyType").value : "Access";
-              var rname = ($("sdReqName") && $("sdReqName").value.trim()) || currentUserName();
-              var remail = ($("sdReqEmail") && $("sdReqEmail").value.trim()) || "";
-              rec.module = "Privacy Request";
-              rec.privacyType = ptype;
-              rec.requester = rname + (remail ? " <" + remail + ">" : "");
-              rec.title = "Privacy Request - " + ptype + ": " + rec.title;
-              rec.status = "Open - response target 30 days";
-              rec.diagnosis = "Privacy Request (" + ptype + ") from " + rec.requester + ", received " + fmtDate(rec.ts) + ". Tracked against a 30-day response target and visible to workspace admins. The workspace owner answers the request itself; submissions are noted in the Compliance & Legal access record.";
-              $("sdAiTitle").textContent = "Privacy Request logged - reference " + ref;
-              $("sdAiText").textContent = "Your " + ptype.toLowerCase() + " request has been recorded as a tracked Privacy Request (reference " + ref + ").\n\nIt is visible to workspace admins in this list with its age against the 30-day response target, and the submission is noted in the Compliance & Legal access record. The workspace owner answers the request itself - the AI does not decide or action data rights requests.";
-              accessLog("Privacy request submitted", ref + " - " + ptype + " request from " + rec.requester + ": " + desc.slice(0, 120) + " Tracked in the Service Desk against a 30-day response target.");
-            } else if (type === "enhancement") {
-              rec.status = "Logged for product roadmap";
-              rec.diagnosis = "Enhancement - captured for a future designed build. The AI does not build enhancements from tickets.";
-              $("sdAiTitle").textContent = "Enhancement logged - not auto-built";
-              $("sdAiText").textContent = "Thank you - this enhancement has been captured verbatim for the product roadmap (reference " + ref + ").\n\nEnhancements are deliberately not actioned by the built-in AI: a change to the workflow needs its own designed build, testing and release, so it is reviewed and scheduled by the product team instead. Your ticket stays visible here and on the audit trail as the early-insight record.";
-            } else {
-              var res = troubleshoot(desc, module);
-              rec.status = res.t === "General workflow" ? "Escalated to support" : "AI fix suggested";
-              rec.diagnosis = res.t + " - " + res.fix.split("\n")[0].replace("Most likely cause: ", "");
-              $("sdAiTitle").textContent = "AI troubleshooting - " + res.t;
-              $("sdAiText").textContent = res.fix + "\n\nTicket " + ref + " has been recorded with this diagnosis. If the fix does not resolve it, the ticket is already with the support team - quote " + ref + ".";
-            }
+            var ptype = $("sdPrivacyType") ? $("sdPrivacyType").value : "Access";
+            var rname = ($("sdReqName") && $("sdReqName").value.trim()) || currentUserName();
+            var remail = ($("sdReqEmail") && $("sdReqEmail").value.trim()) || "";
+            var rec = { id: uid(), ref: ref, type: "privacy", module: "Privacy Request", privacyType: ptype, requester: rname + (remail ? " <" + remail + ">" : ""), title: "Privacy Request - " + ptype + ": " + desc.split("\n")[0].slice(0, 90), desc: desc, by: currentUserName() + " (" + currentInitials() + ")", ts: nowISO(), status: "Open - response target 30 days", diagnosis: "" };
+            rec.diagnosis = "Privacy Request (" + ptype + ") from " + rec.requester + ", received " + fmtDate(rec.ts) + ". Tracked against a 30-day response target and visible to workspace admins. The workspace owner answers the request itself; submissions are noted in the Compliance & Legal access record.";
+            $("sdAiTitle").textContent = "Privacy Request logged - reference " + ref;
+            $("sdAiText").textContent = "Your " + ptype.toLowerCase() + " request has been recorded as a tracked Privacy Request (reference " + ref + ").\n\nIt is visible to workspace admins in this list with its age against the 30-day response target, and the submission is noted in the Compliance & Legal access record. The workspace owner answers the request itself.";
             $("sdAiOut").hidden = false;
             tickets.push(rec); saveData("ra2_tickets", tickets);
-            accessLog("Service desk ticket " + ref, (type === "enhancement" ? "Enhancement" : "Issue") + " raised in " + module + ": " + rec.title + " - status: " + rec.status + ".");
-            $("sdDesc").value = ""; $("sdStatus").textContent = "Ticket " + ref + " submitted.";
+            accessLog("Privacy request submitted", ref + " - " + ptype + " request from " + rec.requester + ": " + desc.slice(0, 120) + " Tracked in the Service Desk against a 30-day response target.");
+            $("sdDesc").value = ""; $("sdStatus").textContent = "Privacy Request " + ref + " submitted.";
             renderTickets();
-            toast("Ticket " + ref + " submitted.");
+            toast("Privacy Request " + ref + " submitted.");
           });
         }
 
@@ -18961,7 +18248,6 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
             rb.__wired = true;
             rb.addEventListener("click", function () {
               goView("servicedesk");
-              var ts = $("sdType"); if (ts) { ts.value = "privacy"; ts.dispatchEvent(new Event("change")); }
               setTimeout(function () { var d = $("sdDesc"); if (d) d.focus(); }, 80);
             });
           }
@@ -19117,137 +18403,6 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           });
         }
 
-        /* ---------- training: organisation regulatory mapping + PDF + share ---------- */
-        var RM_REQ = {
-          "DPDP Act 2023": "Consent-based processing with clear notices, data principal rights (access, correction, erasure), breach notification to the Data Protection Board and affected principals, and grievance redressal within defined timelines.",
-          "PMLA": "Risk-based AML programme: KYC/CDD and beneficial ownership, transaction monitoring, STR filing to FIU-IND, and a complete audit trail retained for 10 years.",
-          "RBI Digital Lending": "Lending only through regulated entities and approved LSPs, direct disbursal to borrower accounts, KFS disclosure, and data stored only on servers in India.",
-          "RBI IT Outsourcing": "Board-approved outsourcing policy, risk assessment before onboarding, contractual audit and exit rights, and concentration-risk monitoring over material IT providers.",
-          "SEBI LODR": "Timely disclosure of material events, related-party transaction controls and approvals, and board/committee governance evidence.",
-          "IRDAI Corporate Governance": "Fit-and-proper criteria for board and key persons, control function independence (risk, compliance, actuarial, internal audit) and stewardship reporting.",
-          "Consumer Duty": "Products and services designed for a target market, fair value assessments, consumer understanding and support standards, with board-level outcomes monitoring.",
-          "SM&CR": "Statements of responsibilities for senior managers, certification of material staff annually, conduct rules training and a maintained responsibilities map.",
-          "UK GDPR": "Lawful bases documented per purpose, DPIAs for high-risk processing, 72-hour breach notification to the ICO, and data subject rights answered within one month.",
-          "PSD2 / PSRs": "Strong customer authentication, open banking interface standards, incident reporting to the FCA/PSR and APP fraud reimbursement readiness.",
-          "UK CGC - Provision 29": "Board declaration on the effectiveness of material controls over the full reporting period, evidenced by testing of the material control set.",
-          "Operational Resilience": "Important business services identified, impact tolerances set and tested, mapping of supporting assets, and scenario testing with lessons implemented.",
-          "OCC Heightened Standards": "Risk appetite framework approved by the board, independent risk management and audit functions, and talent and compensation governance for large banks.",
-          "NYDFS Cyber 500": "Risk-based cybersecurity programme with a qualified CISO, penetration testing, MFA, incident notification within 72 hours and the annual certification of compliance.",
-          "SOX": "Management assessment of internal control over financial reporting, control testing evidence, deficiency evaluation and Section 302/906 certifications.",
-          "SEC Reg BI": "Best-interest standard at the point of recommendation: disclosure, care, conflict-of-interest and compliance obligations evidenced per recommendation.",
-          "BSA / AML": "Risk-based AML programme with a designated BSA officer, customer identification and due diligence, SAR filing within 30 days and independent testing.",
-          "CCPA / CPRA": "Consumer rights to know, delete, correct and opt out of sale/sharing, honoured within 45 days, with privacy notices and metrics maintained.",
-          "DORA": "ICT risk management framework, incident classification and reporting to tight deadlines, digital operational resilience testing including TLPT, and a register of ICT third-party providers.",
-          "GDPR": "Accountability and records of processing, DPIAs, 72-hour breach notification, data subject rights and Chapter V transfer mechanisms for cross-border data.",
-          "EU AI Act": "Risk-tiered obligations: prohibited practices banned, high-risk systems need conformity assessment, data governance, human oversight and registration.",
-          "MiCA": "Authorisation for crypto-asset service providers, reserve and custody rules for stablecoins, market-abuse controls and whitepaper disclosures.",
-          "AMLD6": "Harmonised money-laundering offences and liability, beneficial ownership transparency and expanded predicate offences across member states.",
-          "CSRD": "Sustainability reporting under the ESRS with double materiality assessment and independent assurance over the reported information.",
-          "Basel III Framework": "Capital adequacy (CET1, leverage ratio), liquidity standards (LCR, NSFR) and Pillar 3 disclosure, with supervisory review under Pillar 2.",
-          "BCBS 239": "Risk data aggregation capabilities: accuracy, completeness, timeliness and adaptability of risk reporting, evidenced to supervisors.",
-          "FATF Recommendations": "A risk-based AML/CFT framework: customer due diligence, correspondent banking controls, wire transfer information and suspicious reporting.",
-          "IAIS Core Principles": "All 24 ICPs, each stated in plain language with applicability by insurer type: supervisory framework (ICP 1-3), authorisation and suitability (ICP 4-6), governance, risk management and internal controls (ICP 7-8), supervisory review, intervention and exit (ICP 9-12), risk transfer, valuation, investment, ERM and capital (ICP 13-17), intermediaries and conduct (ICP 18-19), disclosure, fraud and financial crime (ICP 20-22), and group-wide and macroprudential supervision (ICP 23-24). Each ICP maps to a methodology step, a control and test expectation, and the evidence a supervisor expects.",
-          "IFRS 17": "Measurement of insurance contracts (fulfilment cash flows, CSM), presentation and disclosure, with audited transition evidence.",
-          "ISO 31000:2018": "Enterprise risk management principles and process: integration, structured approach, customisation, inclusiveness and continual improvement."
-        };
-        function rmRowsFor(jur, ind) {
-          var j = JURISDICTIONS[jur] || JURISDICTIONS.global;
-          var rows = [];
-          j.regulators.forEach(function (reg) {
-            reg[2].forEach(function (rn) {
-              var info = REGINFO[rn]; if (!info) return;
-              rows.push({ reg: info[0], by: reg[0] + " (" + reg[1] + ")", req: RM_REQ[rn] || ("Maintain controls evidencing " + info[2] + ", with testing and reporting owned by the second line."), focus: info[2] });
-            });
-          });
-          if (jur !== "global") {
-            JURISDICTIONS.global.regulators.forEach(function (reg) {
-              reg[2].forEach(function (rn) {
-                if (rn === "Basel III Framework" || rn === "BCBS 239" || rn === "FATF Recommendations") {
-                  var info = REGINFO[rn]; if (!info) return;
-                  rows.push({ reg: info[0], by: reg[0] + " (global standard)", req: RM_REQ[rn], focus: info[2] });
-                }
-              });
-            });
-          }
-          if (ind === "Insurance") {
-            if (typeof ICP_LIBRARY !== "undefined" && ICP_LIBRARY.length) {
-              ICP_LIBRARY.forEach(function (p) {
-                rows.push({ reg: "ICP " + p.n + " - " + p.title, by: "IAIS", req: p.req + " Methodology step: " + p.step + ". Control / test expectation: " + p.test + " Evidence expected: " + p.ev, focus: p.theme, step: p.step, test: p.test, ev: p.ev, app: p.app });
-              });
-            } else {
-              rows.push({ reg: "IAIS Insurance Core Principles", by: "IAIS", req: RM_REQ["IAIS Core Principles"], focus: "insurance supervision, governance and market conduct" });
-            }
-            rows.push({ reg: "IFRS 17 Insurance Contracts", by: "IASB", req: RM_REQ["IFRS 17"], focus: "measurement and disclosure of insurance contracts" });
-          }
-          if (ind === "Payments and Fintech") rows.push({ reg: "Payments conduct and safeguarding expectations", by: "Home regulator", req: "Safeguarding of customer funds with daily reconciliation, safeguarding account controls, and wind-down planning evidenced and tested.", focus: "safeguarding and operational resilience of payment services" });
-          return rows;
-        }
-        var rmLast = null;
-        function wireRegMapping() {
-          var btn = $("rmMapBtn"); if (!btn || btn.__wired) return; btn.__wired = true;
-          btn.addEventListener("click", function () {
-            var org = $("rmOrg").value.trim(), ind = $("rmInd").value, jur = $("rmJur").value;
-            if (!org) {
-              $("rmStatus").textContent = "Not mapped - give the organisation a name first. The mapping is prepared for a named organisation, so the impact analysis names the right firm.";
-              toast("Give the organisation a name first - nothing was mapped.");
-              $("rmOrg").focus();
-              return;
-            }
-            var orgName = org;
-            var rows = rmRowsFor(jur, ind);
-            rmLast = { org: orgName, ind: ind, jur: (JURISDICTIONS[jur] || {}).label || jur, rows: rows, ts: nowISO() };
-            $("rmBody").innerHTML = rows.map(function (x) {
-              var impact = "For " + orgName + ": expect control redesign and evidence upgrades around " + x.focus + ". The second line should plan testing capacity, update the control library mappings, and brief the accountable executives named under the local accountability regime.";
-              return "<tr><td><span class=\"t\">" + esc(x.reg) + "</span></td><td>" + esc(x.by) + "</td><td>" + esc(x.req) + "</td><td>" + esc(impact) + "</td><td>" + esc(x.focus.charAt(0).toUpperCase() + x.focus.slice(1)) + "</td></tr>";
-            }).join("");
-            $("rmDesc").value = "Regulatory mapping for " + orgName + " (" + ind + ", " + rmLast.jur + "), prepared " + fmtDate(rmLast.ts) + ". The attached document maps " + rows.length + " applicable standards and regulations - including " + rows.slice(0, 3).map(function (x) { return x.reg; }).join(", ") + " - to their key requirements, the impact on the organisation, and the second-line assurance focus for each. Recommended next step: agree the priority regulations for the next assurance cycle and schedule the control-library updates.";
-            $("rmOut").hidden = false;
-            $("rmStatus").textContent = "Mapped " + rows.length + " standards and regulations for " + orgName + ".";
-            accessLog("Regulatory mapping generated", "Mapping for " + orgName + " (" + ind + ", " + rmLast.jur + "): " + rows.length + " regulations mapped with requirements and impact analysis.");
-          });
-          $("rmPdf").addEventListener("click", function () {
-            if (!rmLast) { $("rmSendStatus").textContent = "Run the mapping first."; return; }
-            var lib = window.jspdf;
-            if (!lib || !lib.jsPDF) { $("rmSendStatus").textContent = "The PDF library could not be loaded - check your connection and try again. (Diagnostic code: RA-PDFLIB)"; return; }
-            var doc = new lib.jsPDF({ unit: "mm", format: "a4" });
-            var y = 18, left = 15, width = 180;
-            function line(txt, size, gap, bold) {
-              doc.setFontSize(size); doc.setFont("helvetica", bold ? "bold" : "normal");
-              var wrapped = doc.splitTextToSize(txt, width);
-              wrapped.forEach(function (w) { if (y > 282) { doc.addPage(); y = 18; } doc.text(w, left, y); y += gap; });
-            }
-            line("Regulatory Mapping - " + rmLast.org, 16, 7, true);
-            line(rmLast.ind + " - " + rmLast.jur + " - prepared " + fmtDate(rmLast.ts) + " by RiskAssure" + orgSuffix(), 10.5, 5.5);
-            line($("rmDesc").value, 10.5, 5.5);
-            y += 3;
-            rmLast.rows.forEach(function (x, i) {
-              line((i + 1) + ". " + x.reg + " - " + x.by, 12, 6, true);
-              line("Key requirements: " + x.req, 10.5, 5);
-              if (x.app) line("Applicability: " + x.app, 10.5, 5);
-              if (x.step) line("Methodology step: " + x.step, 10.5, 5);
-              line("Impact analysis: For " + rmLast.org + ", expect control redesign and evidence upgrades around " + x.focus + ". The second line should plan testing capacity and update control library mappings.", 10.5, 5);
-              line("Assurance focus: " + x.focus + ".", 10.5, 5);
-              y += 2;
-            });
-            y += 2;
-            line("Prepared for stakeholder discussion. Regulation summaries are practitioner summaries of public regulatory material; the issuing authorities' texts prevail. Outcomes depend on the accuracy of the organisation details provided.", 9, 4.5);
-            doc.save("Regulatory-Mapping-" + rmLast.org.replace(/[^A-Za-z0-9]+/g, "-").slice(0, 40) + ".pdf");
-            $("rmSendStatus").textContent = "PDF generated - attach it to your stakeholder email.";
-            accessLog("Regulatory mapping PDF generated", "PDF produced for " + rmLast.org + " (" + rmLast.rows.length + " regulations).");
-          });
-          $("rmSend").addEventListener("click", function () {
-            if (!rmLast) { $("rmSendStatus").textContent = "Run the mapping first."; return; }
-            var em = $("rmEmail").value.trim();
-            if (!em) { $("rmSendStatus").textContent = "Add the stakeholder's email address first."; return; }
-            var subject = encodeURIComponent("Regulatory mapping - " + rmLast.org + " (" + rmLast.ind + ", " + rmLast.jur + ")");
-            var body = encodeURIComponent($("rmDesc").value + "\n\n(Please attach the PDF generated from the Training Centre - Regulatory Mapping - before sending.)");
-            window.location.href = "mailto:" + em + "?subject=" + subject + "&body=" + body;
-            $("rmLog").textContent = "Share prepared for " + em + " at " + stamp() + " - your email app opens with the description pre-filled; attach the generated PDF before sending.";
-            $("rmSendStatus").textContent = "Opening your email app...";
-            accessLog("Regulatory mapping shared", "Mapping for " + rmLast.org + " prepared for sending to " + em + " with the AI-drafted description.");
-          });
-        }
-
         /* ---------- compliance view: acceptance + access record ---------- */
         var SEC_EVENT_PREFIXES = ["Signed in", "Sign-in failed", "Signed out", "Password reset", "Password change", "MFA", "Session timeout", "Legal terms accepted", "Continued on this device", "Account sign-up", "Privacy request", "Consent granted", "Consent withdrawn", "Consent recorded", "Account deletion requested", "Data export", "Data purge", "Team invite"];
         function renderAccessLog() {
@@ -19291,7 +18446,6 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           injectStageFooters();
           wireTeamExtras();
           wireServiceDesk();
-          wireRegMapping();
           wirePrivacy();
           wireDataControls();
           wireLocalInvites();
@@ -19318,7 +18472,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
         /* ================================================================
            BENCHMARK FIXES MODULE
            1) IAIS depth: the full 24-ICP library below feeds the Training
-              Centre ICP table and the Organisation Regulatory Mapping.
+              Centre ICP table.
            2) Live feed: implemented in the Auto Refresh module above.
            3) Starter configuration: thresholds, per-path starter control
               libraries and the policy/template pack, with live status and
